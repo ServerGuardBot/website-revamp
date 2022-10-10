@@ -1,4 +1,4 @@
-const API_BASE_URL = (location.hostname === "localhost" || location.hostname === "127.0.0.1") ? 'http://localhost:5000/' : 'https://api.serverguard.reapimus.com/'
+const API_BASE_URL = (location.hostname === "localhost" || location.hostname === "127.0.0.1") ? 'http://localhost:5000/' : 'https://serverguard-api.reapimus.com/'
 const params = new Proxy(new URLSearchParams(window.location.search), {
     get: (searchParams, prop) => searchParams.get(prop)
 })
