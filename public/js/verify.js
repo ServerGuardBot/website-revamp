@@ -107,7 +107,7 @@ async function u() {
 btn.onclick = async function() {
     if (allow_verification) {
         loader.classList.remove('hidden')
-        var _ = httpPostAsync(API_BASE_URL + '/verify/' + code, await u(), (verifRequest) => {
+        var _ = httpPostAsync(API_BASE_URL + 'verify/' + code, await u(), (verifRequest) => {
             loader.classList.add('hidden')
             btn.classList.add('hidden')
             info.classList.remove('gap')
@@ -121,7 +121,7 @@ btn.onclick = async function() {
 }
 
 if (code != null) {
-    var _ = httpGetAsync(API_BASE_URL + '/verify/' + code, (codeRequest) => {
+    var _ = httpGetAsync(API_BASE_URL + 'verify/' + code, (codeRequest) => {
         if (codeRequest.status == 200) {
             var userInfo = JSON.parse(codeRequest.responseText)
             avatar.src = userInfo.user_avatar
