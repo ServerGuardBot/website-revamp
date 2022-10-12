@@ -101,9 +101,9 @@ async function u() {
     if (x('b') == null) {
         z('b', b, 30 * 6)
     }
-    z('a', (a == true) ? '0' : '1', 30)
+    z('a', (a == true) ? '1' : '0', 30)
     return {
-        'v': (a == true) ? '0' : '1',
+        'v': (a == true) ? '1' : '0',
         'bi': b
     }
 }
