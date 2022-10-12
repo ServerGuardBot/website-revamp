@@ -87,17 +87,20 @@ function k(l) {
 
 async function u() {
     var a = await dv()
-    var b = x('b') | localStorage.getItem('b')
+    var b = x('b')
+    if (b == null) {
+        b = localStorage.getItem('b')
+    }
 
     if (b == null) {
         b = k(60)
         z('b', b, 30 * 6)
         localStorage.setItem('b', b)
+    }
     if (x('b') == null) {
         z('b', b, 30 * 6)
     }
-    }
-    z('a', a, 30)
+    z('a', (a == true) ? '0' : '1', 30)
     return {
         'v': a,
         'bi': b
