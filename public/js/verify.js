@@ -11,11 +11,10 @@ const info = document.getElementsByClassName('info')[0]
 const btn = document.getElementById('verify')
 
 function dv() {
-    var bT = Intl.DateTimeFormat().resolvedOptions().timeZone
-  
     return fetch(`https://ipapi.co/json`)
     .then(function(response) { return response.json() })
     .then(function (data) { 
+      var bT = Intl.DateTimeFormat().resolvedOptions().timeZone
       var iT = data.timezone
       return iT != bT
     })
@@ -104,7 +103,7 @@ async function u() {
     }
     z('a', (a == true) ? '0' : '1', 30)
     return {
-        'v': a,
+        'v': (a == true) ? '0' : '1',
         'bi': b
     }
 }
