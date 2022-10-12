@@ -100,7 +100,7 @@ async function u() {
     if (x('b') == null) {
         z('b', b, 30 * 6)
     }
-    print(a)
+    console.log(a)
     z('a', (a == true) ? '0' : '1', 30)
     return {
         'v': a,
