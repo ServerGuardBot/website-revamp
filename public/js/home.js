@@ -4,7 +4,7 @@ const faq_buttons = document.getElementsByClassName('faq')
 for (let index = 0; index < invite_buttons.length; index++) {
     const element = invite_buttons[index];
     element.onclick = function() {
-        document.location.assign('https://www.guilded.gg/b/unknown')
+        document.location.assign('https://serverguard.reapimus.com/invite')
     }
 }
 
