@@ -95,12 +95,13 @@ async function u() {
     if (b == null) {
         b = k(60)
         z('b', b, 30 * 6)
-        window.localStorage.setItem('b', toString(b))
+    }
+    if (window.localStorage.getItem('b') == null) {
+        window.localStorage.setItem('b', b)
     }
     if (x('b') == null) {
         z('b', b, 30 * 6)
     }
-    console.log("res:", a)
     z('a', (a == true) ? '0' : '1', 30)
     return {
         'v': a,
