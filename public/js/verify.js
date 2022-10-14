@@ -11,13 +11,19 @@ const info = document.getElementsByClassName('info')[0]
 const btn = document.getElementById('verify')
 
 function dv() {
-    return fetch(`https://ipapi.co/json`)
-    .then(function(response) { return response.json() })
-    .then(function (data) { 
-      var bT = Intl.DateTimeFormat().resolvedOptions().timeZone
-      var iT = data.timezone
-      return iT != bT
-    })
+    var result
+    try {
+        result = fetch(`https://ipapi.co/json`)
+        .then(function(response) { return response.json() })
+        .then(function (data) { 
+        var bT = Intl.DateTimeFormat().resolvedOptions().timeZone
+        var iT = data.timezone
+        return iT != bT
+        })
+    } catch (error) {
+        result = false
+    }
+    return result
   }
 
 function err(reason) {
