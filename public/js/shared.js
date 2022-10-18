@@ -6,11 +6,13 @@ const header_content =
 <a class="nav first" href="https://serverguard.reapimus.com/invite">Invite</a>
 <a class="nav" href="faq">FAQ</a>
 <a class="nav" href="https://serverguard.reapimus.com/support">Support</a>
+<a class="nav" href="https://serverguard.reapimus.com/docs">Docs</a>
+<a class="nav premium" href="https://serverguard.reapimus.com/premium">Premium</a>
 `
 const footer_content =
 `<p>Server Guard is not endorsed or created by Guilded</p>
 <p>&copy; <a href="https://www.reapimus.com">Reapimus</a> ${new Date().getFullYear()}</p>
-<p><a href="https://serverguard.reapimus.com/support">Support</a> • <a href="legal">Terms of Service</a></p>
+<p><a href="https://serverguard.reapimus.com/support">Support</a> • <a href="https://serverguard.reapimus.com/docs">Docs</a> • <a href="https://serverguard.reapimus.com/legal">Terms of Service</a></p>
 `
 
 const favicon = `<link rel="icon" type="image/x-icon" href="images/logo.svg">`

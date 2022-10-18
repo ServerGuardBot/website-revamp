@@ -2,7 +2,9 @@
     --background: #1F1F1F;
     --background-100: #252525;
     --background-200: #2F2F2F;
+    
     --primary: #FFED47;
+    --primary-200: #fff7ad;
 
     --text: #FFFFFF;
     --text-error: #E24141;
@@ -56,6 +58,14 @@ a {
 
 .header .nav.first {
     margin-left: .3rem;
+}
+
+.header .nav.premium {
+    color: var(--primary);
+}
+
+.header .nav.premium:hover {
+    color: var(--primary-200);
 }
 
 footer {
@@ -378,6 +388,10 @@ body {
 
 .home-banner-contents h1.subtext {
     line-height: 1.8rem;
+}
+
+.contents.legal p.space-top {
+    margin-top: .35rem;
 }
 
 h1 {
