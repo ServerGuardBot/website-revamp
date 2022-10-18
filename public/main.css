@@ -327,6 +327,10 @@ button.outlined:hover {
     .feature-grid {
         grid-template-columns: repeat(1, 1fr);
     }
+
+    .hide-mobile {
+        display: none;
+    }
 }
 
 .feature-grid .feature {

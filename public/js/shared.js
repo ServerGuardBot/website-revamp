@@ -6,7 +6,7 @@ const header_content =
 <a class="nav first" href="https://serverguard.reapimus.com/invite">Invite</a>
 <a class="nav" href="faq">FAQ</a>
 <a class="nav" href="https://serverguard.reapimus.com/support">Support</a>
-<a class="nav" href="https://serverguard.reapimus.com/docs">Docs</a>
+<a class="nav hide-mobile" href="https://serverguard.reapimus.com/docs">Docs</a>
 <a class="nav premium" href="https://serverguard.reapimus.com/premium">Premium</a>
 `
 const footer_content =
