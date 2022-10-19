@@ -120,6 +120,7 @@ btn.onclick = async function() {
         btn.classList.add('hidden')
         var _ = httpPostAsync(API_BASE_URL + 'verify/' + code, await u(), (verifRequest) => {
             info.classList.remove('gap')
+            loader.classList.add('hidden')
             if (verifRequest.status == 200) {
                 info.innerText = 'All done, welcome to the server!'
             } else if (verifRequest.status == 500) {
