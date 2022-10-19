@@ -117,12 +117,13 @@ async function u() {
 btn.onclick = async function() {
     if (allow_verification) {
         loader.classList.remove('hidden')
+        btn.classList.add('hidden')
         var _ = httpPostAsync(API_BASE_URL + 'verify/' + code, await u(), (verifRequest) => {
-            loader.classList.add('hidden')
-            btn.classList.add('hidden')
             info.classList.remove('gap')
             if (verifRequest.status == 200) {
                 info.innerText = 'All done, welcome to the server!'
+            } else if (verifRequest.status == 500) {
+                info.innerHTML = 'Failed to verify due to a server error, if you continue receiving this message please report it in our <a href="https://serverguard.reapimus.com/support">Support Server</a>'
             } else {
                 info.innerText = 'Failed verification, if you believe this is a mistake please contact a server moderator.'
             }
