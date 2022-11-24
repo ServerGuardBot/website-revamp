@@ -2,4 +2,3 @@
 /invite https://www.guilded.gg/b/c10ac149-0462-4282-a632-d7a8808c6c6e
 /premium https://www.guilded.gg/server-guard/subscriptions
 /docs https://www.guilded.gg/server-guard/groups/D57rgP7z/channels/7ad31d28-0577-4f18-a80d-d401ceacf9db/docs
-/verify/:code /verify?code=:code
