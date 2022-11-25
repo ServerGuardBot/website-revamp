@@ -10,6 +10,7 @@ import Particles from "react-tsparticles";
 import { loadLinksPreset } from "tsparticles-preset-links";
 import CircularProgress from '@mui/material/CircularProgress';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import escapeHTML from 'escape-html-tags';
 
 const theme = createTheme({
     palette: {
@@ -133,6 +134,7 @@ class VerifyApp extends Component {
             username: "",
             server: "",
             success: false,
+            admin_contact: "",
             "code": code
         };
 
@@ -157,7 +159,8 @@ class VerifyApp extends Component {
                 loading: false,
                 avatar: userInfo.user_avatar,
                 username: userInfo.user_name,
-                server: userInfo.guild_name
+                server: userInfo.guild_name,
+                admin_contact: userInfo.admin_contact,
             })
         } else {
             if (typeof request.responseText == "string") {
@@ -231,7 +234,11 @@ class VerifyApp extends Component {
         } else {
             if (this.state.error) {
                 headerMessage = "Error";
-                bodyMessage = this.state.error_message;
+                if (this.state.admin_contact !== "" && this.state.admin_contact !== null) {
+                    bodyMessage = `${this.state.error_message}\n\nIf you believe this was in error, contact a staff member via <a href="${escapeHTML(this.state.admin_contact)}">this url.</a>`;
+                } else {
+                    bodyMessage = this.state.error_message;
+                }
             }
             else if (this.state.awaitingServer) {
                 bodyMessage = "";
