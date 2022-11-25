@@ -235,7 +235,7 @@ class VerifyApp extends Component {
             if (this.state.error) {
                 headerMessage = "Error";
                 if (this.state.admin_contact !== "" && this.state.admin_contact !== null) {
-                    bodyMessage = `${this.state.error_message}\n\nIf you believe this was in error, contact a staff member via <a href="${escapeHTML(this.state.admin_contact)}">this url.</a>`;
+                    bodyMessage = `${this.state.error_message}<br><br>If you believe this was in error, contact a staff member via <a href="${escapeHTML(this.state.admin_contact)}">this url.</a>`;
                 } else {
                     bodyMessage = this.state.error_message;
                 }
