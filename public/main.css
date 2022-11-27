@@ -12,6 +12,8 @@
 
     --border: #363636;
     --border-100: #282828;
+
+    --warning: #EF6C00;
 }
 
 span, img {
@@ -466,6 +468,27 @@ footer::before {
 
 .verify .container.legal p:nth-child(2) {
     margin-top: .15rem;
+}
+
+.container.warning {
+    background-color: var(--warning);
+}
+
+.verify .container.warning {
+    display: flex;
+    flex-direction: row;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.verify .container.warning p {
+    font-weight: bold;
+    font-size: .45rem;
+}
+
+.verify .container.warning .icon {
+    font-size: 1.25rem;
+    padding-right: .15rem;
 }
 
 button.verify-btn {

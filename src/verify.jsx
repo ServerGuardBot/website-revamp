@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://api.serverguard.xyz/" // http://localhost:5000/
+const API_BASE_URL = "https://api.serverguard.xyz/" // http://localhost:5000/ // https://api.serverguard.xyz/
 const VERIFY_REGEX = /\/verify\/([\w\-_]+)/
 const params = new Proxy(new URLSearchParams(window.location.search), {
     get: (searchParams, prop) => searchParams.get(prop)
@@ -11,6 +11,8 @@ import { loadLinksPreset } from "tsparticles-preset-links";
 import CircularProgress from '@mui/material/CircularProgress';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import escapeHTML from 'escape-html-tags';
+import CryptoJS from 'crypto-js';
+import FingerprintJS from '@fingerprintjs/fingerprintjs'
 
 const theme = createTheme({
     palette: {
@@ -19,6 +21,8 @@ const theme = createTheme({
         }
     }
 });
+
+const key = CryptoJS.enc.Utf8.parse(SECRET);
 
 function setCookie(name,value,days) {
     var expires = ""
@@ -67,50 +71,52 @@ function checkVPN() {
   }
 
 async function generateBody() {
-    var a = await checkVPN()
-    var b = getCookie('b')
+    var a = await checkVPN();
+    var b = getCookie('b');
     if (b == null) {
-        b = window.localStorage.getItem('b')
+        b = window.localStorage.getItem('b');
     }
 
     if (b == null) {
-        b = generateID(60)
-        setCookie('b', b, 30 * 6)
+        const fpPromise = await FingerprintJS.load();
+        var fpRes = await fpPromise.get();
+        b = fpRes.visitorId; //generateID(60);
+        setCookie('b', b, 30 * 6);
     }
     if (window.localStorage.getItem('b') == null) {
-        window.localStorage.setItem('b', b)
+        window.localStorage.setItem('b', b);
     }
     if (getCookie('b') == null) {
-        setCookie('b', b, 30 * 6)
+        setCookie('b', b, 30 * 6);
     }
     setCookie('a', (a == true) ? '1' : '0', 30)
-    return {
+    return CryptoJS.AES.encrypt(JSON.stringify({
         'v': (a == true) ? '1' : '0',
         'bi': b
-    }
+    }), key, {mode: CryptoJS.mode.ECB}).toString();
 }
 
 function httpGetAsync(theUrl, callback)
 {
-    var xmlHttp = new XMLHttpRequest()
+    var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() { 
         if (xmlHttp.readyState == 4)
-            callback(xmlHttp)
+            callback(xmlHttp);
     }
-    xmlHttp.open("GET", theUrl, true) // true for asynchronous 
-    xmlHttp.send(null)
+    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+    xmlHttp.send(null);
 }
 
 function httpPostAsync(theUrl, data, callback)
 {
-    var xmlHttp = new XMLHttpRequest()
+    var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() { 
         if (xmlHttp.readyState == 4)
-            callback(xmlHttp)
+            callback(xmlHttp);
     }
     xmlHttp.open("POST", theUrl, true); // true for asynchronous 
-    xmlHttp.setRequestHeader('Content-Type', 'application/json')
-    xmlHttp.send(JSON.stringify(data))
+    xmlHttp.setRequestHeader('Content-Type', 'text/plain'); // application/json
+    xmlHttp.send(data);
 }
 
 class VerifyApp extends Component {
@@ -292,6 +298,10 @@ class VerifyApp extends Component {
                             <p className="message" style={msgStyle} dangerouslySetInnerHTML={{__html: bodyMessage}}></p>
                             <CircularProgress color="primary" style={loaderStyle} thickness={2} size="3.5rem" />
                             <button className="verify-btn" style={btnStyle} onClick={this.buttonClicked}>Verify</button>
+                        </div>
+                        <div className="container warning">
+                            <span class="material-symbols-outlined icon">warning</span>
+                            <p>Server Guard will never ask you for personal information</p>
                         </div>
                         <div className="container legal">
                             <p>By verifying with Server Guard, you agree with our <a href="https://serverguard.xyz/legal">Privacy Policy & Terms and Conditions.</a></p>
