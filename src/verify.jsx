@@ -139,6 +139,7 @@ class VerifyApp extends Component {
         this.buttonClicked = this.buttonClicked.bind(this);
 
         if (code != null) {
+            history.replaceState({}, '', `${location.origin}/verify/${code}`)
             httpGetAsync(API_BASE_URL + 'verify/' + code, this.identityReceived);
         }
     }
