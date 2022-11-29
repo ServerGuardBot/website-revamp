@@ -44,17 +44,6 @@ function getCookie(name) {
     return null
 }
 
-function generateID(l) {
-    var r = ''
-    var c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-    var cL = c.length
-    for ( var i = 0; i < l; i++ ) {
-      r += c.charAt(Math.floor(Math.random() * 
- cL))
-   }
-   return r
-}
-
 function checkVPN() {
     var result
     result = fetch(`https://ipapi.co/json`)

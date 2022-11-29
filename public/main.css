@@ -89,6 +89,12 @@ h2.subheader {
     margin-top: 0;
 }
 
+.subheader a {
+    font-size: .9rem;
+    font-weight: 700;
+    margin-top: 0;
+}
+
 .contents.legal {
     padding: 1rem;
 }
