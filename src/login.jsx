@@ -22,7 +22,8 @@ function httpGetAsync(theUrl, callback)
         if (xmlHttp.readyState == 4)
             callback(xmlHttp);
     }
-    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+    xmlHttp.open("GET", theUrl, true); // true for asynchronous
+    xmlHttp.withCredentials = true;
     xmlHttp.send(null);
 }
 
@@ -34,6 +35,7 @@ function httpPostAsync(theUrl, data, callback)
             callback(xmlHttp);
     }
     xmlHttp.open("POST", theUrl, true); // true for asynchronous 
+    xmlHttp.withCredentials = true;
     xmlHttp.setRequestHeader('Content-Type', 'text/plain'); // application/json
     xmlHttp.send(data);
 }

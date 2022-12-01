@@ -7,7 +7,8 @@ function httpGetAsync(theUrl, callback)
         if (xmlHttp.readyState == 4)
             await callback(xmlHttp);
     }
-    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+    xmlHttp.open("GET", theUrl, true); // true for asynchronous
+    xmlHttp.withCredentials = true;
     xmlHttp.send(null);
 }
 
@@ -18,7 +19,8 @@ function httpPostAsync(theUrl, data, callback)
         if (xmlHttp.readyState == 4)
             await callback(xmlHttp);
     }
-    xmlHttp.open("POST", theUrl, true); // true for asynchronous 
+    xmlHttp.open("POST", theUrl, true); // true for asynchronous
+    xmlHttp.withCredentials = true;
     xmlHttp.setRequestHeader('Content-Type', 'application/json'); // application/json
     xmlHttp.send(JSON.stringify(data));
 }
