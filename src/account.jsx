@@ -25,8 +25,6 @@ class AccountApp extends Component {
             user: ''
         }
 
-        this.update_user = this.update_user.bind(this);
-
         get_user().then(function(user) {
             console.log(user);
             this.setState({
