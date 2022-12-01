@@ -452,7 +452,7 @@ footer::before {
     font-size: .6rem;
 }
 
-.verify .container.body .MuiCircularProgress-root svg, .verify .container.body .MuiCircularProgress-root svg circle {
+.MuiCircularProgress-root svg, .MuiCircularProgress-root svg circle {
     color: var(--primary);
 }
 

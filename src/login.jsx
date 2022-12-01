@@ -12,7 +12,7 @@ function setCookie(name,value,days) {
         date.setTime(date.getTime() + (days*24*60*60*1000))
         expires = "; expires=" + date.toUTCString()
     }
-    document.cookie = name + "=" + (value || "")  + expires + "; path=/"
+    document.cookie = name + "=" + (value || "")  + expires + "; HttpOnly; Secure; domain=.serverguard.xyz; path=/"
 }
 
 function httpGetAsync(theUrl, callback)
@@ -53,7 +53,7 @@ class LoginApp extends Component {
 
         httpPostAsync(API_BASE_URL + 'auth', "", this.codeReceived);
 
-        window.setInterval(this.loop, 1000)
+        window.setInterval(this.loop, 1000);
     }
 
     async loop() {
