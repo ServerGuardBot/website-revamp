@@ -5,6 +5,16 @@ import ReactDOM from 'react-dom';
 import Particles from "react-tsparticles";
 import { loadLinksPreset } from "tsparticles-preset-links";
 
+function setCookie(name,value,days) {
+    var expires = ""
+    if (days) {
+        var date = new Date()
+        date.setTime(date.getTime() + (days*24*60*60*1000))
+        expires = "; expires=" + date.toUTCString()
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/"
+}
+
 function httpGetAsync(theUrl, callback)
 {
     var xmlHttp = new XMLHttpRequest();
@@ -58,6 +68,9 @@ class LoginApp extends Component {
 
     async codeReceived(request) {
         if (request.status == 403) {
+            const msg = JSON.parse(request.responseText);
+            setCookie('auth', msg.auth, 1);
+            setCookie('refresh', msg.refresh, 14);
             location.assign(`${location.origin}/account`); // Already logged in, redirect to account page
         } else if (request.status == 200) {
             this.setState({
