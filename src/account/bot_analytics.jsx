@@ -21,7 +21,7 @@ export default class BotAnalytics extends Component {
 
     render() {
         var servers = this.state.serverCount.map(
-            (item, index) => {
+            (item, _) => {
                 return {
                     x: (new Date(item.time)).toLocaleString(),
                     y: item.value

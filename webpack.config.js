@@ -4,6 +4,7 @@ const webpack = require('webpack');
 require('dotenv').config();
 
 module.exports = {
+    devtool: 'source-map',
     entry: {
         verify: './src/verify.jsx',
         login: './src/login.jsx',

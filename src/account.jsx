@@ -51,7 +51,7 @@ class AccountApp extends Component {
                                         <div className='account'>
                                             <Routes>
                                                 <Route path='/account/' element={<Home user={this.state.user} />}/>
-                                                <Route path='/account/internal' element={<BotAnalytics user={this.state.user} />}/>
+                                                <Route path='/account/internal/' element={<BotAnalytics user={this.state.user} />}/>
                                             </Routes>
                                         </div>
                                     )
