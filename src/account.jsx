@@ -8,6 +8,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import Home from './account/home.jsx';
+import BotAnalytics from './account/bot_analytics.jsx';
 
 const theme = createTheme({
     palette: {
@@ -50,6 +51,7 @@ class AccountApp extends Component {
                                         <div className='account'>
                                             <Routes>
                                                 <Route path='/account/' element={<Home user={this.state.user} />}/>
+                                                <Route path='/account/internal' element={<BotAnalytics user={this.state.user} />}/>
                                             </Routes>
                                         </div>
                                     )
