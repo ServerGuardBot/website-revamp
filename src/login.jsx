@@ -12,7 +12,7 @@ function setCookie(name,value,days) {
         date.setTime(date.getTime() + (days*24*60*60*1000))
         expires = "; expires=" + date.toUTCString()
     }
-    document.cookie = name + "=" + (value || "")  + expires + ";HttpOnly;Secure;domain=.serverguard.xyz;path=/"
+    document.cookie = name + "=" + (value || "")  + expires + ";domain=.serverguard.xyz;path=/"
 }
 
 function httpGetAsync(theUrl, callback)
