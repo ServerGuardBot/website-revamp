@@ -30,7 +30,7 @@ class AccountApp extends Component {
             this.setState({
                 'user': user
             });
-        });
+        }.bind(this));
     }
 
     render() {
