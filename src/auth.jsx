@@ -1,5 +1,15 @@
 const API_BASE_URL = "https://api.serverguard.xyz/" // http://localhost:5000/ // https://api.serverguard.xyz/
 
+function setCookie(name,value,days) {
+    var expires = ""
+    if (days) {
+        var date = new Date()
+        date.setTime(date.getTime() + (days*24*60*60*1000))
+        expires = "; expires=" + date.toUTCString()
+    }
+    document.cookie = name + "=" + (value || "")  + expires + ";domain=.serverguard.xyz;path=/"
+}
+
 function httpGetAsync(theUrl, callback)
 {
     var xmlHttp = new XMLHttpRequest();
