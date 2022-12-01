@@ -25,10 +25,14 @@ class AccountApp extends Component {
             user: ''
         }
 
-        get_user().then((user) => {
-            this.setState({
-                'user': user
-            });
+        this.update_user = this.update_user.bind(this);
+
+        get_user().then(this.update_user);
+    }
+
+    async update_user(user) {
+        this.setState({
+            'user': user
         });
     }
 
