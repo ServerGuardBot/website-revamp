@@ -5,7 +5,9 @@ require('dotenv').config();
 
 module.exports = {
     entry: {
-        verify: './src/verify.jsx'
+        verify: './src/verify.jsx',
+        login: './src/login.jsx',
+        account: './src/account.jsx'
     },
     output: {
         filename: '[name].js',
