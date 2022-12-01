@@ -1,7 +1,7 @@
 const API_BASE_URL = "https://api.serverguard.xyz/" // http://localhost:5000/ // https://api.serverguard.xyz/
 
 import React, { Component } from 'react';
-import { Route, Switch, Link, BrowserRouter as Router } from 'react-router-dom';
+import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import { get_user } from './auth.jsx';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -22,34 +22,41 @@ class AccountApp extends Component {
         super(props);
 
         this.state = {
-            user: null
+            user: ''
         }
 
-        get_user().then((request) => {
+        get_user().then((user) => {
             this.setState({
-                user: JSON.parse(request.responseText)
+                'user': user
             });
         });
     }
 
     render() {
+        console.log(this.state.user);
         return (
             <ThemeProvider theme={theme}>
-                <div className="app">
-                    {
-                        (this.state.user == null)
-                        ?
-                        <div className="loading"></div>
-                        :
-                        <Router>
-                            <Switch>
-                                <Route path='/'>
-                                    <Home user={this.state.user} />
-                                </Route>
-                            </Switch>
-                        </Router>
-                    }
-                </div>
+                <Router>
+                    <div className="app">
+                        {
+                            (function() {
+                                if (this.state.user == '') {
+                                    return (
+                                        <div className="loading"></div>
+                                    )
+                                } else {
+                                    return (
+                                        <div className='account'>
+                                            <Routes>
+                                                <Route path='/account/' element={<Home user={this.state.user} />}/>
+                                            </Routes>
+                                        </div>
+                                    )
+                                }
+                            }.bind(this))()
+                        }
+                    </div>
+                </Router>
             </ThemeProvider>
         )
     }

@@ -519,6 +519,137 @@ button.verify-btn {
     text-align: center;
 }
 
+.account {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 5vw 0;
+}
+
+.account .home .welcome {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.account .home .welcome-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-100);
+    padding: .5rem;
+    border-radius: .15rem;
+    box-shadow: 0px .875rem 1rem 1rem rgba(255, 237, 71, 0.015);
+}
+
+.account .home .welcome h1 {
+    margin: 0;
+    margin-left: .45rem;
+    font-weight: 700;
+    font-size: 1.15rem;
+}
+
+.account .home .welcome .avatar {
+    --size: 3.5rem;
+}
+
+.account .home h1 {
+    text-align: center;
+    color: var(--text);
+    font-weight: 300;
+}
+
+.account .home h1.servers {
+    margin-bottom: .35rem;
+    margin-top: 1.5rem;
+}
+
+.account .home .server {
+    width: auto;
+    height: auto;
+}
+
+.account .home .server p {
+    text-align: center;
+}
+
+.account .home .server .icon {
+    width: var(--size);
+    height: var(--size);
+    border-radius: .15rem;
+    background-color: var(--background-200);
+}
+
+.account .home .server.disabled {
+    cursor: unset;
+    opacity: .5;
+}
+
+.account .home .server.enabled {
+    cursor: pointer;
+}
+
+.account .home .server.enabled .icon {
+    transition: filter .15s;
+}
+
+.account .home .server.enabled:hover .icon {
+    filter: brightness(.7);
+}
+
+.account .home .server p {
+    margin-top: .1rem;
+}
+
+.account .home .server-list {
+    --size: 6rem;
+    --gap: 1rem;
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: var(--size) var(--size) var(--size) var(--size) var(--size);
+    row-gap: var(--gap);
+    column-gap: var(--gap);
+
+    background-color: var(--background-100);
+    padding: 1rem;
+    border-radius: .15rem;
+}
+
+.account .home .branding-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.account .home .branding-container a {
+    text-decoration: none;
+}
+
+.account .home .branding h1 {
+    transition: color .15s;
+}
+
+.account .home .branding:hover h1 {
+    color: var(--subtext);
+}
+
+.account .home .branding {
+    background-color: var(--background-100);
+    padding: .25rem;
+    padding-right: .4rem;
+    border-radius: .15rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+}
+
+.account .home .branding h1 {
+    font-weight: 700;
+    margin: 0;
+    user-select: none;
+}
+
 @media (max-width: 500px) {
     .verify .container {
         width: 10.5rem;

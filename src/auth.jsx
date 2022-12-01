@@ -74,9 +74,134 @@ export async function authenticated_post(url, data) {
 
 export async function get_user() {
     return new Promise(async function(resolve, reject) {
-        var request = await authenticated_get(API_BASE_URL + 'auth');
-        if (request.status == 200) {
-            resolve(JSON.parse(request.responseText));
+        if (location.hostname == 'localhost') {
+            resolve({
+                "avatar": "https://s3-us-west-2.amazonaws.com/www.guilded.gg/UserAvatar/54aa49d28f35c50b29fbd729b7cf8cdb-Large.webp?w=450&h=450&ia=1",
+                "guilds": [
+                    {
+                        "active": false,
+                        "avatar": "https://s3-us-west-2.amazonaws.com/www.guilded.gg/TeamAvatar/f3ca3496e7f2b6bfaeddfbb6526bdec7-Large.png?w=450&h=450",
+                        "id": "wlVr3Ggl",
+                        "name": "Guilded"
+                    },
+                    {
+                        "active": false,
+                        "avatar": "https://s3-us-west-2.amazonaws.com/www.guilded.gg/TeamAvatar/52c4e8181349da2a3e5b1e0216efe02a-Large.png?w=450&h=450",
+                        "id": "kj78xnyR",
+                        "name": "Advertisement Space"
+                    },
+                    {
+                        "active": false,
+                        "avatar": "https://s3-us-west-2.amazonaws.com/www.guilded.gg/TeamAvatar/2244e9413e0d3a544afe43a36edc7c87-Large.png?w=450&h=450",
+                        "id": "Mldq2n0E",
+                        "name": "Programming Space"
+                    },
+                    {
+                        "active": false,
+                        "avatar": "https://s3-us-west-2.amazonaws.com/www.guilded.gg/TeamAvatar/a66e23924a4bc49fbf9242a98d955a7c-Large.png?w=450&h=450",
+                        "id": "4R5q39VR",
+                        "name": "Guilded-API"
+                    },
+                    {
+                        "active": false,
+                        "avatar": "https://s3-us-west-2.amazonaws.com/www.guilded.gg/TeamAvatar/04ff07e3a8f1f109c4885d25de8d913d-Large.png?w=450&h=450",
+                        "id": "QR46qKZE",
+                        "name": "Guilded API"
+                    },
+                    {
+                        "active": false,
+                        "avatar": "https://s3-us-west-2.amazonaws.com/www.guilded.gg/TeamAvatar/18634f0a59ccf67b9ef452f5bbf80d5a-Large.png?w=450&h=450",
+                        "id": "VRzvL9bR",
+                        "name": "Gil Gang"
+                    },
+                    {
+                        "active": true,
+                        "avatar": "https://s3-us-west-2.amazonaws.com/www.guilded.gg/TeamAvatar/69b8eb93831c23058e97f213ffef8837-Large.png?w=450&h=450",
+                        "id": "wReb5DPl",
+                        "name": "Anime Island"
+                    },
+                    {
+                        "active": false,
+                        "avatar": "https://s3-us-west-2.amazonaws.com/www.guilded.gg/TeamAvatar/074cfce794aff1ce293dc09dad286043-Large.png?w=450&h=450",
+                        "id": "ARmQz4mR",
+                        "name": "ReGuilded"
+                    },
+                    {
+                        "active": true,
+                        "avatar": "https://s3-us-west-2.amazonaws.com/www.guilded.gg/TeamAvatar/4d4f97c75f89c6a82452ff57b6fe1aac-Large.png?w=450&h=450",
+                        "id": "QR4MXPdl",
+                        "name": "Reapimus"
+                    },
+                    {
+                        "active": false,
+                        "avatar": null,
+                        "id": "wlVq5oYR",
+                        "name": "Ambishyon"
+                    },
+                    {
+                        "active": false,
+                        "avatar": "https://s3-us-west-2.amazonaws.com/www.guilded.gg/TeamAvatar/4f28a4ee2dcb05e47b9c632af6bdc6df-Large.png?w=450&h=450",
+                        "id": "blPAmevE",
+                        "name": "World Builder Game"
+                    },
+                    {
+                        "active": false,
+                        "avatar": "https://s3-us-west-2.amazonaws.com/www.guilded.gg/TeamAvatar/30429367acc757579e1b4c7e6207fee1-Large.png?w=450&h=450",
+                        "id": "4l3xGAYE",
+                        "name": "Chat About Anime"
+                    },
+                    {
+                        "active": false,
+                        "avatar": "https://s3-us-west-2.amazonaws.com/www.guilded.gg/TeamAvatar/6064af59c15cee519cac3311861432b0-Large.png?w=450&h=450",
+                        "id": "4R56dNkl",
+                        "name": "Yoki Labs"
+                    },
+                    {
+                        "active": false,
+                        "avatar": "https://s3-us-west-2.amazonaws.com/www.guilded.gg/TeamAvatar/b3079f5148f132c3edd36b82d697b51f-Large.png?w=450&h=450",
+                        "id": "4l3r1wyR",
+                        "name": "Creation Central"
+                    },
+                    {
+                        "active": false,
+                        "avatar": "https://s3-us-west-2.amazonaws.com/www.guilded.gg/TeamAvatar/744797641a5a98f7e7341a7e8c9fa918-Large.png?w=450&h=450",
+                        "id": "JjMwxb8l",
+                        "name": "Parrot Bot"
+                    },
+                    {
+                        "active": true,
+                        "avatar": "https://s3-us-west-2.amazonaws.com/www.guilded.gg/TeamAvatar/5ee5d209a822d95e565aecfb9644a14e-Large.png?w=450&h=450",
+                        "id": "aE9Zg6Kj",
+                        "name": "Server Guard"
+                    },
+                    {
+                        "active": true,
+                        "avatar": null,
+                        "id": "kj7BAwoE",
+                        "name": "Reapimus-Test-213asd3"
+                    },
+                    {
+                        "active": true,
+                        "avatar": null,
+                        "id": "Oj1JY1mR",
+                        "name": "Reapimus-test-1234sasd"
+                    },
+                    {
+                        "active": true,
+                        "avatar": "https://s3-us-west-2.amazonaws.com/www.guilded.gg/TeamAvatar/7316621d358c0d98dfb6e9ecb9ab8b64-Large.png?w=450&h=450",
+                        "id": "ME2D3K6R",
+                        "name": "Gilded Gamers"
+                    }
+                ],
+                "id": "00000000",
+                "name": "Test User",
+                "premium": "3"
+            });
+        } else {
+            var request = await authenticated_get(API_BASE_URL + 'auth');
+            if (request.status == 200) {
+                resolve(JSON.parse(request.responseText));
+            }
         }
     });
 }
