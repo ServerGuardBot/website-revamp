@@ -51,6 +51,8 @@ export async function authenticated_get(url) {
                     location.assign(`${location.origin}/login`);
                     reject();
                 }
+            } else {
+                resolve(request);
             }
         });
     });
@@ -67,6 +69,8 @@ export async function authenticated_post(url, data) {
                     location.assign(`${location.origin}/login`);
                     reject();
                 }
+            } else {
+                resolve(request);
             }
         });
     });
