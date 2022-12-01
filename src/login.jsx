@@ -68,9 +68,6 @@ class LoginApp extends Component {
 
     async codeReceived(request) {
         if (request.status == 403) {
-            const msg = JSON.parse(request.responseText);
-            setCookie('auth', msg.auth, 1);
-            setCookie('refresh', msg.refresh, 14);
             location.assign(`${location.origin}/account`); // Already logged in, redirect to account page
         } else if (request.status == 200) {
             this.setState({
@@ -87,6 +84,9 @@ class LoginApp extends Component {
             httpPostAsync(API_BASE_URL + 'auth', "", this.codeReceived);
         }
         else if (request.status == 200) {
+            const msg = JSON.parse(request.responseText);
+            setCookie('auth', msg.auth, 1);
+            setCookie('refresh', msg.refresh, 14);
             location.assign(`${location.origin}/account`)
         }
     }
