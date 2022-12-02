@@ -8,6 +8,14 @@ export default class BotAnalytics extends Component {
 
         if (location.hostname == 'localhost') {
             this.state = {
+                largestServers: [
+                    {
+                        "id": "wReb5DPl",
+                        "name": "Anime Island",
+                        "avatar": "https://img.guildedcdn.com/TeamAvatar/69b8eb93831c23058e97f213ffef8837-Large.png?w=450&h=450",
+                        "members": 14794
+                    }
+                ],
                 serverCount: [
                     {
                         "time": 1669791600,
@@ -181,7 +189,8 @@ export default class BotAnalytics extends Component {
                 .then(async function(request) {
                     var resp = JSON.parse(request.responseText);
                     this.setState({
-                        serverCount: resp.servers
+                        serverCount: resp.servers,
+                        largestServers: (resp.largestServers != null) ? resp.largestServers : this.state.largestServers
                     });
                 }.bind(this))
         }
@@ -189,20 +198,63 @@ export default class BotAnalytics extends Component {
 
     render() {
         return (
-            <div className="bot_analytics">
-                <LineChart labels={this.state.serverCount.map((item, _) => {
-                    return (new Date(item.time)).toLocaleString();
-                })} data={[
-                    {
-                        label: "servers",
-                        data: this.state.serverCount.map((item, _) => {
-                            return {
-                                x: (new Date(item.time)).toLocaleString(),
-                                y: item.value
+            <div className="bot-analytics">
+                <div className="row">
+                    <div className="container">
+                        <h1>Server Count</h1>
+                        <LineChart
+                            width="300"
+                            height="150"
+                            labels={this.state.serverCount.map((item, _) => {
+                                return (new Date(item.time * 1000)).toLocaleString();
+                            })} data={[
+                            {
+                                label: "Servers",
+                                data: this.state.serverCount.map((item, _) => {
+                                    return {
+                                        x: (new Date(item.time * 1000)).toLocaleString(),
+                                        y: item.value
+                                    }
+                                })
                             }
-                        })
-                    }
-                ]} />
+                        ]} />
+                    </div>
+                    <div className="container">
+                        <h1>Placeholder</h1>
+                        <LineChart
+                            width="300"
+                            height="150"
+                            labels={this.state.serverCount.map((item, _) => {
+                                return (new Date(item.time * 1000)).toLocaleString();
+                            })} data={[
+                            {
+                                label: "Servers",
+                                data: this.state.serverCount.map((item, _) => {
+                                    return {
+                                        x: (new Date(item.time * 1000)).toLocaleString(),
+                                        y: item.value
+                                    }
+                                })
+                            }
+                        ]} />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="container servers">
+                        <h1>Largest Servers</h1>
+                        {
+                            this.state.largestServers.map((item, _) => {
+                                return <div className="listed-server">
+                                    <img src={(item.avatar != null) ? item.avatar : "https://img.guildedcdn.com/asset/DefaultUserAvatars/profile_1.png"} alt={`${item.name}'s Icon`} className="icon" />
+                                    <div className="column">
+                                        <p>{item.name}</p>
+                                        <p className="members">{item.members} Members</p>
+                                    </div>
+                                </div>
+                            })
+                        }
+                    </div>
+                </div>
             </div>
         )
     }

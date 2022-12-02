@@ -650,6 +650,61 @@ button.verify-btn {
     user-select: none;
 }
 
+.bot-analytics h1 {
+    color: var(--text);
+    margin: 0;
+    margin-bottom: .15rem;
+    font-size: .7rem;
+}
+
+.bot-analytics .row {
+    display: flex;
+}
+
+.bot-analytics .container {
+    border-radius: .15rem;
+    background-color: var(--background-100);
+    box-shadow: 0 .15rem .6rem rgba(0, 0, 0, 0.1);
+    margin: .3rem;
+}
+
+.data-chart {
+    border-radius: .15rem;
+    background-color: var(--background-200);
+}
+
+.bot-analytics .listed-server {
+    width: calc(100% - .4rem);
+    height: 2.4rem;
+    padding: .2rem;
+    border-radius: .15rem;
+    background-color: var(--background-200);
+    display: flex;
+    align-items: center;
+}
+
+.bot-analytics .listed-server .icon {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: .15rem;
+    margin-right: .35rem;
+}
+
+.bot-analytics .listed-server p {
+    margin: 0;
+    font-weight: 700;
+}
+
+.bot-analytics .listed-server p.members {
+    color: var(--subtext);
+    font-size: .5rem;
+    font-weight: 300;
+}
+
+.bot-analytics .container .servers {
+    width: 100%;
+}
+
 @media (max-width: 500px) {
     .verify .container {
         width: 10.5rem;
