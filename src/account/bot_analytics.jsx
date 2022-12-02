@@ -177,6 +177,14 @@ export default class BotAnalytics extends Component {
             }
         } else {
             this.state = {
+                largestServers: [
+                    {
+                        "id": "wReb5DPl",
+                        "name": "Anime Island",
+                        "avatar": "https://img.guildedcdn.com/TeamAvatar/69b8eb93831c23058e97f213ffef8837-Large.png?w=450&h=450",
+                        "members": 14794
+                    }
+                ],
                 serverCount: [
                     {
                         "time": 1669791600,
