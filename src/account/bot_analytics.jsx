@@ -208,10 +208,10 @@ export default class BotAnalytics extends Component {
         return (
             <div className="bot-analytics">
                 <div className="row">
-                    <div className="container">
+                    <div className="container data-container">
                         <h1>Server Count</h1>
                         <LineChart
-                            width="300"
+                            width="350"
                             height="150"
                             labels={this.state.serverCount.map((item, _) => {
                                 return (new Date(item.time * 1000)).toLocaleString();
@@ -227,10 +227,10 @@ export default class BotAnalytics extends Component {
                             }
                         ]} />
                     </div>
-                    <div className="container">
+                    <div className="container data-container">
                         <h1>Placeholder</h1>
                         <LineChart
-                            width="300"
+                            width="350"
                             height="150"
                             labels={this.state.serverCount.map((item, _) => {
                                 return (new Date(item.time * 1000)).toLocaleString();

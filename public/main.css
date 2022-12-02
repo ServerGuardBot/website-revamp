@@ -523,7 +523,7 @@ button.verify-btn {
     display: flex;
     align-items: center;
     flex-direction: column;
-    margin: 5vw 0;
+    margin: 0 5vw;
 }
 
 .account .home .welcome {
@@ -613,12 +613,14 @@ button.verify-btn {
     background-color: var(--background-100);
     padding: 1rem;
     border-radius: .15rem;
+    margin-bottom: 2rem;
 }
 
 .account .home .branding-container {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 2rem;
 }
 
 .account .home .branding-container a {
@@ -657,6 +659,14 @@ button.verify-btn {
     font-size: .7rem;
 }
 
+.bot-analytics .data-container h1 {
+    text-align: center;
+}
+
+.bot-analytics .data-container {
+    padding: .2rem;
+}
+
 .bot-analytics .row {
     display: flex;
 }
@@ -681,6 +691,11 @@ button.verify-btn {
     background-color: var(--background-200);
     display: flex;
     align-items: center;
+    margin-bottom: .25rem;
+}
+
+.bot-analytics .listed-server:last-child {
+    margin-bottom: 0;
 }
 
 .bot-analytics .listed-server .icon {
@@ -701,8 +716,9 @@ button.verify-btn {
     font-weight: 300;
 }
 
-.bot-analytics .container .servers {
+.bot-analytics .container.servers {
     width: 100%;
+    padding: .2rem;
 }
 
 @media (max-width: 500px) {

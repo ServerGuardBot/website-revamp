@@ -39,7 +39,7 @@ class AccountApp extends Component {
         return (
             <ThemeProvider theme={theme}>
                 <Router>
-                    <div className="app">
+                    <div className="app-account">
                         {
                             (function() {
                                 if (this.state.user == '') {
