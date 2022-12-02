@@ -4,7 +4,6 @@ const webpack = require('webpack');
 require('dotenv').config();
 
 module.exports = {
-    devtool: 'source-map',
     entry: {
         verify: './src/verify.jsx',
         login: './src/login.jsx',
@@ -15,7 +14,13 @@ module.exports = {
         path: path.resolve(__dirname, 'public', 'js'),
     },
     devServer: {
-        port: 8001
+        port: 8001,
+        static: path.resolve(__dirname, 'public'),
+        historyApiFallback: {
+            rewrites: [
+                { from: '(\/account\/[\\w\\-_]+(?!\/+)+)$', to: '/account/404.html' }
+            ]
+        }
     },
     module: {
         rules: [

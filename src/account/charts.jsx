@@ -50,6 +50,9 @@ export class LineChart extends Component {
         return (
             <Line
                 data={{
+                    labels: ((this.props.data[0]) != null ? this.props.data[0] : []).map((item, _) => {
+                        return item.x
+                    }),
                     datasets: [
                         this.props.data.map((item, _) => {
                             return {
@@ -57,6 +60,9 @@ export class LineChart extends Component {
                                 tension: .25,
                                 data: item.data,
                                 fill: true,
+                                parsing: {
+                                    yAxisKey: 'y'
+                                },
                                 backgroundColor: function(context) {
                                     const chart = context.chart;
                                     const {ctx, chartArea} = chart;
