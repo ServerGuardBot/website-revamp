@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { LineChart } from './charts.jsx';
 import { authenticated_get } from '../auth.jsx';
-import { AutoSizer, List } from 'react-virtualized';
 
 export default class BotAnalytics extends Component {
     constructor(props) {
@@ -387,7 +386,7 @@ export default class BotAnalytics extends Component {
     }
 
     render() {
-        function logsRenderer({index}) {
+        function logsRenderer(index) {
             const item = this.state.logs[index];
             console.log(index, item);
             return <p className={`log-item ${item.type.toLowerCase()}`}>
@@ -463,18 +462,6 @@ export default class BotAnalytics extends Component {
                 <div className="row">
                     <div className="container logs">
                         <h1>Logs</h1>
-                        <AutoSizer className="data-chart">
-                            {({ height, width }) => {
-                                <List 
-                                    overscanRowCount={10}
-                                    height={height}
-                                    rowHeight={20}
-                                    rowCount={this.state.logs.length}
-                                    width={width}
-                                    rowRenderer={logsRenderer}
-                                />
-                            }}
-                        </AutoSizer>
                     </div>
                 </div>
             </div>
