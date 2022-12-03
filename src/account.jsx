@@ -27,10 +27,17 @@ class AccountApp extends Component {
         }
 
         get_user().then(function(user) {
-            console.log(user);
-            this.setState({
-                'user': user
-            });
+            if (location.hostname == 'localhost') {
+                setTimeout(function() {
+                    this.setState({
+                        'user': user
+                    });
+                }.bind(this), 1000); // Simulate lag on local tests
+            } else {
+                this.setState({
+                    'user': user
+                });
+            }
         }.bind(this));
     }
 
@@ -44,7 +51,9 @@ class AccountApp extends Component {
                             (function() {
                                 if (this.state.user == '') {
                                     return (
-                                        <div className="loading"></div>
+                                        <div className="loading">
+                                            <CircularProgress color="primary" thickness={3} size="3.8rem" />
+                                        </div>
                                     )
                                 } else {
                                     return (

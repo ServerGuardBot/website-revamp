@@ -671,13 +671,6 @@ button.verify-btn {
     display: flex;
 }
 
-.bot-analytics .container {
-    border-radius: .15rem;
-    background-color: var(--background-100);
-    box-shadow: 0 .15rem .6rem rgba(0, 0, 0, 0.1);
-    margin: .3rem;
-}
-
 .data-chart {
     border-radius: .15rem;
     background-color: var(--background-200);
@@ -716,9 +709,29 @@ button.verify-btn {
     font-weight: 300;
 }
 
-.bot-analytics .container.servers {
+.bot-analytics .container.servers, .bot-analytics .container.logs {
     width: 100%;
     padding: .2rem;
+}
+
+.app-account .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--background-100);
+    border-radius: .2rem;
+    box-shadow: 0 .15rem .6rem rgba(0, 0, 0, 0.1);
+    margin: .3rem;
+    padding: .25rem;
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
 }
 
 @media (max-width: 500px) {
