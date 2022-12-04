@@ -373,7 +373,7 @@ export default class BotAnalytics extends Component {
                 ]
             }
     
-            authenticated_get('https://api.serverguard.xyz/analytics/servers/dash')
+            authenticated_get('https://api.serverguard.xyz/analytics/servers/dash/2')
                 .then(async function(request) {
                     var resp = JSON.parse(request.responseText);
                     this.setState({
