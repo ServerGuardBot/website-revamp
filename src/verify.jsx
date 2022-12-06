@@ -232,35 +232,37 @@ class VerifyApp extends Component {
         var headerMessage = "";
         var bodyMessage = "";
 
-        if (this.state.loading) {
-            headerMessage = translate('verify.loading') | "Loading...";
-        } else {
-            if (this.state.error) {
-                headerMessage = "Error";
-                if (this.state.admin_contact !== "" && this.state.admin_contact !== null) {
-                    bodyMessage = translate('verify.failure.with_contact', {
-                        message: this.state.error_message,
-                        admin_contact: escapeHTML(this.state.admin_contact)
-                    }) | `${this.state.error_message}<br><br>If you believe this was in error, contact a staff member via <a href="${escapeHTML(this.state.admin_contact)}">this url.</a>`;
-                } else {
-                    bodyMessage = this.state.error_message;
-                }
-            }
-            else if (this.state.awaitingServer) {
-                bodyMessage = "";
-            }
-            else if (this.state.success) {
-                bodyMessage = translate('verify.message.success');
+        if (this.state.translationsReady) {
+            if (this.state.loading) {
+                headerMessage = translate('verify.loading') | "Loading...";
             } else {
-                bodyMessage = translate('verify.message.intro', {
-                    server: this.state.server
-                });
-            }
-
-            if (this.state.error === false) {
-                headerMessage = translate('verify.welcome', {
-                    username: this.state.username
-                });
+                if (this.state.error) {
+                    headerMessage = "Error";
+                    if (this.state.admin_contact !== "" && this.state.admin_contact !== null) {
+                        bodyMessage = translate('verify.failure.with_contact', {
+                            message: this.state.error_message,
+                            admin_contact: escapeHTML(this.state.admin_contact)
+                        }) | `${this.state.error_message}<br><br>If you believe this was in error, contact a staff member via <a href="${escapeHTML(this.state.admin_contact)}">this url.</a>`;
+                    } else {
+                        bodyMessage = this.state.error_message;
+                    }
+                }
+                else if (this.state.awaitingServer) {
+                    bodyMessage = "";
+                }
+                else if (this.state.success) {
+                    bodyMessage = translate('verify.message.success');
+                } else {
+                    bodyMessage = translate('verify.message.intro', {
+                        server: this.state.server
+                    });
+                }
+    
+                if (this.state.error === false) {
+                    headerMessage = translate('verify.welcome', {
+                        username: this.state.username
+                    });
+                }
             }
         }
 
