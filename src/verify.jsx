@@ -140,15 +140,14 @@ class VerifyApp extends Component {
         this.serverResponse = this.serverResponse.bind(this);
         this.buttonClicked = this.buttonClicked.bind(this);
 
-        if (code != null) {
-            history.replaceState({}, '', `${location.origin}/verify/${code}`)
-            httpGetAsync(API_BASE_URL + 'verify/' + code, this.identityReceived);
-        }
-
         waitForLoad().then((() => {
             this.setState({
                 translationsReady: true
             });
+            if (code != null) {
+                history.replaceState({}, '', `${location.origin}/verify/${code}`)
+                httpGetAsync(API_BASE_URL + 'verify/' + code, this.identityReceived);
+            }
         }).bind(this));
     }
 
