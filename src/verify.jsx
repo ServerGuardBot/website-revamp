@@ -12,7 +12,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import escapeHTML from 'escape-html-tags';
 import CryptoJS from 'crypto-js';
-import FingerprintJS from '@fingerprintjs/fingerprintjs'
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import { translateAsync, translate, waitForLoad } from "./translator.jsx";
 
 const theme = createTheme({
     palette: {
@@ -130,7 +131,8 @@ class VerifyApp extends Component {
             server: "",
             success: false,
             admin_contact: "",
-            "code": code
+            "code": code,
+            translationsReady: false,
         };
 
         this.particlesInit = this.particlesInit.bind(this);
@@ -142,6 +144,12 @@ class VerifyApp extends Component {
             history.replaceState({}, '', `${location.origin}/verify/${code}`)
             httpGetAsync(API_BASE_URL + 'verify/' + code, this.identityReceived);
         }
+
+        waitForLoad().then((() => {
+            this.setState({
+                translationsReady: true
+            });
+        }).bind(this));
     }
 
     async particlesInit(engine) {
@@ -163,13 +171,13 @@ class VerifyApp extends Component {
                 this.setState({
                     loading: false,
                     error: true,
-                    error_message: `[${request.status}] ${request.responseText}`
+                    error_message: await translateAsync(`verify.${request.status}.${JSON.parse(request.responseText).message}`) | `[${request.status}] ${request.responseText}`
                 });
             } else {
                 this.setState({
                     loading: false,
                     error: true,
-                    error_message: `[${request.status}] ${JSON.parse(request.responseText).message}`
+                    error_message: await translateAsync(`verify.${request.status}.${JSON.parse(request.responseText).message}`) | `[${request.status}] ${JSON.parse(request.responseText).message}`
                 });
             }
         }
@@ -186,13 +194,13 @@ class VerifyApp extends Component {
             this.setState({
                 awaitingServer: false,
                 error: true,
-                error_message: `[500] Failed to verify due to a server error, if you continue receiving this message please report it in our <a href="https://serverguard.xyz/support">Support Server</a>`
+                error_message: await translateAsync(`verify.500`) | `[500] Failed to verify due to a server error, if you continue receiving this message please report it in our <a href="https://serverguard.xyz/support">Support Server</a>`
             });
         } else {
             this.setState({
                 awaitingServer: false,
                 error: true,
-                error_message: `[${request.status}] ${JSON.parse(request.responseText).message}`
+                error_message: await translateAsync(`verify.${request.status}.${JSON.parse(request.responseText).message}`) | `[${request.status}] ${JSON.parse(request.responseText).message}`
             });
         }
     }
@@ -226,12 +234,15 @@ class VerifyApp extends Component {
         var bodyMessage = "";
 
         if (this.state.loading) {
-            headerMessage = "Loading...";
+            headerMessage = translate('verify.loading') | "Loading...";
         } else {
             if (this.state.error) {
                 headerMessage = "Error";
                 if (this.state.admin_contact !== "" && this.state.admin_contact !== null) {
-                    bodyMessage = `${this.state.error_message}<br><br>If you believe this was in error, contact a staff member via <a href="${escapeHTML(this.state.admin_contact)}">this url.</a>`;
+                    bodyMessage = translate('verify.failure.with_contact', {
+                        message: this.state.error_message,
+                        admin_contact: escapeHTML(this.state.admin_contact)
+                    }) | `${this.state.error_message}<br><br>If you believe this was in error, contact a staff member via <a href="${escapeHTML(this.state.admin_contact)}">this url.</a>`;
                 } else {
                     bodyMessage = this.state.error_message;
                 }
@@ -240,13 +251,17 @@ class VerifyApp extends Component {
                 bodyMessage = "";
             }
             else if (this.state.success) {
-                bodyMessage = 'Thanks for verifying, you can now enter the server!'
+                bodyMessage = translate('verify.message.success');
             } else {
-                bodyMessage = `Welcome to ${this.state.server}! This server is protected by Server Guard, please verify with us by clicking the button below.`;
+                bodyMessage = translate('verify.message.intro', {
+                    server: this.state.server
+                });
             }
 
             if (this.state.error === false) {
-                headerMessage = `Hello, ${this.state.username}`;
+                headerMessage = translate('verify.welcome', {
+                    username: this.state.username
+                });
             }
         }
 
@@ -274,31 +289,44 @@ class VerifyApp extends Component {
 
         return (
             <ThemeProvider theme={theme}>
-                <div className="app">
-                    <div className="particle-container">
-                    <Particles options={options} className="verify-particles"
-                        init={this.particlesInit}/>
-                    </div>
-                    <div className="verify">
-                        <div className="container header">
-                            <img src={this.state.avatar} alt="user avatar icon" className="avatar" />
-                            <h1 className="title">{headerMessage}</h1>
+                {
+                function() {
+                    if (this.state.translationsReady == false) {
+                        return (
+                            <div className="loading">
+                                <CircularProgress color="primary" thickness={3} size="3.8rem" />
+                            </div>
+                        )
+                    }
+                    return (<div className="app">
+                        <div className="particle-container">
+                        <Particles options={options} className="verify-particles"
+                            init={this.particlesInit}/>
                         </div>
-                        <div className="container body">
-                            <p className="message" style={msgStyle} dangerouslySetInnerHTML={{__html: bodyMessage}}></p>
-                            <CircularProgress color="primary" style={loaderStyle} thickness={2} size="3.5rem" />
-                            <button className="verify-btn" style={btnStyle} onClick={this.buttonClicked}>Verify</button>
+                        <div className="verify">
+                            <div className="container header">
+                                <img src={this.state.avatar} alt="user avatar icon" className="avatar" />
+                                <h1 className="title">{headerMessage}</h1>
+                            </div>
+                            <div className="container body">
+                                <p className="message" style={msgStyle} dangerouslySetInnerHTML={{__html: bodyMessage}}></p>
+                                <CircularProgress color="primary" style={loaderStyle} thickness={2} size="3.5rem" />
+                                <button className="verify-btn" style={btnStyle} onClick={this.buttonClicked}>{translate('verify.button')}</button>
+                            </div>
+                            <div className="container warning">
+                                <span class="material-symbols-outlined icon">warning</span>
+                                <p>{translate('verify.scamwarning')}</p>
+                            </div>
+                            <div className="container legal">
+                                <p dangerouslySetInnerHTML={
+                                    {__html: translate('verify.legal')}
+                                }></p>
+                                <p>{translate('verify.notice')}</p>
+                            </div>
                         </div>
-                        <div className="container warning">
-                            <span class="material-symbols-outlined icon">warning</span>
-                            <p>Server Guard will never ask you for personal information</p>
-                        </div>
-                        <div className="container legal">
-                            <p>By verifying with Server Guard, you agree with our <a href="https://serverguard.xyz/legal">Privacy Policy & Terms and Conditions.</a></p>
-                            <p>Server Guard is not endorsed or created by Guilded</p>
-                        </div>
-                    </div>
-                </div>
+                    </div>)
+                    }.bind(this)()
+                }
             </ThemeProvider>
         )
     }

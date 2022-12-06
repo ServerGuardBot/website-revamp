@@ -7,7 +7,8 @@ module.exports = {
     entry: {
         verify: './src/verify.jsx',
         login: './src/login.jsx',
-        account: './src/account.jsx'
+        account: './src/account.jsx',
+        'translate-static': './src/translate-static.jsx',
     },
     output: {
         filename: '[name].js',
@@ -18,7 +19,9 @@ module.exports = {
         static: path.resolve(__dirname, 'public'),
         historyApiFallback: {
             rewrites: [
-                { from: '(\/account\/[\\w\\-_]+(?!\/+)+)$', to: '/account/404.html' }
+                { from: '(\/account\/[\\w\\-_]+(?!\/+)+)$', to: '/account/404.html' },
+                { from: '/legal', to: '/legal.html' },
+                { from: '/login', to: '/login.html' },
             ]
         }
     },

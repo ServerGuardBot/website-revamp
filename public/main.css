@@ -738,6 +738,31 @@ a.button.invite {
     font-size: 1rem;
 }
 
+.locale-switcher {
+    background: none;
+    border: .08rem solid var(--primary);
+    border-radius: .15rem;
+    padding: .15em .4em;
+    line-height: .8rem;
+    text-decoration: none;
+    transition: background-color .25s, color .25s;
+    color: var(--primary);
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: 30px;
+    font-size: .5rem;
+    height: 70%;
+}
+
+.locale-switcher:hover * {
+    color: black;
+}
+
+.locale-switcher:hover {
+    background-color: var(--primary);
+    color: black;
+}
+
 @media (max-width: 500px) {
     .verify .container {
         width: 10.5rem;

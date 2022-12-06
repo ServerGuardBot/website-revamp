@@ -4,6 +4,8 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Particles from "react-tsparticles";
 import { loadLinksPreset } from "tsparticles-preset-links";
+import { translate, waitForLoad } from "./translator.jsx";
+import CircularProgress from '@mui/material/CircularProgress';
 
 function setCookie(name,value,days) {
     var expires = ""
@@ -46,6 +48,7 @@ class LoginApp extends Component {
 
         this.state = {
             "code": null,
+            translationsReady: false,
         };
 
         this.particlesInit = this.particlesInit.bind(this);
@@ -56,6 +59,12 @@ class LoginApp extends Component {
         httpPostAsync(API_BASE_URL + 'auth', "", this.codeReceived);
 
         window.setInterval(this.loop, 1000);
+
+        waitForLoad().then((() => {
+            this.setState({
+                translationsReady: true
+            });
+        }).bind(this));
     }
 
     async loop() {
@@ -116,6 +125,14 @@ class LoginApp extends Component {
             }
         };
 
+        if (this.state.translationsReady == false) {
+            return (
+                <div className="loading">
+                    <CircularProgress color="primary" thickness={3} size="3.8rem" />
+                </div>
+            )
+        }
+
         return (
             <div className="app">
                 <div className="particle-container">
@@ -124,9 +141,11 @@ class LoginApp extends Component {
                 </div>
                 <div className="login">
                     <div className="container">
-                        <h1>{(this.state.code == null) ? "Waiting for Code..." : this.state.code}</h1>
-                        <p>Send this code in <a target="_blank" href="https://www.guilded.gg/server-guard/groups/D57rgP7z/channels/1f6fae7f-6cdf-403d-80b9-623a76f8b621/chat">#Login</a> in our support server to log in!</p>
-                        <p>Please keep this page open until you have sent the code, it will automatically redirect to the account page once logged in.</p>
+                        <h1>{(this.state.code == null) ? translate('login.waiting') : this.state.code}</h1>
+                        <p dangerouslySetInnerHTML={{
+                            __html: translate('login.send')
+                        }}></p>
+                        <p>{translate('login.notice')}</p>
                     </div>
                 </div>
             </div>

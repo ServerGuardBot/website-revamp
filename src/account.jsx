@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom';
 import { get_user } from './auth.jsx';
 import CircularProgress from '@mui/material/CircularProgress';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { waitForLoad } from "./translator.jsx";
 
 import Home from './account/home.jsx';
 import BotAnalytics from './account/bot_analytics.jsx';
@@ -23,7 +24,8 @@ class AccountApp extends Component {
         super(props);
 
         this.state = {
-            user: ''
+            user: '',
+            translationsReady: false,
         }
 
         get_user().then(function(user) {
@@ -39,17 +41,22 @@ class AccountApp extends Component {
                 });
             }
         }.bind(this));
+
+        waitForLoad().then(function() {
+            this.setState({
+                translationsReady: true
+            })
+        }.bind(this));
     }
 
     render() {
-        console.log(this.state.user);
         return (
             <ThemeProvider theme={theme}>
                 <Router>
                     <div className="app-account">
                         {
                             (function() {
-                                if (this.state.user == '') {
+                                if (this.state.user == '' | this.state.translationsReady == false) {
                                     return (
                                         <div className="loading">
                                             <CircularProgress color="primary" thickness={3} size="3.8rem" />

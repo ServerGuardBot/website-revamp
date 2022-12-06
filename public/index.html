@@ -33,14 +33,18 @@
     <link rel="icon" type="image/x-icon" href="images/logo.svg">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@1" rel="stylesheet">
+    <script src="js/translate-static.js"></script>
 </head>
 <body>
     <nav class="header">
         <a class="img-link" href="/"><img src="images/logo.svg" alt="logo" class="logo"></a>
-        <a class="nav" href="/invite">Invite</a>
-        <a class="nav" href="/support">Support</a>
-        <a class="nav" href="/docs">Docs</a>
-        <a class="nav premium" href="/premium">Premium</a>
+        <a data-i18n-key="bot.invite" class="nav" href="/invite">Invite</a>
+        <a data-i18n-key="nav.support" class="nav" href="/support">Support</a>
+        <a data-i18n-key="nav.docs" class="nav" href="/docs">Docs</a>
+        <a data-i18n-key="nav.premium" class="nav premium" href="/premium">Premium</a>
+        <select data-i18n-switcher class="locale-switcher">
+            <option value="en">English</option>
+        </select>
     </nav>
     <section class="home">
         <div class="home-banner">
@@ -48,22 +52,22 @@
                 <div class="inner grid-mask">
                     <img src="images/logo.svg" alt="logo" class="logo">
                     <h1 class="center-text">SERVER GUARD</h1>
-                    <h2 class="subheader center-text">Defend your <a href="https://guilded.gg">Guilded</a> servers against trolls, ban evaders, and raids!</h2>
-                    <a href="/invite" class="button invite">Invite</a>
+                    <h2 data-i18n-key="bot.slogan" class="subheader center-text">Defend your <a href="https://guilded.gg">Guilded</a> servers against trolls, ban evaders, and raids!</h2>
+                    <a data-i18n-key="bot.invite" href="/invite" class="button invite">Invite</a>
                 </div>
             </div>
         </div>
     </section>
     <section class="features">
-        <h1 class="center-text">WHAT WE OFFER</h1>
+        <h1 data-i18n-key="home.offer" class="center-text">WHAT WE OFFER</h1>
         <div class="feature-grid">
             <div class="feature">
                 <div class="column">
                     <span class="material-symbols-outlined icon">verified</span>
                 </div>
                 <div class="column">
-                    <h2>Frictionless New User Verification</h2>
-                    <p>New users are required to verify through our verification system which offers a frictionless experience. Our checkpoint system will deter bots and prevent alts, while allowing legitimate users entry to your server!</p>
+                    <h2 data-i18n-key="feature.verify.title">Frictionless New User Verification</h2>
+                    <p data-i18n-key="feature.verify.desc">New users are required to verify through our verification system which offers a frictionless experience. Our checkpoint system will deter bots and prevent alts, while allowing legitimate users entry to your server!</p>
                 </div>
             </div>
             <div class="feature">
@@ -71,8 +75,8 @@
                     <span class="material-symbols-outlined icon">shield</span>
                 </div>
                 <div class="column">
-                    <h2>Automated Raid Protection</h2>
-                    <p>Automated accounts will not be able to pass our verification site, while allowing legitimate users in to enjoy your server! If we detect a suspected raid, our system will activate stricter checkpoints.</p>
+                    <h2 data-i18n-key="feature.raid.title">Automated Raid Protection</h2>
+                    <p data-i18n-key="feature.raid.desc">Automated accounts will not be able to pass our verification site, while allowing legitimate users in to enjoy your server! If we detect a suspected raid, our system will activate stricter checkpoints.</p>
                 </div>
             </div>
             <div class="feature">
@@ -80,8 +84,8 @@
                     <span class="material-symbols-outlined icon">account_circle</span>
                 </div>
                 <div class="column">
-                    <h2>Detailed User Information</h2>
-                    <p>Server Guard notifies you of exactly who is verifying, giving you a score of a user based on various factors, including their social connections. We will even alert you if they are using a VPN!</p>
+                    <h2 data-i18n-key="feature.userinfo.title">Detailed User Information</h2>
+                    <p data-i18n-key="feature.userinfo.desc">Server Guard notifies you of exactly who is verifying, giving you a score of a user based on various factors, including their social connections. We will even alert you if they are using a VPN!</p>
                 </div>
             </div>
             <div class="feature">
@@ -89,8 +93,8 @@
                     <span class="material-symbols-outlined icon">block</span>
                 </div>
                 <div class="column">
-                    <h2>Automatic Chat Moderation</h2>
-                    <p>Our automated chat filters can greatly assist server moderators by preventing toxicity, hate-speech, invite links, and more automatically without moderator intervention! Rest assured, our filters rarely have false positives!</p>
+                    <h2 data-i18n-key="feature.filter.title">Automatic Chat Moderation</h2>
+                    <p data-i18n-key="feature.filter.desc">Our automated chat filters can greatly assist server moderators by preventing toxicity, hate-speech, invite links, and more automatically without moderator intervention! Rest assured, our filters rarely have false positives!</p>
                 </div>
             </div>
             <div class="feature">
@@ -98,8 +102,8 @@
                     <span class="material-symbols-outlined icon">people</span>
                 </div>
                 <div class="column">
-                    <h2>Banning, Mutes & Warnings</h2>
-                    <p>Our bot offers the capability to temporarily ban users, mute them permanently or temporarily, and issue warnings to users that can be temporary and viewed by moderators, making moderation easier for your moderators!</p>
+                    <h2 data-i18n-key="feature.admin.title">Banning, Mutes & Warnings</h2>
+                    <p data-i18n-key="feature.admin.desc">Our bot offers the capability to temporarily ban users, mute them permanently or temporarily, and issue warnings to users that can be temporary and viewed by moderators, making moderation easier for your moderators!</p>
                 </div>
             </div>
             <div class="feature">
@@ -107,14 +111,14 @@
                     <span class="material-symbols-outlined icon">check</span>
                 </div>
                 <div class="column">
-                    <h2>...And More To Come</h2>
-                    <p>We are always actively on the lookout for new features to implement that would assist in moderation! Be sure to join our support server so you can get help with using the bot and submit feature requests or bug reports!</p>
+                    <h2 data-i18n-key="feature.more.title">...And More To Come</h2>
+                    <p data-i18n-key="feature.more.desc">We are always actively on the lookout for new features to implement that would assist in moderation! Be sure to join our support server so you can get help with using the bot and submit feature requests or bug reports!</p>
                 </div>
             </div>
         </div>
     </section>
     <section class="trustedby">
-        <h1 class="center-text">TRUSTED BY</h1>
+        <h1 data-i18n-key="home.trusted" class="center-text">TRUSTED BY</h1>
         <div class="servers">
             <div class="server-container">
                 <a href="https://guilded.gg/anime">
@@ -129,9 +133,9 @@
         </div>
     </section>
     <section class="trybot">
-        <h1 class="center-text">READY TO TRY SERVER GUARD?</h1>
-        <p class="center-text">Don't delay any further! Invite our bot now and enjoy a peaceful server!</p>
-        <a href="/invite" class="button invite">Invite</a>
+        <h1 data-i18n-key="home.try" class="center-text">READY TO TRY SERVER GUARD?</h1>
+        <p data-i18n-key="home.try.desc" class="center-text">Don't delay any further! Invite our bot now and enjoy a peaceful server!</p>
+        <a data-i18n-key="bot.invite" href="/invite" class="button invite">Invite</a>
     </section>
     <footer class="grid-mask">
         <div class="contents">
@@ -140,15 +144,15 @@
                 <h1>SERVER GUARD</h1>
             </div>
             <div class="link-area">
-                <a href="/support">Support</a>
-                <a href="/legal">Terms of Service</a>
-                <a href="/docs">Docs</a>
-                <a href="/premium">Premium</a>
-                <a href="https://github.com/ServerGuardBot">Github</a>
+                <a data-i18n-key="nav.support" href="/support">Support</a>
+                <a data-i18n-key="nav.tos" href="/legal">Terms of Service</a>
+                <a data-i18n-key="nav.docs" href="/docs">Docs</a>
+                <a data-i18n-key="nav.premium" href="/premium">Premium</a>
+                <a data-i18n-key="nav.github" href="https://github.com/ServerGuardBot">Github</a>
             </div>
             <div class="info-area">
-                <p>Server Guard is not endorsed or created by Guilded</p>
-                <p>© <a href="https://reapimus.com">Reapimus</a> 2022</p>
+                <p data-i18n-key="footer.notice">Server Guard is not endorsed or created by Guilded</p>
+                <p data-i18n-key="footer.copyright">© <a href="https://reapimus.com">Reapimus</a> 2022</p>
             </div>
         </div>
     </footer>
