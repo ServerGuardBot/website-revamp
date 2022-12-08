@@ -142,10 +142,11 @@ class VerifyApp extends Component {
 
         waitForLoad().then((() => {
             this.setState({
-                translationsReady: true
+                translationsReady: true,
+                error_message: (code == null) ? translate('verify.missingcode') : ""
             });
             if (code != null) {
-                history.replaceState({}, '', `${location.origin}/verify/${code}`)
+                history.replaceState({}, '', `${location.origin}/verify/${code}`);
                 httpGetAsync(API_BASE_URL + 'verify/' + code, this.identityReceived);
             }
         }).bind(this));
@@ -199,7 +200,7 @@ class VerifyApp extends Component {
             this.setState({
                 awaitingServer: false,
                 error: true,
-                error_message: await translateAsync(`verify.${request.status}.${JSON.parse(request.responseText).message}`) | `[${request.status}] ${JSON.parse(request.responseText).message}`
+                error_message: await translateAsync(`verify.${request.status}.${JSON.parse(request.responseText).message}`) || `[${request.status}] ${JSON.parse(request.responseText).message}`
             });
         }
     }
@@ -234,15 +235,15 @@ class VerifyApp extends Component {
 
         if (this.state.translationsReady) {
             if (this.state.loading) {
-                headerMessage = translate('verify.loading') | "Loading...";
+                headerMessage = translate('verify.loading');
             } else {
                 if (this.state.error) {
-                    headerMessage = "Error";
+                    headerMessage = translate('verify.error');
                     if (this.state.admin_contact !== "" && this.state.admin_contact !== null) {
                         bodyMessage = translate('verify.failure.with_contact', {
                             message: this.state.error_message,
                             admin_contact: escapeHTML(this.state.admin_contact)
-                        }) | `${this.state.error_message}<br><br>If you believe this was in error, contact a staff member via <a href="${escapeHTML(this.state.admin_contact)}">this url.</a>`;
+                        });
                     } else {
                         bodyMessage = this.state.error_message;
                     }
