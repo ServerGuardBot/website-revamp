@@ -17,7 +17,7 @@ function setCookie(name,value,days) {
     document.cookie = name + "=" + (value || "")  + expires + ";domain=.serverguard.xyz;path=/"
 }
 
-function httpGetAsync(theUrl, callback)
+function httpGetAsync(theUrl, data, callback)
 {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() { 
@@ -26,7 +26,8 @@ function httpGetAsync(theUrl, callback)
     }
     xmlHttp.open("GET", theUrl, true); // true for asynchronous
     xmlHttp.withCredentials = true;
-    xmlHttp.send(null);
+    xmlHttp.setRequestHeader('Content-Type', 'application/json'); // application/json
+    xmlHttp.send(data);
 }
 
 function httpPostAsync(theUrl, data, callback)
@@ -38,7 +39,7 @@ function httpPostAsync(theUrl, data, callback)
     }
     xmlHttp.open("POST", theUrl, true); // true for asynchronous 
     xmlHttp.withCredentials = true;
-    xmlHttp.setRequestHeader('Content-Type', 'application/json'); // application/json
+    
     xmlHttp.send(data);
 }
 
@@ -49,6 +50,7 @@ class LoginApp extends Component {
         this.state = {
             "code": null,
             translationsReady: false,
+            currentLock: crypto.randomUUID()
         };
 
         this.particlesInit = this.particlesInit.bind(this);
@@ -57,7 +59,7 @@ class LoginApp extends Component {
         this.loop = this.loop.bind(this);
 
         httpPostAsync(API_BASE_URL + 'auth', JSON.stringify({
-            lock: crypto.randomUUID()
+            lock: this.state.currentLock
         }), this.codeReceived);
 
         window.setInterval(this.loop, 1000);
@@ -71,7 +73,9 @@ class LoginApp extends Component {
 
     async loop() {
         if (this.state.code != null) {
-            httpGetAsync(API_BASE_URL + `auth/status/${this.state.code}`, this.codeStatusReceived);
+            httpGetAsync(API_BASE_URL + `auth/status/${this.state.code}`, JSON.stringify({
+                lock: this.state.currentLock
+            }), this.codeStatusReceived);
         }
     }
 
@@ -92,10 +96,11 @@ class LoginApp extends Component {
     async codeStatusReceived(request) {
         if (request.status == 404) {
             this.setState({
-                "code": null
+                "code": null,
+                currentLock: crypto.randomUUID()
             })
             httpPostAsync(API_BASE_URL + 'auth', JSON.stringify({
-                lock: crypto.randomUUID()
+                lock: this.state.currentLock
             }), this.codeReceived);
         }
         else if (request.status == 200) {
