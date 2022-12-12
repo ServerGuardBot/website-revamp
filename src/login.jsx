@@ -72,7 +72,7 @@ class LoginApp extends Component {
 
     async loop() {
         if (this.state.code != null) {
-            httpGetAsync(API_BASE_URL + `auth/status/${this.state.code}?lock=${this.state.currentLock}`, this.codeStatusReceived);
+            httpGetAsync(API_BASE_URL + `auth/status/${this.state.code}?lock=${encodeURIComponent(this.state.currentLock)}`, this.codeStatusReceived);
         }
     }
 
