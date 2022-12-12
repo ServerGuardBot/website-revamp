@@ -379,7 +379,7 @@ export default class BotAnalytics extends Component {
                     this.setState({
                         serverCount: resp.servers,
                         largestServers: (resp.largestServers != undefined) ? resp.largestServers : this.state.largestServers,
-                        userCount: (resp.userCount != undefined) ? resp.userCount : this.state.userCount
+                        userCount: (resp.users != undefined) ? resp.users : this.state.userCount
                     });
                 }.bind(this))
         }
