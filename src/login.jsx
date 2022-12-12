@@ -38,7 +38,7 @@ function httpPostAsync(theUrl, data, callback)
     }
     xmlHttp.open("POST", theUrl, true); // true for asynchronous 
     xmlHttp.withCredentials = true;
-    xmlHttp.setRequestHeader('Content-Type', 'text/plain'); // application/json
+    xmlHttp.setRequestHeader('Content-Type', 'application/json'); // application/json
     xmlHttp.send(data);
 }
 
@@ -56,7 +56,9 @@ class LoginApp extends Component {
         this.codeStatusReceived = this.codeStatusReceived.bind(this);
         this.loop = this.loop.bind(this);
 
-        httpPostAsync(API_BASE_URL + 'auth', "", this.codeReceived);
+        httpPostAsync(API_BASE_URL + 'auth', JSON.stringify({
+            lock: crypto.randomUUID()
+        }), this.codeReceived);
 
         window.setInterval(this.loop, 1000);
 
@@ -92,7 +94,9 @@ class LoginApp extends Component {
             this.setState({
                 "code": null
             })
-            httpPostAsync(API_BASE_URL + 'auth', "", this.codeReceived);
+            httpPostAsync(API_BASE_URL + 'auth', JSON.stringify({
+                lock: crypto.randomUUID()
+            }), this.codeReceived);
         }
         else if (request.status == 200) {
             const msg = JSON.parse(request.responseText);
