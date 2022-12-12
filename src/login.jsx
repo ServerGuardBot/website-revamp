@@ -26,7 +26,7 @@ function httpGetAsync(theUrl, callback)
     }
     xmlHttp.open("GET", theUrl, true); // true for asynchronous
     xmlHttp.withCredentials = true;
-    xmlHttp.send(data);
+    xmlHttp.send(null);
 }
 
 function httpPostAsync(theUrl, data, callback)
