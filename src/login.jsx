@@ -17,7 +17,7 @@ function setCookie(name,value,days) {
     document.cookie = name + "=" + (value || "")  + expires + ";domain=.serverguard.xyz;path=/"
 }
 
-function httpGetAsync(theUrl, data, callback)
+function httpGetAsync(theUrl, callback)
 {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() { 
@@ -26,7 +26,6 @@ function httpGetAsync(theUrl, data, callback)
     }
     xmlHttp.open("GET", theUrl, true); // true for asynchronous
     xmlHttp.withCredentials = true;
-    xmlHttp.setRequestHeader('Content-Type', 'application/json'); // application/json
     xmlHttp.send(data);
 }
 
@@ -73,9 +72,7 @@ class LoginApp extends Component {
 
     async loop() {
         if (this.state.code != null) {
-            httpGetAsync(API_BASE_URL + `auth/status/${this.state.code}`, JSON.stringify({
-                lock: this.state.currentLock
-            }), this.codeStatusReceived);
+            httpGetAsync(API_BASE_URL + `auth/status/${this.state.code}?lock=${this.state.currentLock}`, this.codeStatusReceived);
         }
     }
 
