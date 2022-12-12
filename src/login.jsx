@@ -39,7 +39,7 @@ function httpPostAsync(theUrl, data, callback)
     }
     xmlHttp.open("POST", theUrl, true); // true for asynchronous 
     xmlHttp.withCredentials = true;
-    
+    xmlHttp.setRequestHeader('Content-Type', 'application/json'); // application/json
     xmlHttp.send(data);
 }
 
