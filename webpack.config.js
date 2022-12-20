@@ -19,7 +19,7 @@ module.exports = {
         static: path.resolve(__dirname, 'public'),
         historyApiFallback: {
             rewrites: [
-                { from: '(\/account\/[\\w\\-_]+(?!\/+)+)$', to: '/account/404.html' },
+                { from: '\/account\/([\/\\\w\-_]+)(?<!\/\/)$', to: '/account/404.html' },
                 { from: '/legal', to: '/legal.html' },
                 { from: '/login', to: '/login.html' },
             ]

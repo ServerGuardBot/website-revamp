@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 class Server extends Component {
     constructor(props) {
@@ -7,12 +8,23 @@ class Server extends Component {
 
     render() {
         var data = this.props.data;
-        return (
-            <div className={`server ${(data.active) ? 'enabled' : 'disabled'}`}>
-                <img src={(data.avatar != null) ? data.avatar : "https://img.guildedcdn.com/asset/DefaultUserAvatars/profile_1.png"} alt={`${data.name} Server Icon`} className="icon" />
-                <p>{data.name}</p>
-            </div>
-        )
+        if (data.active) {
+            return (
+                <Link to={`/servers/${data.id}`}>
+                    <div className={`server ${(data.active) ? 'enabled' : 'disabled'}`}>
+                        <img src={(data.avatar != null) ? data.avatar : "https://img.guildedcdn.com/asset/DefaultUserAvatars/profile_1.png"} alt={`${data.name} Server Icon`} className="icon" />
+                        <p>{data.name}</p>
+                    </div>
+                </Link>
+            )
+        } else {
+            return (
+                <div className={`server ${(data.active) ? 'enabled' : 'disabled'}`}>
+                    <img src={(data.avatar != null) ? data.avatar : "https://img.guildedcdn.com/asset/DefaultUserAvatars/profile_1.png"} alt={`${data.name} Server Icon`} className="icon" />
+                    <p>{data.name}</p>
+                </div>
+            )
+        }
     }
 }
 
@@ -23,6 +35,7 @@ export default class Home extends Component {
     }
 
     render() {
+        document.body.classList.remove('cover-screen');
         var user = this.props.user;
         return (
             <div className="home">

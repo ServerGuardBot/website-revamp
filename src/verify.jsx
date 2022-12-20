@@ -1,4 +1,8 @@
-const API_BASE_URL = "https://api.serverguard.xyz/" // http://localhost:5000/ // https://api.serverguard.xyz/
+if (window.location.hostname == 'localhost') {
+    var API_BASE_URL = "http://localhost:5000/"
+} else {
+    var API_BASE_URL = "https://api.serverguard.xyz/"
+}
 const VERIFY_REGEX = /\/verify\/([\w\-_]+)/
 const params = new Proxy(new URLSearchParams(window.location.search), {
     get: (searchParams, prop) => searchParams.get(prop)
