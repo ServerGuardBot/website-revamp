@@ -9,6 +9,7 @@ module.exports = {
         login: './src/login.jsx',
         account: './src/account.jsx',
         'translate-static': './src/translate-static.jsx',
+        '404': './src/404.jsx',
     },
     output: {
         filename: '[name].js',
@@ -36,7 +37,8 @@ module.exports = {
      },
      plugins: [
         new webpack.DefinePlugin({
-            "SECRET": JSON.stringify(process.env.SECRET)
+            "SECRET": JSON.stringify(process.env.SECRET),
+            "TURNSTILE_KEY": JSON.stringify(process.env.TURNSTILE_KEY)
         })
      ],
 };

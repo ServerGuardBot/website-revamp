@@ -1,128 +1,126 @@
 const API_BASE_URL = "https://api.serverguard.xyz/" // http://localhost:5000/ // https://api.serverguard.xyz/
 
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+import { MantineProvider, Loader } from '@mantine/core';
 import { Route, createBrowserRouter, RouterProvider, createRoutesFromElements } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import { get_user } from './auth.jsx';
-import CircularProgress from '@mui/material/CircularProgress';
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { waitForLoad } from "./translator.jsx";
 
-import Home from './account/home.jsx';
-import BotAnalytics from './account/bot_analytics.jsx';
-import Servers from './account/servers.jsx';
-import { authenticated_get } from './auth.jsx';
+import Home from './account_pages/home.jsx';
+import BotAnalytics from './account_pages/bot_analytics.jsx';
+import Servers from './account_pages/servers.jsx';
 
-const theme = createTheme({
-    palette: {
-        primary: {
-            main: "#FFED47"
-        }
-    }
-});
+const theme = {
+    colors: {
+        brand: 
+        [
+          '#fffedc',
+          '#fff8af',
+          '#fff37e',
+          '#ffee4d',
+          '#ffe91e',
+          '#e6cf08',
+          '#b3a100',
+          '#807300',
+          '#4d4500',
+          '#1b1700',
+        ]
+    },
+    primaryColor: 'brand',
+    colorScheme: 'dark'
+};
 
-class AccountApp extends Component {
-    constructor(props) {
-        super(props);
+function AccountApp() {
+    const [user, setUser] = useState('');
+    const [translationsReady, setTranslationsReady] = useState(false);
 
-        this.state = {
-            user: '',
-            translationsReady: false,
-        }
-
+    useEffect(() => {
         get_user().then(function(user) {
             if (location.hostname == 'localhost') {
                 setTimeout(function() {
-                    this.setState({
-                        'user': user
-                    });
-                }.bind(this), 1000); // Simulate lag on local tests
+                    setUser(user);
+                }, 1000); // Simulate lag on local tests
             } else {
-                this.setState({
-                    'user': user
-                });
+                setUser(user);
             }
-        }.bind(this));
-
+        });
+    
         waitForLoad().then(function() {
-            this.setState({
-                translationsReady: true
-            })
-        }.bind(this));
-    }
+            setTranslationsReady(true)
+        });
+    }, [])
 
-    render() {
-        return (
-            <ThemeProvider theme={theme}>
-                <div className="app-account">
-                    {
-                        (function() {
-                            if (this.state.user == '' | this.state.translationsReady == false) {
-                                return (
-                                    <div className="loading">
-                                        <CircularProgress color="primary" thickness={3} size="3.8rem" />
-                                    </div>
-                                )
-                            } else {
-                                return (
-                                    <div className='account'>
-                                        <RouterProvider router={createBrowserRouter(createRoutesFromElements([
-                                            <Route path='/' element={<Home user={this.state.user} />}/>,
-                                            <Route path='/internal/' element={<BotAnalytics user={this.state.user} />}/>,
-                                            <Route
-                                                path="/servers/:serverId" 
-                                                loader={async ({ params }) => {
-                                                    let info;
+    return (
+        <MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
+            <div className="app-account">
+                {
+                    (function() {
+                        if (user == '' | translationsReady == false) {
+                            return (
+                                <div className="loading">
+                                    <Loader size='xl' variant='dots' />
+                                </div>
+                            )
+                        } else {
+                            return (
+                                <div className='account'>
+                                    <RouterProvider router={createBrowserRouter(createRoutesFromElements([
+                                        <Route path='/' element={<Home user={user} />}/>,
+                                        <Route path='/internal/' element={<BotAnalytics user={user} />}/>,
+                                        <Route
+                                            path="/servers/:serverId" 
+                                            loader={async ({ params }) => {
+                                                let info;
 
-                                                    for (let index = 0; index < this.state.user.guilds.length; index++) {
-                                                        const element = this.state.user.guilds[index];
-                                                        if (element.id == params.serverId) {
-                                                            info = element;
-                                                            break
-                                                        }
+                                                for (let index = 0; index < user.guilds.length; index++) {
+                                                    const element = user.guilds[index];
+                                                    if (element.id == params.serverId) {
+                                                        info = element;
+                                                        break
                                                     }
+                                                }
 
-                                                    if (info != null && info != undefined) {
-                                                        return info
-                                                    } else {
-                                                        console.error('INVALID-SERVER');
-                                                    }
-                                                }}
-                                                element={<Servers user={this.state.user} />}
-                                            />,
-                                            <Route
-                                                path="/servers/:serverId/*" 
-                                                loader={async ({ params }) => {
-                                                    let info;
+                                                if (info != null && info != undefined) {
+                                                    return info
+                                                } else {
+                                                    console.error('INVALID-SERVER');
+                                                }
+                                            }}
+                                            element={<Servers user={user} />}
+                                        />,
+                                        <Route
+                                            path="/servers/:serverId/*" 
+                                            loader={async ({ params }) => {
+                                                let info;
 
-                                                    for (let index = 0; index < this.state.user.guilds.length; index++) {
-                                                        const element = this.state.user.guilds[index];
-                                                        if (element.id == params.serverId) {
-                                                            info = element;
-                                                            break
-                                                        }
+                                                for (let index = 0; index < user.guilds.length; index++) {
+                                                    const element = user.guilds[index];
+                                                    if (element.id == params.serverId) {
+                                                        info = element;
+                                                        break
                                                     }
+                                                }
 
-                                                    if (info != null && info != undefined) {
-                                                        return info
-                                                    } else {
-                                                        console.error('INVALID-SERVER');
-                                                    }
-                                                }}
-                                                element={<Servers user={this.state.user} />}
-                                            />
-                                        ]), {
-                                            basename: "/account"
-                                        })} />
-                                    </div>
-                                )
-                            }
-                        }.bind(this))()
-                    }
-                </div>
-            </ThemeProvider>
-        )
-    }
+                                                if (info != null && info != undefined) {
+                                                    return info
+                                                } else {
+                                                    console.error('INVALID-SERVER');
+                                                }
+                                            }}
+                                            element={<Servers user={user} />}
+                                        />
+                                    ]), {
+                                        basename: "/account"
+                                    })} />
+                                </div>
+                            )
+                        }
+                    }.bind(this))()
+                }
+            </div>
+        </MantineProvider>
+    )
 }
 
 ReactDOM.render(<AccountApp />, document.getElementById('app'));
