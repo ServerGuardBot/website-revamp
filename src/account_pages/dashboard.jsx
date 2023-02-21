@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {
     Navbar, Box, Collapse, Tooltip, UnstyledButton, Stack, Group, Avatar, Text, createStyles,
-    BackgroundImage, Center, Title, Menu
+    BackgroundImage, Center, Title, Menu, ScrollArea
 } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight, IconLogout, IconSettings, IconHelp, IconHome, IconInfoCircle } from '@tabler/icons';
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { getServerInfo } from '../server_info.jsx';
 import { authenticated_delete } from '../auth.jsx';
-
-const API_BASE_URL = "https://api.serverguard.xyz/" // http://localhost:5000/ // https://api.serverguard.xyz/
+import { API_BASE_URL } from '../helpers.jsx';
 
 const useStyles = createStyles((theme) => ({
     aside: {
@@ -87,9 +86,10 @@ const useStyles = createStyles((theme) => ({
         fontWeight: 500,
         display: 'block',
         width: '100%',
-        padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
+        padding: `${theme.spacing.xs}px ${theme.spacing.xs}px`,
         color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
         fontSize: theme.fontSizes.sm,
+        borderRadius: theme.radius.sm,
         
         '&:hover': {
             backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[0],
@@ -107,6 +107,46 @@ const useStyles = createStyles((theme) => ({
         '&:hover': {
             backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[0],
         },
+    },
+
+    server: {
+        '--size': '50px',
+        width: 'var(--size)',
+        height: 'var(--size)',
+        backgroundColor: theme.colors.dark[9],
+        borderRadius: theme.radius.xs,
+        cursor: 'pointer',
+        transition: 'outline .15s',
+        marginTop: theme.spacing.sm,
+        outline: 'transparent solid 2px',
+
+        '&:nth-child(1)': {
+            marginTop: 0,
+        },
+
+        '&:hover': {
+            outline: `${theme.colors.dark[7]} solid 2px`,
+        },
+
+        '&[disabled]': {
+            cursor: 'default',
+            opacity: .5,
+        }
+    },
+
+    serverSelected: {
+        outline: `${theme.colors.brand[4]} solid 2px`,
+
+        '&:hover': {
+            outline: `${theme.colors.brand[2]} solid 2px !important`,
+        },
+    },
+
+    linkWrap: {
+        lineHeight: 0,
+        color: 'transparent',
+        textDecoration: 'none',
+        margin: '0 auto',
     },
 }));
 
@@ -180,7 +220,7 @@ function renderItem(props, name, item, selected, setSelected) {
                 <UnstyledButton onClick={() => setOpened((o) => !o)} className={classes.control}>
                     <Group position="apart" spacing={0}>
                     <Box sx={{ display: 'flex', alignItems: 'center', fontSize: theme.fontSizes.lg }}>
-                        <Box style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}} ml="md">{name}</Box>
+                        <Box style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}>{name}</Box>
                     </Box>
                     <ChevronIcon
                         className={classes.chevron}
@@ -218,9 +258,9 @@ function ServerNavLink(props) {
     if (props.href !== undefined) {
         return (
             <Tooltip zIndex={2} label={props.label} position="right" transitionDuration={150}>
-                <a href={props.href} disabled={props.disabled} className='link-wrap'>
+                <a href={props.href} disabled={props.disabled} className={classes.linkWrap}>
                     <UnstyledButton className={cx(classes.serverLink, { [classes.active]: props.selected })}>
-                        <img src={props.img} alt={props.label} disabled={props.disabled} className={`dash-server-icon${(props.selected == true) ? " selected" : ""}`} />
+                        <img src={props.img} alt={props.label} disabled={props.disabled} className={cx(classes.server, { [classes.serverSelected]: props.selected == true })} />
                     </UnstyledButton>
                 </a>
             </Tooltip>
@@ -228,9 +268,9 @@ function ServerNavLink(props) {
     } else {
         return (
             <Tooltip zIndex={2} label={props.label} position="right" transitionDuration={150}>
-                <Link to={props.link} disabled={props.disabled} className='link-wrap'>
+                <Link to={props.link} disabled={props.disabled} className={classes.linkWrap}>
                     <UnstyledButton className={cx(classes.serverLink, { [classes.active]: props.selected })}>
-                        <img src={props.img} alt={props.label} disabled={props.disabled} className={`dash-server-icon${(props.selected == true) ? " selected" : ""}`} />
+                        <img src={props.img} alt={props.label} disabled={props.disabled} className={cx(classes.server, { [classes.serverSelected]: props.selected == true })} />
                     </UnstyledButton>
                 </Link>
             </Tooltip>
@@ -250,11 +290,16 @@ export function ServerNavigation(props) {
 
     return (
         <Navbar style={{zIndex: 1100}} height={height} width={width} p="sm">
-            <Navbar.Section grow mt={5}>
-                <Stack justify="center" spacing={10}>
-                    <ServerNavLink link="/" img="/images/logo.svg" label="Home" />
-                    {user.guilds.map((guild, index) => (guild.active == false) ? null : <ServerNavLink link={`/servers/${guild.id}`} selected={guild.id == server.id} label={guild.name} disabled={guild.active == false} img={(guild.avatar != null) ? guild.avatar : "https://img.guildedcdn.com/asset/DefaultUserAvatars/profile_1.png"} />)}
-                </Stack>
+            <Navbar.Section grow mt={5} h="100%">
+                <ScrollArea.Autosize
+                    maxHeight="100%"
+                    type="never"
+                >
+                    <Stack justify="center" spacing={10}>
+                        <ServerNavLink link="/" img="/images/logo.svg" label="Home" />
+                        {user.guilds.map((guild, index) => (guild.active == false) ? null : <ServerNavLink link={`/servers/${guild.id}`} selected={guild.id == server.id} label={guild.name} disabled={guild.active == false} img={(guild.avatar != null) ? guild.avatar : "https://img.guildedcdn.com/asset/DefaultUserAvatars/profile_1.png"} />)}
+                    </Stack>
+                </ScrollArea.Autosize>
             </Navbar.Section>
         </Navbar>
     )
@@ -311,10 +356,27 @@ export function Navigation(props) {
                     </Center>
                 </BackgroundImage>
             </Navbar.Section>
-            <Navbar.Section style={{maxHeight: `calc(100vh - 163px)`, overflowY: 'scroll'}} grow mt={5}>
-                <Stack justify="center" spacing={10}>
-                    {listItems}
-                </Stack>
+            <Navbar.Section sx={{
+                maxHeight: `calc(100vh - 163px)`,
+
+                [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+                    maxHeight: `calc(100vh - 206px)`,
+                },
+            }} grow mt={5}>
+                <ScrollArea.Autosize
+                    scrollbarSize={6}
+                    offsetScrollbars
+                    sx={{
+                        [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+                            maxHeight: `calc(100vh - 206px)`,
+                        },
+                    }}
+                    maxHeight="calc(100vh - 163px)"
+                >
+                    <Stack justify="center" spacing={10}>
+                        {listItems}
+                    </Stack>
+                </ScrollArea.Autosize>
             </Navbar.Section>
             <Navbar.Section style={{height: 72}} mt={5}>
                 <Menu withArrow width={menuWidth} position="bottom" transition="pop">
@@ -344,7 +406,7 @@ export function Navigation(props) {
                         <Menu.Divider />
 
                         <Menu.Item disabled icon={<IconSettings size={22} stroke={1.5} />}>Settings</Menu.Item>
-                        <Menu.Item icon={<IconLogout color={theme.colors.red[6]} size={22} stroke={1.5} />}>Logout</Menu.Item>
+                        <Menu.Item onClick={logout} icon={<IconLogout color={theme.colors.red[6]} size={22} stroke={1.5} />}>Logout</Menu.Item>
                     </Menu.Dropdown>
                 </Menu>
             </Navbar.Section>

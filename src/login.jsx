@@ -1,11 +1,10 @@
-const API_BASE_URL = "https://api.serverguard.xyz/" // http://localhost:5000/ // https://api.serverguard.xyz/
-
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Particles from "react-tsparticles";
 import { loadLinksPreset } from "tsparticles-preset-links";
 import { translate, waitForLoad } from "./translator.jsx";
 import CircularProgress from '@mui/material/CircularProgress';
+import { API_BASE_URL } from './helpers.jsx';
 
 function setCookie(name,value,days) {
     var expires = ""
@@ -104,7 +103,7 @@ class LoginApp extends Component {
             const msg = JSON.parse(request.responseText);
             setCookie('auth', msg.auth, 1);
             setCookie('refresh', msg.refresh, 14);
-            location.assign(`${location.origin}/account`)
+            location.assign(`${location.origin}/account`);
         }
     }
 

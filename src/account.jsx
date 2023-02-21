@@ -1,15 +1,16 @@
-const API_BASE_URL = "https://api.serverguard.xyz/" // http://localhost:5000/ // https://api.serverguard.xyz/
-
 import React, { useState, useEffect } from 'react';
-import { MantineProvider, Loader } from '@mantine/core';
+import { createStyles, MantineProvider, Loader, ScrollArea } from '@mantine/core';
 import { Route, createBrowserRouter, RouterProvider, createRoutesFromElements } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import { get_user } from './auth.jsx';
 import { waitForLoad } from "./translator.jsx";
+import { NothingFoundBackground } from "./nothing_found.jsx";
 
 import Home from './account_pages/home.jsx';
 import BotAnalytics from './account_pages/bot_analytics.jsx';
 import Servers from './account_pages/servers.jsx';
+import { NotificationsProvider } from '@mantine/notifications';
+import { API_BASE_URL } from './helpers.jsx';
 
 const theme = {
     colors: {
@@ -31,9 +32,33 @@ const theme = {
     colorScheme: 'dark'
 };
 
+const useStyles = createStyles((theme, _params, getRef) => ({
+    app: {
+        width: '100vw',
+        height: '100vh',
+        overflowX: 'hidden',
+    },
+
+    content: {
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'column',
+    },
+
+    loading: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'absolute',
+        width: '100vw',
+        height: '100vh',
+    },
+}));
+
 function AccountApp() {
     const [user, setUser] = useState('');
     const [translationsReady, setTranslationsReady] = useState(false);
+    const { classes } = useStyles();
 
     useEffect(() => {
         get_user().then(function(user) {
@@ -52,74 +77,81 @@ function AccountApp() {
     }, [])
 
     return (
-        <MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
-            <div className="app-account">
-                {
-                    (function() {
-                        if (user == '' | translationsReady == false) {
-                            return (
-                                <div className="loading">
-                                    <Loader size='xl' variant='dots' />
-                                </div>
-                            )
-                        } else {
-                            return (
-                                <div className='account'>
-                                    <RouterProvider router={createBrowserRouter(createRoutesFromElements([
-                                        <Route path='/' element={<Home user={user} />}/>,
-                                        <Route path='/internal/' element={<BotAnalytics user={user} />}/>,
-                                        <Route
-                                            path="/servers/:serverId" 
-                                            loader={async ({ params }) => {
-                                                let info;
+        <NotificationsProvider limit={5}>
+            <MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
+                <div className={classes.app}>
+                    {
+                        (function() {
+                            if (user == '' | translationsReady == false) {
+                                return (
+                                    <div className={classes.loading}>
+                                        <Loader size='xl' variant='dots' />
+                                    </div>
+                                )
+                            } else {
+                                return (
+                                    <ScrollArea.Autosize maxHeight='100vh' scrollbarSize={6}>
+                                        <div className={classes.content}>
+                                            <RouterProvider router={createBrowserRouter(createRoutesFromElements([
+                                                <Route errorElement={<NothingFoundBackground />} />,
+                                                <Route path='/' element={<Home user={user} />}/>,
+                                                <Route path='/internal/' element={<BotAnalytics user={user} />}/>,
+                                                <Route
+                                                    path="/servers/:serverId" 
+                                                    loader={async ({ params }) => {
+                                                        let info;
 
-                                                for (let index = 0; index < user.guilds.length; index++) {
-                                                    const element = user.guilds[index];
-                                                    if (element.id == params.serverId) {
-                                                        info = element;
-                                                        break
-                                                    }
-                                                }
+                                                        for (let index = 0; index < user.guilds.length; index++) {
+                                                            const element = user.guilds[index];
+                                                            if (element.id == params.serverId) {
+                                                                info = element;
+                                                                break
+                                                            }
+                                                        }
 
-                                                if (info != null && info != undefined) {
-                                                    return info
-                                                } else {
-                                                    console.error('INVALID-SERVER');
-                                                }
-                                            }}
-                                            element={<Servers user={user} />}
-                                        />,
-                                        <Route
-                                            path="/servers/:serverId/*" 
-                                            loader={async ({ params }) => {
-                                                let info;
+                                                        if (info != null && info != undefined) {
+                                                            return info
+                                                        } else {
+                                                            console.error('INVALID-SERVER');
+                                                        }
+                                                    }}
+                                                    element={<Servers user={user} />}
+                                                    errorElement={<NothingFoundBackground />}
+                                                />,
+                                                <Route
+                                                    path="/servers/:serverId/*" 
+                                                    loader={async ({ params }) => {
+                                                        let info;
 
-                                                for (let index = 0; index < user.guilds.length; index++) {
-                                                    const element = user.guilds[index];
-                                                    if (element.id == params.serverId) {
-                                                        info = element;
-                                                        break
-                                                    }
-                                                }
+                                                        for (let index = 0; index < user.guilds.length; index++) {
+                                                            const element = user.guilds[index];
+                                                            if (element.id == params.serverId) {
+                                                                info = element;
+                                                                break
+                                                            }
+                                                        }
 
-                                                if (info != null && info != undefined) {
-                                                    return info
-                                                } else {
-                                                    console.error('INVALID-SERVER');
-                                                }
-                                            }}
-                                            element={<Servers user={user} />}
-                                        />
-                                    ]), {
-                                        basename: "/account"
-                                    })} />
-                                </div>
-                            )
-                        }
-                    }.bind(this))()
-                }
-            </div>
-        </MantineProvider>
+                                                        if (info != null && info != undefined) {
+                                                            return info
+                                                        } else {
+                                                            console.error('INVALID-SERVER');
+                                                        }
+                                                    }}
+                                                    element={<Servers user={user} />}
+                                                    errorElement={<NothingFoundBackground />}
+                                                />
+                                            ]), {
+                                                basename: "/account"
+                                            })} />
+                                        </div>
+                                    </ScrollArea.Autosize>
+                                )
+                            }
+                        })()
+                    }
+                </div>
+            </MantineProvider>
+        </NotificationsProvider>
     )
 }
 

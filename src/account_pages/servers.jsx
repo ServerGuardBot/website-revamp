@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useLoaderData, useLocation, Route, Routes } from "react-router-dom";
 import {
-    createStyles, Drawer, MediaQuery, Text, Header, Title, Burger
+    createStyles, Drawer, MediaQuery, Header, Title, Burger, ScrollArea
 } from '@mantine/core';
 import {
     IconHome, IconShieldCheck, IconList, IconTrendingUp, IconMessageReport, IconForbid,
     IconBell, IconMessage, IconGift
 } from '@tabler/icons';
+import { API_BASE_URL } from '../helpers.jsx';
 import { Navigation, NavChoice, ServerNavigation } from "./dashboard.jsx";
 import { useViewportSize } from '@mantine/hooks';
+import { Dash } from './tabs/dash.jsx';
+import { NothingFoundBackground } from '../nothing_found.jsx';
+import { Verification } from './tabs/verification.jsx';
+import { Logging } from './tabs/logging.jsx';
+import { XP } from './tabs/xp.jsx';
+import { Welcomer } from './tabs/welcomer.jsx';
+import { Filters } from './tabs/filters.jsx';
+import { authenticated_get } from '../auth.jsx';
 
 const paths = {
     'Dashboard': '/',
@@ -16,7 +25,6 @@ const paths = {
     'Logging': '/logs',
     'XP Management': '/xp',
     'Chat Filters': '/filters',
-    'Word Blacklist': '/blacklist',
     'Welcomer': '/welcomer',
     'Conversation Starter': '/conversation',
     'Giveaways': '/giveaways'
@@ -28,13 +36,40 @@ const icons = {
     'Logging': IconList,
     'XP Management': IconTrendingUp,
     'Chat Filters': IconMessageReport,
-    'Word Blacklist': IconForbid,
     'Welcomer': IconBell,
     'Conversation Starter': IconMessage,
     'Giveaways': IconGift
 }
 
 const useStyles = createStyles((theme) => ({
+    app: {
+        width: '100vw',
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'row',
+        overflow: 'hidden',
+    },
+
+    page: {
+        flexGrow: 1,
+
+        [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+            width: '100vw',
+        },
+    },
+
+    pageScroll: {
+        minHeight: 'calc(100% - 43px)',
+
+        '& .mantine-ScrollArea-root': {
+            height: '100%',
+        },
+
+        [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+            width: '100vw',
+        },
+    },
+
     header: {
         backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
         display: 'flex',
@@ -44,18 +79,17 @@ const useStyles = createStyles((theme) => ({
         borderColor: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[3],
         height: 43,
     },
+
+    content: {
+        flexGrow: 1,
+        padding: theme.spacing.md,
+        height: 'calc(100% - 43px)',
+
+        [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+            width: '100vw',
+        },
+    },
 }));
-
-function Dash(props) {
-    var user = props.user;
-    var server = props.server;
-
-    return (
-        <div className="server-dash">
-            <Text>User = {user.name}, Server = {server.name}</Text>
-        </div>
-    )
-}
 
 export default function Servers(props) {
     const { classes, theme } = useStyles();
@@ -63,8 +97,8 @@ export default function Servers(props) {
     const [navOpened, setNavOpened] = useState(false);
     let routerLocation = useLocation();
     useEffect(() => {
-        const re = new RegExp(/account\/servers\/\w+\/(\w+)/);
-        const found = location.pathname.match(re);
+        const re = new RegExp(/servers\/\w+\/(\w+)/);
+        const found = routerLocation.pathname.match(re);
         if (found !== null) {
             const testCase = `/${found[1]}`;
             for (const [name, element] of Object.entries(paths)) {
@@ -79,8 +113,19 @@ export default function Servers(props) {
         }
     }, [routerLocation]);
 
+    const [config, setConfig] = useState({});
+
     var user = props.user;
     var server = useLoaderData();
+
+    useEffect(() => {
+        authenticated_get(`${API_BASE_URL}servers/${server.id}/config`)
+            .then((request) => {
+                if (request.status == 200) {
+                    setConfig(JSON.parse(request.responseText));
+                }
+            });
+    }, server);
 
     var icon = {
         object: icons[defaultSelected] || IconHome
@@ -97,11 +142,8 @@ export default function Servers(props) {
                 Moderation: {
                     Verification: new NavChoice(IconShieldCheck, false, `/servers/${server.id}/verification`),
                     Logging: new NavChoice(IconList, false, `/servers/${server.id}/logs`),
-                    'XP Management': new NavChoice(IconTrendingUp, false, `/servers/${server.id}/xp`)
-                },
-                Automod: {
+                    'XP Management': new NavChoice(IconTrendingUp, false, `/servers/${server.id}/xp`),
                     'Chat Filters': new NavChoice(IconMessageReport, false, `/servers/${server.id}/filters`),
-                    'Word Blacklist': new NavChoice(IconForbid, false, `/servers/${server.id}/blacklist`)
                 },
                 General: {
                     Welcomer: new NavChoice(IconBell, false, `/servers/${server.id}/welcomer`),
@@ -119,11 +161,21 @@ export default function Servers(props) {
     }, [width]);
     const burgerTitle = navOpened ? 'Close navigation' : 'Open navigation';
 
-    if (screenWidth <= 490) {
+    if (screenWidth <= theme.breakpoints.sm) {
         nav = (
             <Drawer
                 opened={navOpened}
                 onClose={() => setNavOpened(false)}
+                withCloseButton={false}
+                sx={{
+                    height: 'calc(100vh - 43px)',
+                    top: '43px',
+
+                    '& > .mantine-Drawer-drawer': {
+                        height: 'calc(100vh - 43px)',
+                        top: '43px',
+                    }
+                }}
             >
                 {navItems}
             </Drawer>
@@ -133,12 +185,12 @@ export default function Servers(props) {
     }
 
     return (
-        <div className="server-config">
+        <div className={classes.app}>
             {nav}
-            <div className="server-page">
+            <div className={classes.page}>
                 <Header className={classes.header}>
                     <MediaQuery
-                        query='(min-width: 491px)'
+                        query={`(min-width: ${theme.breakpoints.sm + 1}px)`}
                         styles={{display: 'none'}}
                     >
                         <Burger
@@ -150,11 +202,19 @@ export default function Servers(props) {
                     <icon.object style={{marginRight: `${theme.spacing.sm}px`, marginLeft: `${theme.spacing.sm}px`}} size={28} stroke={1.5} />
                     <Title order={3}>{defaultSelected}</Title>
                 </Header>
-                <div className="dash-servers-content">
-                    <Routes>
-                        <Route exact path='/' element={<Dash user={user} server={server} />} />
-                    </Routes>
-                </div>
+                <ScrollArea.Autosize w="calc(100vw - 380px)" maxHeight='calc(100% - 43px)' scrollbarSize={6} className={classes.pageScroll}>
+                    <div style={{width: "calc(100vw - 380px)"}} className={classes.content}>
+                            <Routes>
+                                <Route exact path='/' element={<Dash config={config} user={user} server={server} />} />
+                                <Route exact path='/verification' element={<Verification config={config} user={user} server={server} />} />
+                                <Route exact path='/logs' element={<Logging config={config} user={user} server={server} />} />
+                                <Route exact path='/xp' element={<XP config={config} user={user} server={server} />} />
+                                <Route exact path='/welcomer' element={<Welcomer config={config} user={user} server={server} />} />
+                                <Route exact path='/filters' element={<Filters config={config} user={user} server={server} />} />
+                                <Route path='/*' element={<NothingFoundBackground />} />,
+                            </Routes>
+                    </div>
+                </ScrollArea.Autosize>
             </div>
         </div>
     );
