@@ -33,11 +33,18 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
-export function Logging({user, server}) {
+export function Logging({user, server, config, updateConfig}) {
     const { classes, theme } = useStyles();
 
-    const [logCommands, setLogCommands] = useState(false); // TODO: Pull from config once the server component is designed to pass config to tabs
-    const [silenceCommands, setSC] = useState(false); // TODO: Pull from config once the server component is designed to pass config to tabs
+    const [logCommands, setLogCommands] = useState(config?.log_commands == 1);
+    const [silenceCommands, setSC] = useState(config?.silence_commands == 1);
+
+    function switchChanged(field, updater) {
+        return (event) => {
+            updater(event.currentTarget.checked);
+            updateConfig(field, event.currentTarget.checked);
+        }
+    }
 
     return (
         <div>
@@ -53,7 +60,7 @@ export function Logging({user, server}) {
                         <Input.Wrapper id="log_commands" label="Log Commands" description="Log when moderators use commands">
                             <Switch
                                 checked={logCommands}
-                                onChange={(event) => setLogCommands(event.currentTarget.checked)}
+                                onChange={switchChanged('log_commands', setLogCommands)}
                                 className={classes.inputGap}
                             />
                         </Input.Wrapper>
@@ -62,7 +69,7 @@ export function Logging({user, server}) {
                         <Input.Wrapper id="silence_commands" label="Silence Commands" description="Remove the message when a moderator uses a command">
                             <Switch
                                 checked={silenceCommands}
-                                onChange={(event) => setSC(event.currentTarget.checked)}
+                                onChange={switchChanged('silence_commands', setSC)}
                                 className={classes.inputGap}
                             />
                         </Input.Wrapper>

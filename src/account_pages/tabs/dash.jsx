@@ -437,6 +437,26 @@ export function Dash({user, server, config}) {
                         </Input.Wrapper>
                     </Grid.Col>
                     <Grid.Col span={2}>
+                        <Input.Wrapper id="muted_role" label="Muted Role" description="The role that will be added to muted users">
+                            <Select
+                                placeholder="Pick one"
+                                disabled
+                                searchable
+                                withinPortal
+                                nothingFound="No options"
+                                data={[]}
+                                mt={theme.spacing.sm}
+                                rightSection={
+                                    <Tooltip label="Not Yet Supported" position="top-end" withArrow>
+                                        <div>
+                                            <IconAlertCircle size={18} style={{ display: 'block', opacity: 0.5 }} />
+                                        </div>
+                                    </Tooltip>
+                                }
+                            />
+                        </Input.Wrapper>
+                    </Grid.Col>
+                    <Grid.Col span={2}>
                         <Title className={classes.title} order={2}>Recent Activity</Title>
                         <ScrollArea.Autosize
                             w="100%"

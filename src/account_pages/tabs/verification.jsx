@@ -33,12 +33,19 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
-export function Verification({user, server}) {
+export function Verification({user, server, config, updateConfig}) {
     const { classes, theme } = useStyles();
 
-    const [blockTOR, setBlockTOR] = useState(false); // TODO: Pull from config once the server component is designed to pass config to tabs
-    const [blockRG, setBlockRG] = useState(false); // TODO: Pull from config once the server component is designed to pass config to tabs
-    const [blacklistedWords, setBlacklistedWords] = useState([]);
+    const [blockTOR, setBlockTOR] = useState(config?.block_tor == 1);
+    const [raidGuard, setRG] = useState(config?.raid_guard == 1);
+    const [blacklistedWords, setBlacklistedWords] = useState([]); // TODO: Make this sync
+
+    function switchChanged(field, updater) {
+        return (event) => {
+            updater(event.currentTarget.checked);
+            updateConfig(field, event.currentTarget.checked);
+        }
+    }
 
     return (
         <div>
@@ -126,7 +133,7 @@ export function Verification({user, server}) {
                         <Input.Wrapper id="block_tor" label="Block TOR Exit Nodes" description="When enabled, Server Guard will block any verification attempts from the TOR network">
                             <Switch
                                 checked={blockTOR}
-                                onChange={(event) => setBlockTOR(event.currentTarget.checked)}
+                                onChange={switchChanged('block_tor', setBlockTOR)}
                                 className={classes.inputGap}
                             />
                         </Input.Wrapper>
@@ -135,8 +142,8 @@ export function Verification({user, server}) {
                         <Input.Wrapper id="raid_guard" label="Raid Guard" description="Raid Guard attempts to automatically block and intercept raid attempts">
                             <Switch
                                 disabled
-                                checked={blockRG}
-                                onChange={(event) => setBlockRG(event.currentTarget.checked)}
+                                checked={raidGuard}
+                                onChange={switchChanged('raid_guard', setRG)}
                                 className={classes.inputGap}
                             />
                         </Input.Wrapper>
@@ -163,9 +170,12 @@ export function Verification({user, server}) {
                         <Input.Wrapper id="toxicity" label="Profile Toxicity" description="How certain the bot needs to be of toxicity in the user's profile">
                             <Slider
                                 disabled
-                                defaultValue={Math.random() * 100}
+                                defaultValue={config?.rf_toxicity || 0}
                                 step={1}
                                 label={(value) => `${value}%`}
+                                onChangeEnd={(value) => {
+                                    updateConfig('rf_toxicity', value);
+                                }}
                             />
                         </Input.Wrapper>
                     </Grid.Col>
@@ -173,9 +183,12 @@ export function Verification({user, server}) {
                         <Input.Wrapper id="hatespeech" label="Profile Hate-Speech" description="How certain the bot needs to be of hate-speech in the user's profile">
                             <Slider
                                 disabled
-                                defaultValue={Math.random() * 100}
+                                defaultValue={config?.rf_hatespeech || 0}
                                 step={1}
                                 label={(value) => `${value}%`}
+                                onChangeEnd={(value) => {
+                                    updateConfig('rf_hatespeech', value);
+                                }}
                             />
                         </Input.Wrapper>
                     </Grid.Col>
@@ -192,9 +205,12 @@ export function Verification({user, server}) {
                             <Input.Wrapper style={{flexGrow: 1}} id="nsfw" label="Avatar/Banner NSFW" description="How certain the bot needs to be of NSFW in the user's avatar or banner">
                                 <Slider
                                     disabled
-                                    defaultValue={Math.random() * 100}
+                                    defaultValue={config?.rf_nsfw || 0}
                                     step={1}
                                     label={(value) => `${value}%`}
+                                    onChangeEnd={(value) => {
+                                        updateConfig('rf_nsfw', value);
+                                    }}
                                 />
                             </Input.Wrapper>
                         </Group>
@@ -204,6 +220,7 @@ export function Verification({user, server}) {
                             <MultiSelect
                                 data={blacklistedWords}
                                 placeholder="Add words"
+                                disabled
                                 creatable
                                 searchable
                                 getCreateLabel={(query) => `+ Add "${query}"`}

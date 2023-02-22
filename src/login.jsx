@@ -13,19 +13,22 @@ function setCookie(name,value,days) {
         date.setTime(date.getTime() + (days*24*60*60*1000))
         expires = "; expires=" + date.toUTCString()
     }
-    document.cookie = name + "=" + (value || "")  + expires + ";domain=.serverguard.xyz;path=/"
+    if (location.hostname == 'localhost') {
+        document.cookie = name + "=" + (value || "")  + expires + ";.app.localhost;path=/"
+    } else {
+        document.cookie = name + "=" + (value || "")  + expires + ";domain=.serverguard.xyz;path=/"
+    }
 }
 
 function httpGetAsync(theUrl, callback)
 {
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() { 
-        if (xmlHttp.readyState == 4)
-            callback(xmlHttp);
-    }
-    xmlHttp.open("GET", theUrl, true); // true for asynchronous
-    xmlHttp.withCredentials = true;
-    xmlHttp.send(null);
+    fetch(theUrl, {
+        method: 'GET',
+        credentials: 'include',  
+    })
+        .then((response) => {
+            callback(response);
+        });
 }
 
 function httpPostAsync(theUrl, data, callback)
@@ -89,8 +92,8 @@ class LoginApp extends Component {
         }
     }
 
-    async codeStatusReceived(request) {
-        if (request.status == 404) {
+    async codeStatusReceived(response) {
+        if (response.status == 404) {
             this.setState({
                 "code": null,
                 currentLock: crypto.randomUUID()
@@ -99,8 +102,8 @@ class LoginApp extends Component {
                 lock: this.state.currentLock
             }), this.codeReceived);
         }
-        else if (request.status == 200) {
-            const msg = JSON.parse(request.responseText);
+        else if (response.status == 200) {
+            const msg = JSON.parse(await response.text());
             setCookie('auth', msg.auth, 1);
             setCookie('refresh', msg.refresh, 14);
             location.assign(`${location.origin}/account`);

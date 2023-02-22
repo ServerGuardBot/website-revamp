@@ -77,8 +77,8 @@ function AccountApp() {
     }, [])
 
     return (
-        <NotificationsProvider limit={5}>
-            <MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
+        <MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
+            <NotificationsProvider limit={5}>
                 <div className={classes.app}>
                     {
                         (function() {
@@ -150,8 +150,8 @@ function AccountApp() {
                         })()
                     }
                 </div>
-            </MantineProvider>
-        </NotificationsProvider>
+            </NotificationsProvider>
+        </MantineProvider>
     )
 }
 

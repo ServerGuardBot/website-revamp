@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useLoaderData, useLocation, Route, Routes } from "react-router-dom";
 import {
-    createStyles, Drawer, MediaQuery, Header, Title, Burger, ScrollArea
+    createStyles, Drawer, MediaQuery, Header, Title, Burger, ScrollArea, Loader
 } from '@mantine/core';
 import {
     IconHome, IconShieldCheck, IconList, IconTrendingUp, IconMessageReport, IconForbid,
@@ -17,7 +17,9 @@ import { Logging } from './tabs/logging.jsx';
 import { XP } from './tabs/xp.jsx';
 import { Welcomer } from './tabs/welcomer.jsx';
 import { Filters } from './tabs/filters.jsx';
-import { authenticated_get } from '../auth.jsx';
+import { authenticated_get, authenticated_patch } from '../auth.jsx';
+import { showNotification } from '@mantine/notifications';
+import { FailureNotification, SuccessNotification } from './tabs/notifs.jsx';
 
 const paths = {
     'Dashboard': '/',
@@ -66,7 +68,7 @@ const useStyles = createStyles((theme) => ({
         },
 
         [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
-            width: '100vw',
+            width: '100vw !important',
         },
     },
 
@@ -86,8 +88,16 @@ const useStyles = createStyles((theme) => ({
         height: 'calc(100% - 43px)',
 
         [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
-            width: '100vw',
+            width: '100vw !important',
         },
+    },
+
+    loading: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        height: '100%',
     },
 }));
 
@@ -113,7 +123,40 @@ export default function Servers(props) {
         }
     }, [routerLocation]);
 
-    const [config, setConfig] = useState({});
+    const [config, setConfig] = useState(null);
+    const updateConfig = useCallback((field, newValue) => {
+        if (typeof newValue == 'boolean') {
+            newValue = newValue ? 1 : 0;
+        }
+        else if (typeof newValue == 'object') {
+            newValue = JSON.stringify(newValue);
+        }
+
+        var newConfig = {}
+        for (const [index, value] of Object.entries(config)) {
+            if (index == field) {
+                if (typeof newValue == 'object') {
+                    newConfig[index] = JSON.parse(newValue);
+                } else {
+                    newConfig[index] = newValue;
+                }
+            } else {
+                newConfig[index] = value;
+            }
+        }
+        setConfig(newConfig);
+
+        authenticated_patch(`${API_BASE_URL}servers/${server.id}/config`, JSON.stringify({
+            [field]: newValue,
+        }))
+            .then((resp) => {
+                if (resp.ok) {
+                    showNotification(SuccessNotification);
+                } else {
+                    showNotification(FailureNotification);
+                }
+            });
+    })
 
     var user = props.user;
     var server = useLoaderData();
@@ -122,7 +165,9 @@ export default function Servers(props) {
         authenticated_get(`${API_BASE_URL}servers/${server.id}/config`)
             .then((request) => {
                 if (request.status == 200) {
-                    setConfig(JSON.parse(request.responseText));
+                    request.text().then((txt) => {
+                        setConfig(JSON.parse(txt));
+                    });
                 }
             });
     }, server);
@@ -202,19 +247,27 @@ export default function Servers(props) {
                     <icon.object style={{marginRight: `${theme.spacing.sm}px`, marginLeft: `${theme.spacing.sm}px`}} size={28} stroke={1.5} />
                     <Title order={3}>{defaultSelected}</Title>
                 </Header>
-                <ScrollArea.Autosize w="calc(100vw - 380px)" maxHeight='calc(100% - 43px)' scrollbarSize={6} className={classes.pageScroll}>
-                    <div style={{width: "calc(100vw - 380px)"}} className={classes.content}>
-                            <Routes>
-                                <Route exact path='/' element={<Dash config={config} user={user} server={server} />} />
-                                <Route exact path='/verification' element={<Verification config={config} user={user} server={server} />} />
-                                <Route exact path='/logs' element={<Logging config={config} user={user} server={server} />} />
-                                <Route exact path='/xp' element={<XP config={config} user={user} server={server} />} />
-                                <Route exact path='/welcomer' element={<Welcomer config={config} user={user} server={server} />} />
-                                <Route exact path='/filters' element={<Filters config={config} user={user} server={server} />} />
-                                <Route path='/*' element={<NothingFoundBackground />} />,
-                            </Routes>
-                    </div>
-                </ScrollArea.Autosize>
+                {
+                    config == null && (
+                        <div className={classes.loading}>
+                            <Loader size='xl' variant='dots' />
+                        </div>
+                    ) || (
+                        <ScrollArea.Autosize w="calc(100vw - 380px)" maxHeight='calc(100% - 43px)' scrollbarSize={6} className={classes.pageScroll}>
+                            <div style={{width: "calc(100vw - 380px)"}} className={classes.content}>
+                                    <Routes>
+                                        <Route exact path='/' element={<Dash config={config} user={user} updateConfig={updateConfig} server={server} />} />
+                                        <Route exact path='/verification' element={<Verification config={config} updateConfig={updateConfig} user={user} server={server} />} />
+                                        <Route exact path='/logs' element={<Logging config={config} updateConfig={updateConfig} user={user} server={server} />} />
+                                        <Route exact path='/xp' element={<XP config={config} updateConfig={updateConfig} user={user} server={server} />} />
+                                        <Route exact path='/welcomer' element={<Welcomer config={config} updateConfig={updateConfig} user={user} server={server} />} />
+                                        <Route exact path='/filters' element={<Filters config={config} updateConfig={updateConfig} user={user} server={server} />} />
+                                        <Route path='/*' element={<NothingFoundBackground />} />,
+                                    </Routes>
+                            </div>
+                        </ScrollArea.Autosize>
+                    )
+                }
             </div>
         </div>
     );

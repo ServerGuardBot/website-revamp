@@ -1,4 +1,4 @@
-import { Notification } from "@mantine/core";
+import React from 'react';
 import { IconCheck, IconX } from "@tabler/icons";
 
 export const SuccessNotification = {

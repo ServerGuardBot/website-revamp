@@ -35,13 +35,31 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
-export function Filters({user, server, config}) {
+export function Filters({user, server, config, updateConfig}) {
     const { classes, theme } = useStyles();
 
-    const [maliciousURLFilter, setMaliciousURLFilter] = useState(config?.url_filter == 1); // TODO: Pull from config once the server component is designed to pass config to tabs
-    const [inviteFilter, setInviteFilter] = useState(config?.invite_link_filter == 1); // TODO: Pull from config once the server component is designed to pass config to tabs
-    const [duplicateFilter, setDuplicateFilter] = useState(config?.automod_duplicate == 1); // TODO: Pull from config once the server component is designed to pass config to tabs
-    const [blacklistedWords, setBlacklistedWords] = useState([]);
+    const [maliciousURLFilter, setMaliciousURLFilter] = useState(config?.url_filter == 1);
+    const [inviteFilter, setInviteFilter] = useState(config?.invite_link_filter == 1);
+    const [duplicateFilter, setDuplicateFilter] = useState(config?.automod_duplicate == 1);
+    const [blacklistedWords, setBlacklistedWords] = useState(() => {
+        const filters = config?.filters || [];
+        let bl = [];
+        for (let i = 0; i < filters.length; i++) {
+            let item = filters[i];
+            bl.push({
+                value: item,
+                label: item,
+            });
+        }
+        return bl;
+    });
+
+    function switchChanged(field, updater) {
+        return (event) => {
+            updater(event.currentTarget.checked);
+            updateConfig(field, event.currentTarget.checked);
+        }
+    }
 
     return (
         <div>
@@ -57,7 +75,7 @@ export function Filters({user, server, config}) {
                         <Input.Wrapper id="malicious_filter" label="Block Malicious URLs" description="Filters out known malicious URLs from a public database">
                             <Switch
                                 checked={maliciousURLFilter}
-                                onChange={(event) => setMaliciousURLFilter(event.currentTarget.checked)}
+                                onChange={switchChanged('url_filter', setMaliciousURLFilter)}
                                 className={classes.inputGap}
                             />
                         </Input.Wrapper>
@@ -66,7 +84,7 @@ export function Filters({user, server, config}) {
                         <Input.Wrapper id="invite_filter" label="Block Invite Links" description="Blocks Discord & Guilded invite links">
                             <Switch
                                 checked={inviteFilter}
-                                onChange={(event) => setInviteFilter(event.currentTarget.checked)}
+                                onChange={switchChanged('invite_link_filter', setInviteFilter)}
                                 className={classes.inputGap}
                             />
                         </Input.Wrapper>
@@ -75,7 +93,7 @@ export function Filters({user, server, config}) {
                         <Input.Wrapper id="duplicate_filter" label="Block Duplicate Text" description="Blocks duplicate or spammy text">
                             <Switch
                                 checked={duplicateFilter}
-                                onChange={(event) => setDuplicateFilter(event.currentTarget.checked)}
+                                onChange={switchChanged('automod_duplicate', setDuplicateFilter)}
                                 className={classes.inputGap}
                             />
                         </Input.Wrapper>
@@ -83,33 +101,42 @@ export function Filters({user, server, config}) {
                     <Grid.Col span={2}>
                         <Input.Wrapper id="spam" label="Spam" description="How many messages must be sent within 3 seconds of each other to trigger the spam filter">
                             <Slider
-                                defaultValue={0}
+                                defaultValue={config?.automod_spam || 0}
                                 step={1}
                                 min={0}
                                 max={8}
                                 label={(value) => (value == 0) ? 'DISABLED' : value}
+                                onChangeEnd={(value) => {
+                                    updateConfig('automod_spam', value);
+                                }}
                             />
                         </Input.Wrapper>
                     </Grid.Col>
                     <Grid.Col sm={2} md={1}>
                         <Input.Wrapper id="toxicity" label="Toxicity Filter" description="How certain the bot must be of a toxicity detection to act on it">
                             <Slider
-                                defaultValue={0}
+                                defaultValue={config?.toxicity || 0}
                                 step={1}
                                 min={0}
                                 max={100}
                                 label={(value) => (value == 0) ? 'DISABLED' : `${value}%`}
+                                onChangeEnd={(value) => {
+                                    updateConfig('toxicity', value);
+                                }}
                             />
                         </Input.Wrapper>
                     </Grid.Col>
                     <Grid.Col sm={2} md={1}>
                         <Input.Wrapper id="hatespeech" label="Hate-speech Filter" description="How certain the bot must be of a hate-speech detection to act on it">
                             <Slider
-                                defaultValue={0}
+                                defaultValue={config?.hatespeech || 0}
                                 step={1}
                                 min={0}
                                 max={100}
                                 label={(value) => (value == 0) ? 'DISABLED' : `${value}%`}
+                                onChangeEnd={(value) => {
+                                    updateConfig('hatespeech', value);
+                                }}
                             />
                         </Input.Wrapper>
                     </Grid.Col>
@@ -117,6 +144,7 @@ export function Filters({user, server, config}) {
                         <Input.Wrapper id="block_words" label="Word Blacklist" description="Blacklist words in messages, automatically detects potential variants of listed words.">
                             <MultiSelect
                                 data={blacklistedWords}
+                                value={config?.filters || []}
                                 placeholder="Add words"
                                 creatable
                                 searchable
@@ -125,6 +153,9 @@ export function Filters({user, server, config}) {
                                     const item = { value: query, label: query };
                                     setBlacklistedWords((current) => [...current, item]);
                                     return item;
+                                }}
+                                onChange={(value) => {
+                                    updateConfig('filters', value);
                                 }}
                                 className={classes.inputGap}
                             />

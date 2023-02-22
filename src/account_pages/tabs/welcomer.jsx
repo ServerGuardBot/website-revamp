@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     createStyles, Title, Paper, Input, Select, Tooltip, Grid, Group,
     Switch, Text, ScrollArea, Dialog, Button, TextInput, List
@@ -11,6 +11,9 @@ import Underline from '@tiptap/extension-underline';
 import CharacterCount from '@tiptap/extension-character-count';
 import Placeholder from '@tiptap/extension-placeholder';
 import { isValidURL } from '../../helpers.jsx';
+import { useDebouncedValue } from '@mantine/hooks';
+import { HtmlRenderer, Parser } from 'commonmark';
+import TurndownService from 'turndown';
 
 const useStyles = createStyles((theme) => ({
     paper: {
@@ -40,14 +43,22 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
-export function Welcomer({user, server}) {
+const turndownService = new TurndownService();
+
+const reader = new Parser();
+const writer = new HtmlRenderer();
+
+export function Welcomer({user, server, config, updateConfig}) {
     const { classes, theme } = useStyles();
 
     const content = 
-        '<p>Welcome, {mention}, to <strong>{server_name}</strong>!</p>'; // TODO: Pull from config once the server component is designed to pass config to tabs
+        writer.render(
+            reader.parse(config?.welcome_message || 'Welcome, {mention}, to **{server_name}**!')
+        ); // TODO: Pull from config once the server component is designed to pass config to tabs
 
-    const [imageURL, setImageURL] = useState('');
-    const [enabled, setEnabled] = useState(false); // TODO: Pull from config once the server component is designed to pass config to tabs
+    const [imageURL, setImageURL] = useState(config?.welcome_image || '');
+    const [debouncedImageURL] = useDebouncedValue(imageURL, 200)
+    const [enabled, setEnabled] = useState(config?.use_welcome == 1); // TODO: Pull from config once the server component is designed to pass config to tabs
     const [message, setMessage] = useState(content);
     const [messageDirty, setMessageDirty] = useState(false);
 
@@ -72,7 +83,19 @@ export function Welcomer({user, server}) {
         content,
     });
 
-    const imageURLRef = useRef(null);
+    function switchChanged(field, updater) {
+        return (event) => {
+            updater(event.currentTarget.checked);
+            updateConfig(field, event.currentTarget.checked);
+        }
+    }
+
+    useEffect(() => {
+        if ((config?.welcome_image || '') == debouncedImageURL) return // Make sure it doesn't automatically detect a change when the page loads
+        if (isValidURL(debouncedImageURL) || debouncedImageURL == '') {
+            updateConfig('welcome_image', debouncedImageURL);
+        }
+    }, [debouncedImageURL]);
 
     return (
         <div>
@@ -87,6 +110,8 @@ export function Welcomer({user, server}) {
                 <Group position="right">
                     <Button
                         onClick={() => {
+                            var markdown = turndownService.turndown(editor.view.dom.innerHTML);
+                            updateConfig('welcome_message', markdown);
                             setMessage(editor.view.dom.innerHTML);
                             setMessageDirty(false);
                             // TODO: Send request to save message config after converting HTML to CommonMark
@@ -108,7 +133,7 @@ export function Welcomer({user, server}) {
                         <Input.Wrapper id="enabled" label="Enabled" description="Whether or not the bot will welcome users">
                             <Switch
                                 checked={enabled}
-                                onChange={(event) => setEnabled(event.currentTarget.checked)}
+                                onChange={switchChanged('use_welcome', setEnabled)}
                                 className={classes.inputGap}
                             />
                         </Input.Wrapper>

@@ -61,11 +61,18 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
-export function XP({user, server}) {
+export function XP({user, server, config, updateConfig}) {
     const { classes, cx } = useStyles();
 
-    const [removeOldLevelRoles, setRemoveOldLevelRoles] = useState(false); // TODO: Pull from config once the server component is designed to pass config to tabs
-    const [announceLU, setAnnounceLU] = useState(false); // TODO: Pull from config once the server component is designed to pass config to tabs
+    const [removeOldLevelRoles, setRemoveOldLevelRoles] = useState(config?.xp_remove_old == 1);
+    const [announceLU, setAnnounceLU] = useState(config?.xp_announce_lu == 1);
+
+    function switchChanged(field, updater) {
+        return (event) => {
+            updater(event.currentTarget.checked);
+            updateConfig(field, event.currentTarget.checked);
+        }
+    }
 
     const [roleXP, setRoleXP] = useState([
         {
@@ -138,7 +145,7 @@ export function XP({user, server}) {
                         <Input.Wrapper id="remove_old_roles" label="Remove Old Level Roles" description="When a user gains a level, the bot will try to remove any known old previous level roles">
                             <Switch
                                 checked={removeOldLevelRoles}
-                                onChange={(event) => setRemoveOldLevelRoles(event.currentTarget.checked)}
+                                onChange={switchChanged('xp_remove_old', setRemoveOldLevelRoles)}
                                 className={classes.inputGap}
                                 disabled
                             />
@@ -148,7 +155,7 @@ export function XP({user, server}) {
                         <Input.Wrapper id="announce_level_up" label="Announce Level Up" description="Announces that the user leveled up, in the channel where they leveled up from">
                             <Switch
                                 checked={announceLU}
-                                onChange={(event) => setAnnounceLU(event.currentTarget.checked)}
+                                onChange={switchChanged('xp_announce_lu', setAnnounceLU)}
                                 className={classes.inputGap}
                                 disabled
                             />
