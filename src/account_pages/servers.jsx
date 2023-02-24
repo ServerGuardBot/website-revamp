@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useLoaderData, useLocation, Route, Routes } from "react-router-dom";
+import { useLoaderData, useLocation, Route, Routes, useParams } from "react-router-dom";
 import {
     createStyles, Drawer, MediaQuery, Header, Title, Burger, ScrollArea, Loader
 } from '@mantine/core';
@@ -162,7 +162,9 @@ export default function Servers(props) {
                     }
                 }
             });
-    })
+    });
+
+    let { serverObject } = useParams();
 
     var user = props.user;
     var server = useLoaderData();
@@ -178,11 +180,11 @@ export default function Servers(props) {
                     });
                 }
             });
-    }, serverId);
+    }, [serverId]);
 
-    if (server.id != serverId) {
-        setServerId(server.id);
-    }
+    useEffect(() => {
+        setServerId(serverObject.id);
+    }, [serverObject]);
 
     var icon = {
         object: icons[defaultSelected] || IconHome
