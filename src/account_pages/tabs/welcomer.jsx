@@ -43,6 +43,7 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
+TurndownService.prototype.escape = (str) => str; // TODO: Test
 const turndownService = new TurndownService();
 
 const reader = new Parser();
