@@ -164,15 +164,12 @@ export default function Servers(props) {
             });
     });
 
-    let { serverObject } = useParams();
-
     var user = props.user;
     var server = useLoaderData();
 
-    const [serverId, setServerId] = useState(server.id);
-
     useEffect(() => {
-        authenticated_get(`${API_BASE_URL}servers/${serverId}/config`)
+        setConfig(null);
+        authenticated_get(`${API_BASE_URL}servers/${server.id}/config`)
             .then((request) => {
                 if (request.status == 200) {
                     request.text().then((txt) => {
@@ -180,11 +177,7 @@ export default function Servers(props) {
                     });
                 }
             });
-    }, [serverId]);
-
-    useEffect(() => {
-        setServerId(serverObject.id);
-    }, [serverObject]);
+    }, [server.id]);
 
     var icon = {
         object: icons[defaultSelected] || IconHome

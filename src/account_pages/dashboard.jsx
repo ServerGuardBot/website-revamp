@@ -296,6 +296,15 @@ export function ServerNavigation(props) {
                 <ScrollArea.Autosize
                     maxHeight="100%"
                     type="never"
+                    sx={{
+                        '& .mantine-ScrollArea-root': {
+                            '& [data-radix-scroll-area-viewport]': {
+                                '& div': {
+                                    paddingBottom: 2,
+                                },
+                            },
+                        },
+                    }}
                 >
                     <Stack justify="center" spacing={10}>
                         <ServerNavLink link="/" img="/images/logo.svg" label="Home" />
@@ -333,7 +342,7 @@ export function Navigation(props) {
             .then((data) => {
                 setServerData(data);
             });
-    }, []);
+    }, [props.server.id]);
 
     const [selected, setSelected] = useState(first);
     useEffect(() => {

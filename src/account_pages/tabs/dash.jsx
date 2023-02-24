@@ -150,7 +150,7 @@ export function Dash({user, server, config, updateConfig}) {
     const [showSetupWizard, setShowSetupWizard] = useState(false);
     const [validLangs, setValidLangs] = useState([]);
 
-    const [blockUntrustedImages, setBUI] = useState(config?.untrusted_block_images == 1)
+    const [blockUntrustedImages, setBUI] = useState(config?.untrusted_block_images == 1);
 
     function rolePermUpdater(id, perm) {
         return () => {
