@@ -123,6 +123,8 @@ export default function Servers(props) {
         }
     }, [routerLocation]);
 
+    const [notifCooldown, setNotifCooldown] = useState(new Date().getTime() / 1000);
+
     const [config, setConfig] = useState(null);
     const updateConfig = useCallback((field, newValue) => {
         if (typeof newValue == 'boolean') {
@@ -150,10 +152,14 @@ export default function Servers(props) {
             [field]: newValue,
         }))
             .then((resp) => {
-                if (resp.ok) {
-                    showNotification(SuccessNotification);
-                } else {
-                    showNotification(FailureNotification);
+                const now = new Date().getTime() / 1000;
+                if (now - notifCooldown > .35) {
+                    setNotifCooldown(now);
+                    if (resp.ok) {
+                        showNotification(SuccessNotification);
+                    } else {
+                        showNotification(FailureNotification);
+                    }
                 }
             });
     })
@@ -161,8 +167,10 @@ export default function Servers(props) {
     var user = props.user;
     var server = useLoaderData();
 
+    const [serverId, setServerId] = useState(server.id);
+
     useEffect(() => {
-        authenticated_get(`${API_BASE_URL}servers/${server.id}/config`)
+        authenticated_get(`${API_BASE_URL}servers/${serverId}/config`)
             .then((request) => {
                 if (request.status == 200) {
                     request.text().then((txt) => {
@@ -170,7 +178,11 @@ export default function Servers(props) {
                     });
                 }
             });
-    }, server);
+    }, serverId);
+
+    if (server.id != serverId) {
+        setServerId(server.id);
+    }
 
     var icon = {
         object: icons[defaultSelected] || IconHome

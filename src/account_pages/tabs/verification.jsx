@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     createStyles, Text, Title, Paper, Input, Select, Tooltip, Grid, ScrollArea, Button, Group,
     Switch, Slider, MultiSelect
 } from '@mantine/core';
 import { IconAlertCircle, IconStar } from '@tabler/icons';
+import { generateChannels, generateRoles } from '../../helpers.jsx';
+import { getServerInfo } from '../../server_info.jsx';
 
 const useStyles = createStyles((theme) => ({
     paper: {
@@ -36,6 +38,16 @@ const useStyles = createStyles((theme) => ({
 export function Verification({user, server, config, updateConfig}) {
     const { classes, theme } = useStyles();
 
+    const [serverData, setServerData] = useState({});
+    useEffect(() => {
+        getServerInfo(server.id)
+            .then((data) => {
+                setServerData(data);
+            });
+    }, []);
+    const serverRoles = generateRoles(serverData?.team?.rolesById);
+    const serverChannels = generateChannels(config?.__cache?.channels, ['chat', 'voice']);
+
     const [blockTOR, setBlockTOR] = useState(config?.block_tor == 1);
     const [raidGuard, setRG] = useState(config?.raid_guard == 1);
     const [blacklistedWords, setBlacklistedWords] = useState([]); // TODO: Make this sync
@@ -60,72 +72,64 @@ export function Verification({user, server, config, updateConfig}) {
                     <Grid.Col sm={2} md={1}>
                         <Input.Wrapper id="logs_channel" label="Logs Channel">
                             <Select
-                                disabled
+                                disabled={serverChannels.length == 0}
                                 placeholder="Pick one"
                                 searchable
+                                withinPortal
                                 nothingFound="No options"
-                                data={["Unknown"]}
-                                rightSection={
-                                    <Tooltip label="Not Yet Supported" position="top-end" withArrow>
-                                        <div>
-                                            <IconAlertCircle size={18} style={{ display: 'block', opacity: 0.5 }} />
-                                        </div>
-                                    </Tooltip>
-                                }
+                                defaultValue={config?.verify_logs_channel}
+                                data={serverChannels}
+                                onChange={(value) => {
+                                    updateConfig('verify_logs_channel', value);
+                                }}
                             />
                         </Input.Wrapper>
                     </Grid.Col>
                     <Grid.Col sm={2} md={1}>
                         <Input.Wrapper id="verify_channel" label="Verification Channel">
                             <Select
-                                disabled
+                                disabled={serverChannels.length == 0}
                                 placeholder="Pick one"
                                 searchable
+                                withinPortal
                                 nothingFound="No options"
-                                data={["Unknown"]}
-                                rightSection={
-                                    <Tooltip label="Not Yet Supported" position="top-end" withArrow>
-                                        <div>
-                                            <IconAlertCircle size={18} style={{ display: 'block', opacity: 0.5 }} />
-                                        </div>
-                                    </Tooltip>
-                                }
+                                defaultValue={config?.verification_channel}
+                                data={serverChannels}
+                                onChange={(value) => {
+                                    updateConfig('verification_channel', value);
+                                }}
                             />
                         </Input.Wrapper>
                     </Grid.Col>
                     <Grid.Col sm={2} md={1}>
                         <Input.Wrapper id="verified_role" label="Verified Role">
                             <Select
-                                disabled
+                                disabled={serverRoles.length == 0}
                                 placeholder="Pick one"
+                                withinPortal
                                 searchable
                                 nothingFound="No options"
-                                data={["Unknown"]}
-                                rightSection={
-                                    <Tooltip label="Not Yet Supported" position="top-end" withArrow>
-                                        <div>
-                                            <IconAlertCircle size={18} style={{ display: 'block', opacity: 0.5 }} />
-                                        </div>
-                                    </Tooltip>
-                                }
+                                data={serverRoles}
+                                defaultValue={(config?.verified_role !== undefined) ? config?.verified_role.toString() : null}
+                                onChange={(value) => {
+                                    updateConfig('verified_role', parseInt(value));
+                                }}
                             />
                         </Input.Wrapper>
                     </Grid.Col>
                     <Grid.Col sm={2} md={1}>
                         <Input.Wrapper id="unverified_role" label="Unverified Role">
                             <Select
-                                disabled
+                                disabled={serverRoles.length == 0}
                                 placeholder="Pick one"
+                                withinPortal
                                 searchable
                                 nothingFound="No options"
-                                data={["Unknown"]}
-                                rightSection={
-                                    <Tooltip label="Not Yet Supported" position="top-end" withArrow>
-                                        <div>
-                                            <IconAlertCircle size={18} style={{ display: 'block', opacity: 0.5 }} />
-                                        </div>
-                                    </Tooltip>
-                                }
+                                data={serverRoles}
+                                defaultValue={(config?.unverified_role !== undefined) ? config.unverified_role.toString() : null}
+                                onChange={(value) => {
+                                    updateConfig('unverified_role', parseInt(value));
+                                }}
                             />
                         </Input.Wrapper>
                     </Grid.Col>

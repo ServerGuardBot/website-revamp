@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     createStyles, Title, Paper, Input, Grid, Group,
     Switch, Text, NumberInput, ActionIcon, ScrollArea,
-    Table
+    Table, Select
 } from '@mantine/core';
 import { IconTrash } from '@tabler/icons';
+import { getServerInfo } from '../../server_info.jsx';
+import { generateRoles } from '../../helpers.jsx';
 
 const useStyles = createStyles((theme) => ({
     paper: {
@@ -64,6 +66,43 @@ const useStyles = createStyles((theme) => ({
 export function XP({user, server, config, updateConfig}) {
     const { classes, cx } = useStyles();
 
+    const [serverData, setServerData] = useState({});
+    useEffect(() => {
+        getServerInfo(server.id)
+            .then((data) => {
+                setServerData(data);
+
+                let gain = config?.xp_gain || {'-1': 0};
+
+                let xp = [];
+
+                for (const [id, amt] of Object.entries(gain)) {
+                    let roleId = parseInt(id);
+                    let roleName;
+
+                    if (roleId == -1) {
+                        roleName = '@everyone';
+                    } else {
+                        for (const [id, r] of Object.entries(data?.team?.rolesById || {})) {
+                            if (r.id == roleId) {
+                                roleName = r.name;
+                                break
+                            }
+                        }
+                    }
+
+                    xp.push({
+                        id: roleId,
+                        name: roleName,
+                        xp: amt,
+                    });
+                }
+
+                setRoleXP(xp);
+            });
+    }, []);
+    const serverRoles = generateRoles(serverData?.team?.rolesById);
+
     const [removeOldLevelRoles, setRemoveOldLevelRoles] = useState(config?.xp_remove_old == 1);
     const [announceLU, setAnnounceLU] = useState(config?.xp_announce_lu == 1);
 
@@ -74,16 +113,11 @@ export function XP({user, server, config, updateConfig}) {
         }
     }
 
-    const [roleXP, setRoleXP] = useState([
-        {
-            id: 0,
-            name: '@everyone',
-            xp: 0,
-        }
-    ]);
+    const [roleXP, setRoleXP] = useState([]);
 
     function xpUpdater(id) {
         return (val) => {
+            val = (val == undefined) ? 0 : val;
             var newRoleXP = [];
             for (let i = 0; i < roleXP.length; i++) {
                 let role = roleXP[i];
@@ -102,6 +136,7 @@ export function XP({user, server, config, updateConfig}) {
                 }
             }
             setRoleXP(newRoleXP);
+            updateConfig('xp_gain', newRoleXP);
         }
     }
 
@@ -120,7 +155,16 @@ export function XP({user, server, config, updateConfig}) {
                 </td>
                 <td width={80}>
                     <Group spacing={0} position="right">
-                        <ActionIcon color="red">
+                        <ActionIcon color="red" onClick={() => {
+                            let xp = [];
+                            for (let i = 0; i < roleXP.length; i++) {
+                                let role = roleXP[i];
+                                if (role.id == item.id) continue;
+                                xp.push(role);
+                            }
+                            setRoleXP(xp);
+                            updateConfig('xp_gain', xp);
+                        }}>
                             <IconTrash size={18} stroke={1.5} />
                         </ActionIcon>
                     </Group>
@@ -177,7 +221,56 @@ export function XP({user, server, config, updateConfig}) {
                                         <th/>
                                     </tr>
                                 </thead>
-                                <tbody>{levelRows}</tbody>
+                                <tbody>
+                                    {levelRows}
+                                    {serverRoles.length > 0 && (
+                                        <tr key='add_new_role'>
+                                            <td>
+                                                <Select
+                                                    placeholder="Add role"
+                                                    searchable
+                                                    nothingFound="No options"
+                                                    withinPortal
+                                                    value={null}
+                                                    data={(() => {
+                                                        let newRoleList = [];
+                                                        role: for (let i = 0; i < serverRoles.length; i++) {
+                                                            let sRole = serverRoles[i];
+                                                            for (let i = 0; i < roleXP.length; i++) {
+                                                                let role = roleXP[i];
+                                                                if (role.id == sRole.id) continue role;
+                                                            }
+                                                            newRoleList.push(sRole);
+                                                        }
+                                                        return newRoleList;
+                                                    })()}
+                                                    onChange={(value) => {
+                                                        let xp = [];
+                                                        for (let i = 0; i < roleXP.length; i++) {
+                                                            let role = roleXP[i];
+                                                            xp.push(role);
+                                                        }
+                                                        
+                                                        for (let i = 0; i < serverRoles.length; i++) {
+                                                            let role = serverRoles[i];
+                                                            if (role.value == parseInt(value)) {
+                                                                xp.push({
+                                                                    id: role.value,
+                                                                    name: role.label,
+                                                                    xp: 0,
+                                                                });
+                                                            }
+                                                        }
+                                                        setRoleXP(xp);
+                                                        updateConfig('xp_gain', xp);
+                                                    }}
+                                                />
+                                            </td>
+                                            <td />
+                                            <td />
+                                        </tr>
+                                    )}
+                                </tbody>
                             </Table>
                         </ScrollArea.Autosize>
                     </Grid.Col>

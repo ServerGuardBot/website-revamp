@@ -6,7 +6,7 @@ import {
 import { IconChevronLeft, IconChevronRight, IconLogout, IconSettings, IconHelp, IconHome, IconInfoCircle } from '@tabler/icons';
 import { Link } from "react-router-dom";
 import { getServerInfo } from '../server_info.jsx';
-import { authenticated_delete } from '../auth.jsx';
+import { authenticated_delete, setCookie } from '../auth.jsx';
 import { API_BASE_URL } from '../helpers.jsx';
 
 const useStyles = createStyles((theme) => ({
@@ -244,6 +244,8 @@ function renderItem(props, name, item, selected, setSelected) {
 function logout() {
     authenticated_delete(API_BASE_URL + 'auth')
         .then(() => {
+            setCookie('auth', '', 1);
+            setCookie('refresh', '', 14);
             location.assign('https://serverguard.xyz/login');
         });
 }
@@ -326,10 +328,12 @@ export function Navigation(props) {
     }
 
     const [serverData, setServerData] = useState(0);
-    getServerInfo(props.server.id)
-        .then((data) => {
-            setServerData(data);
-        })
+    useEffect(() => {
+        getServerInfo(props.server.id)
+            .then((data) => {
+                setServerData(data);
+            });
+    }, []);
 
     const [selected, setSelected] = useState(first);
     useEffect(() => {

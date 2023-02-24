@@ -10,7 +10,7 @@ import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import CharacterCount from '@tiptap/extension-character-count';
 import Placeholder from '@tiptap/extension-placeholder';
-import { isValidURL } from '../../helpers.jsx';
+import { generateChannels, isValidURL } from '../../helpers.jsx';
 import { useDebouncedValue } from '@mantine/hooks';
 import { HtmlRenderer, Parser } from 'commonmark';
 import TurndownService from 'turndown';
@@ -61,6 +61,8 @@ export function Welcomer({user, server, config, updateConfig}) {
     const [enabled, setEnabled] = useState(config?.use_welcome == 1); // TODO: Pull from config once the server component is designed to pass config to tabs
     const [message, setMessage] = useState(content);
     const [messageDirty, setMessageDirty] = useState(false);
+
+    const serverChannels = generateChannels(config?.__cache?.channels, ['chat', 'voice']);
 
     const extensions = [
         StarterKit,
@@ -141,19 +143,17 @@ export function Welcomer({user, server, config, updateConfig}) {
                     <Grid.Col sm={2} md={1}>
                         <Input.Wrapper id="channel" label="Channel" description="The channel to welcome users in">
                             <Select
-                                disabled
+                                disabled={serverChannels.length == 0}
                                 placeholder="Pick one"
                                 searchable
+                                withinPortal
                                 nothingFound="No options"
-                                data={["Unknown"]}
+                                value={config?.welcome_channel}
+                                data={serverChannels}
                                 className={classes.inputGap}
-                                rightSection={
-                                    <Tooltip label="Not Yet Supported" position="top-end" withArrow>
-                                        <div>
-                                            <IconAlertCircle size={18} style={{ display: 'block', opacity: 0.5 }} />
-                                        </div>
-                                    </Tooltip>
-                                }
+                                onChange={(value) => {
+                                    updateConfig('welcome_channel', value);
+                                }}
                             />
                         </Input.Wrapper>
                     </Grid.Col>

@@ -4,6 +4,7 @@ import {
     Switch
 } from '@mantine/core';
 import { IconAlertCircle, IconStar } from '@tabler/icons';
+import { generateChannels } from '../../helpers.jsx';
 
 const useStyles = createStyles((theme) => ({
     paper: {
@@ -38,6 +39,8 @@ export function Logging({user, server, config, updateConfig}) {
 
     const [logCommands, setLogCommands] = useState(config?.log_commands == 1);
     const [silenceCommands, setSC] = useState(config?.silence_commands == 1);
+
+    const serverChannels = generateChannels(config?.__cache?.channels, ['chat', 'voice']);
 
     function switchChanged(field, updater) {
         return (event) => {
@@ -77,57 +80,51 @@ export function Logging({user, server, config, updateConfig}) {
                     <Grid.Col sm={2} md={1}>
                         <Input.Wrapper id="action_logs_channel" label="Action Logs Channel" description="Logs channel for actions like bans or kicks">
                             <Select
-                                disabled
+                                disabled={serverChannels.length == 0}
                                 placeholder="Pick one"
                                 searchable
+                                withinPortal
                                 nothingFound="No options"
-                                data={["Unknown"]}
+                                value={config?.action_logs_channel}
+                                data={serverChannels}
                                 className={classes.inputGap}
-                                rightSection={
-                                    <Tooltip label="Not Yet Supported" position="top-end" withArrow>
-                                        <div>
-                                            <IconAlertCircle size={18} style={{ display: 'block', opacity: 0.5 }} />
-                                        </div>
-                                    </Tooltip>
-                                }
+                                onChange={(value) => {
+                                    updateConfig('action_logs_channel', value);
+                                }}
                             />
                         </Input.Wrapper>
                     </Grid.Col>
                     <Grid.Col sm={2} md={1}>
                         <Input.Wrapper id="message_logs_channel" label="Message Logs Channel" description="Message logs for when messages are edited or deleted">
                             <Select
-                                disabled
+                                disabled={serverChannels.length == 0}
                                 placeholder="Pick one"
                                 searchable
+                                withinPortal
                                 nothingFound="No options"
-                                data={["Unknown"]}
+                                value={config?.message_logs_channel}
+                                data={serverChannels}
                                 className={classes.inputGap}
-                                rightSection={
-                                    <Tooltip label="Not Yet Supported" position="top-end" withArrow>
-                                        <div>
-                                            <IconAlertCircle size={18} style={{ display: 'block', opacity: 0.5 }} />
-                                        </div>
-                                    </Tooltip>
-                                }
+                                onChange={(value) => {
+                                    updateConfig('message_logs_channel', value);
+                                }}
                             />
                         </Input.Wrapper>
                     </Grid.Col>
                     <Grid.Col sm={2} md={1}>
                         <Input.Wrapper id="traffic_logs_channel" label="Traffic Logs Channel" description="Traffic logs for when users join/leave the server">
                             <Select
-                                disabled
+                                disabled={serverChannels.length == 0}
                                 placeholder="Pick one"
                                 searchable
+                                withinPortal
                                 nothingFound="No options"
-                                data={["Unknown"]}
+                                value={config?.traffic_logs_channel}
+                                data={serverChannels}
                                 className={classes.inputGap}
-                                rightSection={
-                                    <Tooltip label="Not Yet Supported" position="top-end" withArrow>
-                                        <div>
-                                            <IconAlertCircle size={18} style={{ display: 'block', opacity: 0.5 }} />
-                                        </div>
-                                    </Tooltip>
-                                }
+                                onChange={(value) => {
+                                    updateConfig('traffic_logs_channel', value);
+                                }}
                             />
                         </Input.Wrapper>
                     </Grid.Col>
@@ -143,19 +140,17 @@ export function Logging({user, server, config, updateConfig}) {
                             </Tooltip>
                             <Input.Wrapper style={{flexGrow: 1}} id="nsfw_logs_channel" label="NSFW Logs Channel" description="Logs for when the bot detects NSFW">
                                 <Select
-                                    disabled
+                                    disabled//={serverChannels.length == 0}
                                     placeholder="Pick one"
                                     searchable
+                                    withinPortal
                                     nothingFound="No options"
-                                    data={["Unknown"]}
+                                    value={config?.nsfw_logs_channel}
+                                    data={serverChannels}
                                     className={classes.inputGap}
-                                    rightSection={
-                                        <Tooltip label="Not Yet Supported" position="top-end" withArrow>
-                                            <div>
-                                                <IconAlertCircle size={18} style={{ display: 'block', opacity: 0.5 }} />
-                                            </div>
-                                        </Tooltip>
-                                    }
+                                    onChange={(value) => {
+                                        updateConfig('nsfw_logs_channel', value);
+                                    }}
                                 />
                             </Input.Wrapper>
                         </Group>

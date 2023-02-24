@@ -1,6 +1,6 @@
 import { API_BASE_URL } from "./helpers.jsx"
 
-function setCookie(name,value,days) {
+export function setCookie(name,value,days) {
     var expires = ""
     if (days) {
         var date = new Date()
@@ -103,7 +103,7 @@ async function refresh_token() {
     });
 }
 
-export async function authenticated_get(url) {
+export async function authenticated_get(url, noRedirect) {
     return new Promise(async function(resolve, reject) {
         httpGetAsync(url, async function(request) {
             if (request.status == 403) {
@@ -111,7 +111,9 @@ export async function authenticated_get(url) {
                 if (success) {
                     resolve(await authenticated_get(url));
                 } else {
-                    location.assign(`${location.origin}/login`);
+                    if (!noRedirect) {
+                        location.assign(`${location.origin}/login`);
+                    }
                     reject();
                 }
             } else {
@@ -121,7 +123,7 @@ export async function authenticated_get(url) {
     });
 }
 
-export async function authenticated_post(url, data) {
+export async function authenticated_post(url, data, noRedirect) {
     return new Promise(async function(resolve, reject) {
         httpPostAsync(url, data, async function(request) {
             if (request.status == 403) {
@@ -129,7 +131,9 @@ export async function authenticated_post(url, data) {
                 if (success) {
                     resolve(await authenticated_post(url, data));
                 } else {
-                    location.assign(`${location.origin}/login`);
+                    if (!noRedirect) {
+                        location.assign(`${location.origin}/login`);
+                    }
                     reject();
                 }
             } else {
@@ -139,7 +143,7 @@ export async function authenticated_post(url, data) {
     });
 }
 
-export async function authenticated_patch(url, data) {
+export async function authenticated_patch(url, data, noRedirect) {
     return new Promise(async function(resolve, reject) {
         httpPatchAsync(url, data, async function(request) {
             if (request.status == 403) {
@@ -147,7 +151,9 @@ export async function authenticated_patch(url, data) {
                 if (success) {
                     resolve(await authenticated_patch(url, data));
                 } else {
-                    location.assign(`${location.origin}/login`);
+                    if (!noRedirect) {
+                        location.assign(`${location.origin}/login`);
+                    }
                     reject();
                 }
             } else {
@@ -157,7 +163,7 @@ export async function authenticated_patch(url, data) {
     });
 }
 
-export async function authenticated_delete(url, data) {
+export async function authenticated_delete(url, data, noRedirect) {
     return new Promise(async function(resolve, reject) {
         httpDeleteAsync(url, data, async function(request) {
             if (request.status == 403) {
@@ -165,7 +171,9 @@ export async function authenticated_delete(url, data) {
                 if (success) {
                     resolve(await authenticated_delete(url, data));
                 } else {
-                    location.assign(`${location.origin}/login`);
+                    if (!noRedirect) {
+                        location.assign(`${location.origin}/login`);
+                    }
                     reject();
                 }
             } else {
@@ -175,12 +183,18 @@ export async function authenticated_delete(url, data) {
     });
 }
 
-export async function get_user() {
+export async function get_user(noRedirect) {
     return new Promise(async function(resolve, reject) {
-        var request = await authenticated_get(API_BASE_URL + 'auth');
-        if (request.status == 200) {
-            const txt = await request.text();
-            resolve(JSON.parse(txt));
+        try {
+            var request = await authenticated_get(API_BASE_URL + 'auth', noRedirect);
+            if (request.status == 200) {
+                const txt = await request.text();
+                resolve(JSON.parse(txt));
+            } else {
+                resolve(0); // Resolve to null as it didn't redirect, the calling function would expect this and handle it appropriately
+            }
+        } catch {
+            resolve(0); // Resolve to null as it didn't redirect, the calling function would expect this and handle it appropriately
         }
     });
 }

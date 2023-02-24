@@ -41,6 +41,7 @@ export function Filters({user, server, config, updateConfig}) {
     const [maliciousURLFilter, setMaliciousURLFilter] = useState(config?.url_filter == 1);
     const [inviteFilter, setInviteFilter] = useState(config?.invite_link_filter == 1);
     const [duplicateFilter, setDuplicateFilter] = useState(config?.automod_duplicate == 1);
+    const [blacklistValue, setBlacklistValue] = useState(config?.filters || []);
     const [blacklistedWords, setBlacklistedWords] = useState(() => {
         const filters = config?.filters || [];
         let bl = [];
@@ -144,17 +145,28 @@ export function Filters({user, server, config, updateConfig}) {
                         <Input.Wrapper id="block_words" label="Word Blacklist" description="Blacklist words in messages, automatically detects potential variants of listed words.">
                             <MultiSelect
                                 data={blacklistedWords}
-                                value={config?.filters || []}
+                                value={blacklistValue}
                                 placeholder="Add words"
                                 creatable
                                 searchable
-                                getCreateLabel={(query) => `+ Add "${query}"`}
+                                getCreateLabel={(query) => `+ Add "${query.toLowerCase()}"`}
                                 onCreate={(query) => {
-                                    const item = { value: query, label: query };
+                                    const item = { value: query.toLowerCase(), label: query.toLowerCase() };
                                     setBlacklistedWords((current) => [...current, item]);
                                     return item;
                                 }}
                                 onChange={(value) => {
+                                    setBlacklistValue(value);
+                                    setBlacklistedWords(() => {
+                                        let list = [];
+                                        for (let i = 0; i < value.length; i++) {
+                                            list.push({
+                                                'value': value[i],
+                                                label: value[i],
+                                            });
+                                        }
+                                        return list;
+                                    })
                                     updateConfig('filters', value);
                                 }}
                                 className={classes.inputGap}

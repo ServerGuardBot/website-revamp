@@ -1,164 +1,195 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import Particles from "react-tsparticles";
-import { loadLinksPreset } from "tsparticles-preset-links";
 import { translate, waitForLoad } from "./translator.jsx";
-import CircularProgress from '@mui/material/CircularProgress';
-import { API_BASE_URL } from './helpers.jsx';
+import React, { useEffect, useState } from "react";
+import ReactDOM from 'react-dom';
+import {
+    createStyles, MantineProvider, Paper, Text, Loader, UnstyledButton
+} from '@mantine/core';
+import { setCookie, authenticated_get, authenticated_post } from "./auth.jsx";
+import { API_BASE_URL } from "./helpers.jsx";
+import { IconCheck, IconCopy } from "@tabler/icons";
+import { useClipboard } from "@mantine/hooks";
+import { NotificationsProvider, showNotification } from "@mantine/notifications";
 
-function setCookie(name,value,days) {
-    var expires = ""
-    if (days) {
-        var date = new Date()
-        date.setTime(date.getTime() + (days*24*60*60*1000))
-        expires = "; expires=" + date.toUTCString()
-    }
-    if (location.hostname == 'localhost') {
-        document.cookie = name + "=" + (value || "")  + expires + ";.app.localhost;path=/"
-    } else {
-        document.cookie = name + "=" + (value || "")  + expires + ";domain=.serverguard.xyz;path=/"
-    }
-}
+const ourTheme = {
+    colors: {
+        brand: 
+        [
+          '#fffedc',
+          '#fff8af',
+          '#fff37e',
+          '#ffee4d',
+          '#ffe91e',
+          '#e6cf08',
+          '#b3a100',
+          '#807300',
+          '#4d4500',
+          '#1b1700',
+        ]
+    },
+    primaryColor: 'brand',
+    colorScheme: 'dark',
+};
 
-function httpGetAsync(theUrl, callback)
-{
-    fetch(theUrl, {
-        method: 'GET',
-        credentials: 'include',  
-    })
-        .then((response) => {
-            callback(response);
-        });
-}
+const useStyles = createStyles((theme) => ({
+    main: {
+        width: '100vw',
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 
-function httpPostAsync(theUrl, data, callback)
-{
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() { 
-        if (xmlHttp.readyState == 4)
-            callback(xmlHttp);
-    }
-    xmlHttp.open("POST", theUrl, true); // true for asynchronous 
-    xmlHttp.withCredentials = true;
-    xmlHttp.setRequestHeader('Content-Type', 'application/json'); // application/json
-    xmlHttp.send(data);
-}
+    paper: {
+        backgroundColor: theme.colors.dark[8],
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+    },
 
-class LoginApp extends Component {
-    constructor(props) {
-        super(props);
+    loading: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        height: '100%',
+    },
 
-        this.state = {
-            "code": null,
-            translationsReady: false,
-            currentLock: crypto.randomUUID()
-        };
+    loginSend: {
+        marginTop: theme.spacing.xs,
+        '& a': {
+            color: 'unset',
+            textDecoration: 'none',
+            backgroundColor: theme.colors.dark[6],
+            borderRadius: theme.radius.xs,
+            padding: 4,
+            fontWeight: 600,
 
-        this.particlesInit = this.particlesInit.bind(this);
-        this.codeReceived = this.codeReceived.bind(this);
-        this.codeStatusReceived = this.codeStatusReceived.bind(this);
-        this.loop = this.loop.bind(this);
+            '&:hover': {
+                backgroundColor: theme.colors.dark[5],
+            },
+        },
+    },
+}));
 
-        httpPostAsync(API_BASE_URL + 'auth', JSON.stringify({
-            lock: this.state.currentLock
-        }), this.codeReceived);
+function LoginApp() {
+    const { classes, theme } = useStyles();
+    const [code, setCode] = useState('');
+    const [translationsReady, setTranslationsReady] = useState(false);
+    const [currentLock, setCurrentLock] = useState(crypto.randomUUID());
+    const [timer, setTimer] = useState(0);
 
-        window.setInterval(this.loop, 1000);
+    const clipboard = useClipboard({ timeout: 500 });
 
-        waitForLoad().then((() => {
-            this.setState({
-                translationsReady: true
-            });
-        }).bind(this));
-    }
-
-    async loop() {
-        if (this.state.code != null) {
-            httpGetAsync(API_BASE_URL + `auth/status/${this.state.code}?lock=${encodeURIComponent(this.state.currentLock)}`, this.codeStatusReceived);
-        }
-    }
-
-    async particlesInit(engine) {
-        await loadLinksPreset(engine);
-    }
-
-    async codeReceived(request) {
+    function codeReceived(request) {
         if (request.status == 403) {
             location.assign(`${location.origin}/account`); // Already logged in, redirect to account page
         } else if (request.status == 200) {
-            this.setState({
-                "code": JSON.parse(request.responseText).code
-            });
+            request.text()
+                .then((txt) => {
+                    let js = JSON.parse(txt);
+                    setCode(js.code);
+                });
         }
     }
 
-    async codeStatusReceived(response) {
+    function codeStatusReceived(response) {
         if (response.status == 404) {
-            this.setState({
-                "code": null,
-                currentLock: crypto.randomUUID()
-            })
-            httpPostAsync(API_BASE_URL + 'auth', JSON.stringify({
-                lock: this.state.currentLock
-            }), this.codeReceived);
+            setCode('');
+            setCurrentLock(crypto.randomUUID());
+            authenticated_post(API_BASE_URL + 'auth', JSON.stringify({
+                lock: currentLock
+            }), true)
+                .then(codeReceived);
         }
         else if (response.status == 200) {
-            const msg = JSON.parse(await response.text());
-            setCookie('auth', msg.auth, 1);
-            setCookie('refresh', msg.refresh, 14);
-            location.assign(`${location.origin}/account`);
+            response.text()
+                .then((txt) => {
+                    const msg = JSON.parse(txt);
+                    setCookie('auth', msg.auth, 1);
+                    setCookie('refresh', msg.refresh, 14);
+                    location.assign(`${location.origin}/account`);
+                });
         }
     }
 
-    render() {
-        const options = {
-            preset: "links",
-            fpsLimit: 60,
-            background: {
-                color: "#252525"
-            },
-            particles: {
-                color: {
-                    value: ["#FFED47"]
-                },
-                links: {
-                    color: "#FFED47"
-                },
-                move: {
-                    speed: .5
-                },
-                number: {
-                    value: 180,
-                }
-            }
-        };
+    useEffect(() => {
+        const interval = setInterval(() => setTimer(timer + 1), 1000);
 
-        if (this.state.translationsReady == false) {
-            return (
-                <div className="loading">
-                    <CircularProgress color="primary" thickness={3} size="3.8rem" />
-                </div>
-            )
+        if (code != '') {
+            authenticated_get(API_BASE_URL + `auth/status/${code}?lock=${encodeURIComponent(currentLock)}`, true)
+                .then(codeStatusReceived);
         }
 
-        return (
-            <div className="app">
-                <div className="particle-container">
-                    <Particles options={options} className="verify-particles"
-                    init={this.particlesInit}/>
+        return () => clearInterval(interval);
+    }, [timer]);
+
+    useEffect(() => {
+        waitForLoad()
+            .then(() => {
+                setTranslationsReady(true);
+            });
+
+        authenticated_post(API_BASE_URL + 'auth', JSON.stringify({
+            lock: currentLock
+        }), true)
+            .then(codeReceived);
+    }, []);
+
+    return (
+        <MantineProvider withGlobalStyles withNormalizeCSS theme={ourTheme}>
+            <NotificationsProvider limit={5}>
+                <div className={classes.main}>
+                    <Paper
+                        radius="md"
+                        withBorder
+                        p="md"
+                        className={classes.paper}
+                    >
+                        {
+                            translationsReady == false && (
+                                <div className={classes.loading}>
+                                    <Loader size='xl' variant='dots' />
+                                </div>
+                            ) || (
+                                <>
+                                    {
+                                        code == '' && (
+                                            <Loader size='md' variant='dots' />
+                                        ) || (
+                                            <>
+                                                <UnstyledButton onClick={() => {
+                                                    clipboard.copy(code);
+                                                    showNotification({
+                                                        closeButtonProps: { 'aria-label': 'Hide notification' },
+                                                        icon: <IconCheck size={18} />,
+                                                        color: "teal",
+                                                        title: "Copied Code",
+                                                    });
+                                                }}>
+                                                    <Text
+                                                        size="xl"
+                                                        sx={{
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                        }}
+                                                    ><IconCopy size={theme.fontSizes.xl} /> {code}</Text>
+                                                </UnstyledButton>
+                                                <Text className={classes.loginSend} dangerouslySetInnerHTML={{
+                                                    __html: translate('login.send'),
+                                                }} />
+                                                <Text mt={theme.spacing.xs}>{translate('login.notice')}</Text>
+                                            </>
+                                        )
+                                    }
+                                </>
+                            )
+                        }
+                    </Paper>
                 </div>
-                <div className="login">
-                    <div className="container">
-                        <h1>{(this.state.code == null) ? translate('login.waiting') : this.state.code}</h1>
-                        <p dangerouslySetInnerHTML={{
-                            __html: translate('login.send')
-                        }}></p>
-                        <p>{translate('login.notice')}</p>
-                    </div>
-                </div>
-            </div>
-        )
-    }
+            </NotificationsProvider>
+        </MantineProvider>
+    )
 }
 
 ReactDOM.render(<LoginApp />, document.getElementById('app'));

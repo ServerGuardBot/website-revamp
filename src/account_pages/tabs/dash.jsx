@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {
     createStyles, Text, Title, Paper, Input, Select, Tooltip, Grid, Table, Avatar, ScrollArea, Button, Group,
-    Checkbox, ActionIcon, TextInput
+    Checkbox, ActionIcon, TextInput, Switch
 } from '@mantine/core';
 import { IconAlertCircle, IconTrash } from '@tabler/icons';
 import { SetupWizard } from './setup_wizard.jsx';
 import { getLanguages } from '../../translator.jsx';
+import { getServerInfo } from '../../server_info.jsx';
+import { generateRoles } from '../../helpers.jsx';
 
 const useStyles = createStyles((theme) => ({
     paper: {
@@ -72,37 +74,83 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
-export function Dash({user, server, config}) {
+export function Dash({user, server, config, updateConfig}) {
     const { classes, theme, cx } = useStyles();
+
+    const [rolePermissions, setRolePermissions] = useState([]);
+
+    const [serverData, setServerData] = useState({});
+    useEffect(() => {
+        getServerInfo(server.id)
+            .then((data) => {
+                setServerData(data);
+
+                let roles = [];
+                let rolesList = config?.roles || [];
+                let trustedRoles = config?.trusted_roles || [];
+                let handled = [];
+
+                for (let i = 0; i < rolesList.length; i++) {
+                    let role = rolesList[i];
+                    let sRole;
+                    for (const [id, r] of Object.entries(data?.team?.rolesById || {})) {
+                        if (r.id == ((typeof role.id == 'string') ? parseInt(role.id) : role.id)) {
+                            sRole = r;
+                            break
+                        }
+                    }
+                    if (sRole == undefined) continue;
+
+                    let perms = []
+
+                    if (role.level >= 0) {
+                        perms.push('Moderator');
+                    }
+                    if (role.level >= 1) {
+                        perms.push('Admin');
+                    }
+                    if (trustedRoles.indexOf(role.id) > -1) {
+                        perms.push('Trusted');
+                    }
+
+                    handled.push(parseInt(role.id));
+                    roles.push({
+                        id: (typeof role.id == 'string') ? parseInt(role.id) : role.id,
+                        name: sRole.name,
+                        'perms': perms,
+                    });
+                }
+
+                for (let i = 0; i < trustedRoles.length; i++) {
+                    let roleId = trustedRoles[i];
+
+                    if (handled.indexOf((typeof roleId == 'string') ? parseInt(roleId) : roleId) > -1) continue;
+
+                    let sRole;
+                    for (const [id, r] of Object.entries(data?.team?.rolesById || {})) {
+                        if (r.id == ((typeof roleId == 'string') ? parseInt(roleId) : roleId)) {
+                            sRole = r;
+                            break
+                        }
+                    }
+                    if (sRole == undefined) continue;
+
+                    roles.push({
+                        id: (typeof roleId == 'string') ? parseInt(roleId) : roleId,
+                        name: sRole.name,
+                        'perms': ['Trusted'],
+                    });
+                }
+
+                setRolePermissions(roles); // Only update role permissions once server data has loaded
+            });
+    }, []);
+    const serverRoles = generateRoles(serverData?.team?.rolesById);
 
     const [showSetupWizard, setShowSetupWizard] = useState(false);
     const [validLangs, setValidLangs] = useState([]);
 
-    const [rolePermissions, setRolePermissions] = useState([
-        {
-            id: '00000000',
-            name: 'Test Role',
-            perms: [
-                'Admin',
-            ],
-        },
-        {
-            id: '00000001',
-            name: 'Test Role 2',
-            perms: [
-                'Moderator',
-                'Admin',
-            ],
-        },
-        {
-            id: '00000002',
-            name: 'Test Role 3',
-            perms: [
-                'Moderator',
-                'Trusted',
-            ],
-        },
-    ]);
+    const [blockUntrustedImages, setBUI] = useState(config?.untrusted_block_images == 1)
 
     function rolePermUpdater(id, perm) {
         return () => {
@@ -139,6 +187,8 @@ export function Dash({user, server, config}) {
                 }
             }
             setRolePermissions(newPerms);
+            updateConfig('roles', newPerms);
+            updateConfig('trusted_roles', newPerms);
         }
     }
 
@@ -315,7 +365,17 @@ export function Dash({user, server, config}) {
                 </td>
                 <td width={80}>
                     <Group spacing={0} position="right">
-                        <ActionIcon color="red">
+                        <ActionIcon color="red" onClick={() => {
+                            let newRolePerms = [];
+                            for (let i = 0; i < rolePermissions.length; i++) {
+                                let role = rolePermissions[i];
+                                if (role.id == item.id) continue;
+                                newRolePerms.push(role);
+                            }
+                            setRolePermissions(newRolePerms);
+                            updateConfig('roles', newRolePerms);
+                            updateConfig('trusted_roles', newRolePerms);
+                        }}>
                             <IconTrash size={18} stroke={1.5} />
                         </ActionIcon>
                     </Group>
@@ -326,6 +386,8 @@ export function Dash({user, server, config}) {
 
     const [activitiesScrolled, setActivitiesScrolled] = useState(false);
     const [rolePermScrolled, setRolePermScrolled] = useState(false);
+
+    const [muteRole, setMuteRole] = useState((config?.mute_role !== undefined) ? config.mute_role.toString() : null);
 
     var unprotectedBanner = (
         <></>
@@ -354,6 +416,13 @@ export function Dash({user, server, config}) {
                 </Group>
             </Paper>
         )
+    }
+
+    function switchChanged(field, updater) {
+        return (event) => {
+            updater(event.currentTarget.checked);
+            updateConfig(field, event.currentTarget.checked);
+        }
     }
 
     useEffect(() => {
@@ -420,7 +489,7 @@ export function Dash({user, server, config}) {
                         <Input.Wrapper id="language" label="Server Language" description="The language that things like logs will be outputted in">
                             <Select
                                 placeholder="Pick one"
-                                defaultValue="en"
+                                defaultValue={config?.language || 'en'}
                                 searchable
                                 withinPortal
                                 nothingFound="No options"
@@ -433,26 +502,27 @@ export function Dash({user, server, config}) {
                                         </div>
                                     </Tooltip>
                                 }
+                                onChange={(value) => {
+                                    updateConfig('language', value);
+                                }}
                             />
                         </Input.Wrapper>
                     </Grid.Col>
                     <Grid.Col span={2}>
-                        <Input.Wrapper id="muted_role" label="Muted Role" description="The role that will be added to muted users">
+                        <Input.Wrapper id="mute_role" label="Muted Role" description="The role that will be added to muted users">
                             <Select
                                 placeholder="Pick one"
-                                disabled
+                                disabled={serverRoles.length == 0}
                                 searchable
                                 withinPortal
                                 nothingFound="No options"
-                                data={[]}
+                                data={serverRoles}
                                 mt={theme.spacing.sm}
-                                rightSection={
-                                    <Tooltip label="Not Yet Supported" position="top-end" withArrow>
-                                        <div>
-                                            <IconAlertCircle size={18} style={{ display: 'block', opacity: 0.5 }} />
-                                        </div>
-                                    </Tooltip>
-                                }
+                                value={muteRole}
+                                onChange={(value) => {
+                                    setMuteRole(value);
+                                    updateConfig('mute_role', parseInt(value));
+                                }}
                             />
                         </Input.Wrapper>
                     </Grid.Col>
@@ -462,11 +532,11 @@ export function Dash({user, server, config}) {
                             w="100%"
                             className={classes.table}
                             maxHeight={51*10}
-                            onScrollPositionChange={({ y }) => setRolePermScrolled(y !== 0)}
+                            onScrollPositionChange={({ y }) => setActivitiesScrolled(y !== 0)}
                             scrollbarSize={6}
                         >
                             <Table width="100%" verticalSpacing="sm">
-                                <thead className={cx(classes.tableHeader, { [classes.tableScrolled]: rolePermScrolled })}>
+                                <thead className={cx(classes.tableHeader, { [classes.tableScrolled]: activitiesScrolled })}>
                                     <tr>
                                         <th>User</th>
                                         <th>Date</th>
@@ -486,15 +556,27 @@ export function Dash({user, server, config}) {
                 className={classes.paper}
             >
                 <Title className={classes.title} order={2}>Role Permissions</Title>
+                <Grid columns={2}>
+                    <Grid.Col sm={2} md={1}>
+                        <Input.Wrapper id="untrusted_block_images" label="Block Untrusted Images" description="Blocks images from untrusted users">
+                            <Switch
+                                mt={theme.spacing.sm}
+                                checked={blockUntrustedImages}
+                                onChange={switchChanged('untrusted_block_images', setBUI)}
+                            />
+                        </Input.Wrapper>
+                    </Grid.Col>
+                </Grid>
                 <ScrollArea.Autosize
                     w="100%"
                     className={classes.table}
+                    mt={theme.spacing.sm}
                     maxHeight={51*10}
-                    onScrollPositionChange={({ y }) => setActivitiesScrolled(y !== 0)}
+                    onScrollPositionChange={({ y }) => setRolePermScrolled(y !== 0)}
                     scrollbarSize={6}
                 >
                     <Table width="100%" verticalSpacing="sm">
-                        <thead className={cx(classes.tableHeader, { [classes.tableScrolled]: activitiesScrolled })}>
+                        <thead className={cx(classes.tableHeader, { [classes.tableScrolled]: rolePermScrolled })}>
                             <tr>
                                 <th>Role</th>
                                 <th>Moderator</th>
@@ -503,7 +585,59 @@ export function Dash({user, server, config}) {
                                 <th />
                             </tr>
                         </thead>
-                        <tbody>{rolePermRows}</tbody>
+                        <tbody>
+                            {rolePermRows}
+                            {serverRoles.length > 0 && (
+                                <tr key='add_new_role'>
+                                    <td>
+                                        <Select
+                                            placeholder="Add role"
+                                            searchable
+                                            nothingFound="No options"
+                                            withinPortal
+                                            value={null}
+                                            data={(() => {
+                                                let newRoleList = [];
+                                                role: for (let i = 0; i < serverRoles.length; i++) {
+                                                    let sRole = serverRoles[i];
+                                                    for (let i = 0; i < rolePermissions.length; i++) {
+                                                        let role = rolePermissions[i];
+                                                        if (role.id == sRole.id) continue role;
+                                                    }
+                                                    newRoleList.push(sRole);
+                                                }
+                                                return newRoleList;
+                                            })()}
+                                            onChange={(value) => {
+                                                let newRolePerms = [];
+                                                for (let i = 0; i < rolePermissions.length; i++) {
+                                                    let role = rolePermissions[i];
+                                                    newRolePerms.push(role);
+                                                }
+                                                
+                                                for (let i = 0; i < serverRoles.length; i++) {
+                                                    let role = serverRoles[i];
+                                                    if (role.value == parseInt(value)) {
+                                                        newRolePerms.push({
+                                                            id: role.value,
+                                                            name: role.label,
+                                                            perms: [],
+                                                        });
+                                                    }
+                                                }
+                                                setRolePermissions(newRolePerms);
+                                                updateConfig('roles', newRolePerms);
+                                                updateConfig('trusted_roles', newRolePerms);
+                                            }}
+                                        />
+                                    </td>
+                                    <td />
+                                    <td />
+                                    <td />
+                                    <td />
+                                </tr>
+                            )}
+                        </tbody>
                     </Table>
                 </ScrollArea.Autosize>
             </Paper>
