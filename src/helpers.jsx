@@ -42,3 +42,111 @@ export function generateRoles(roles) {
     }
     return [];
 }
+
+function httpGetAsync(theUrl, callback)
+{
+    fetch(theUrl, {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'include',
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+    })
+        .then((response) => {
+            callback(response);
+        });
+}
+
+function httpPostAsync(theUrl, data, callback)
+{
+    fetch(theUrl, {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'include',
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: data,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+        .then((response) => {
+            callback(response);
+        });
+}
+
+function httpPostTextAsync(theUrl, data, callback)
+{
+    fetch(theUrl, {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'include',
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: data,
+        headers: {
+            'Content-Type': 'text/plain',
+        },
+    })
+        .then((response) => {
+            callback(response);
+        });
+}
+
+function httpPatchAsync(theUrl, data, callback)
+{
+    fetch(theUrl, {
+        method: 'PATCH',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'include',
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: data,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+        .then((response) => {
+            callback(response);
+        });
+}
+
+export async function http_get(url) {
+    return new Promise(async function(resolve, reject) {
+        httpGetAsync(url, async function(request) {
+            if (request.status == 403) {
+                reject(request);
+            } else {
+                resolve(request);
+            }
+        });
+    });
+}
+
+export async function http_post(url, data) {
+    return new Promise(async function(resolve, reject) {
+        httpPostAsync(url, data, async function(request) {
+            if (request.status == 403) {
+                reject(request);
+            } else {
+                resolve(request);
+            }
+        });
+    });
+}
+
+export async function http_post_text(url, data) {
+    return new Promise(async function(resolve, reject) {
+        httpPostTextAsync(url, data, async function(request) {
+            if (request.status == 403) {
+                reject(request);
+            } else {
+                resolve(request);
+            }
+        });
+    });
+}
