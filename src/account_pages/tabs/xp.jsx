@@ -206,6 +206,8 @@ export function XP({user, server, config, updateConfig}) {
                         </Input.Wrapper>
                     </Grid.Col>
                     <Grid.Col span={2}>
+                        <Title className={classes.title} order={3} mb={2}>Role XP Gain</Title>
+                        <Text color="dimmed" size="md" mb="sm">Grant certain roles (or everyone) XP when they speak. Limits gains to once per minute.</Text>
                         <ScrollArea.Autosize
                             w="100%"
                             className={classes.table}
