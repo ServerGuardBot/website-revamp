@@ -108,6 +108,9 @@ function LoginApp() {
                     const msg = JSON.parse(txt);
                     setCookie('auth', msg.auth, 1);
                     setCookie('refresh', msg.refresh, 14);
+                    gtag('event', 'login', {
+                        method: 'Guilded',
+                    });
                     location.assign(`${location.origin}/account`);
                 });
         }

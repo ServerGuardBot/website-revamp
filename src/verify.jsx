@@ -170,6 +170,7 @@ function VerifyApp() {
                                                 username: userInfo.user_name,
                                                 server: userInfo.guild_name,
                                                 admin_contact: userInfo.admin_contact,
+                                                server_id: userInfo.guild_id,
                                             });
                                         });
                                 } else {
@@ -270,7 +271,6 @@ function VerifyApp() {
                                             <Turnstile
                                                 siteKey={TURNSTILE_KEY}
                                                 onSuccess={(token) => {
-                                                    console.log('Turnstile Completed')
                                                     setTurnstileToken(token);
                                                 }}
                                                 onError={() => {
@@ -285,6 +285,9 @@ function VerifyApp() {
                                                 mt={theme.spacing.sm}
                                                 disabled={status.state == -1 || turnstileToken == null}
                                                 onClick={() => {
+                                                    gtag('event', 'verify_click', {
+                                                        guild_id: data.server_id,
+                                                    });
                                                     setStatus({
                                                         state: -1
                                                     });
@@ -296,6 +299,10 @@ function VerifyApp() {
                                                                         setStatus({
                                                                             state: 2,
                                                                         });
+                                                                        gtag('event', 'verify_response', {
+                                                                            state: 'success',
+                                                                            code: response.status,
+                                                                        });
                                                                     }
                                                                     else if (response.status >= 500 && request.status < 600) {
                                                                         // Server Error
@@ -303,12 +310,22 @@ function VerifyApp() {
                                                                             state: 1,
                                                                             message: translate('verify.500') || '[500] Failed to verify due to a server error, if you continue receiving this message please report it in our <a href="https://serverguard.xyz/support">Support Server</a>',
                                                                         });
+                                                                        gtag('event', 'verify_response', {
+                                                                            state: 'error',
+                                                                            code: response.status,
+                                                                            message: 'Internal server error',
+                                                                        });
                                                                     } else {
                                                                         response.text()
                                                                             .then((txt) => {
                                                                                 setStatus({
                                                                                     state: 1,
                                                                                     message: translate(`verify.${response.status}.${JSON.parse(txt).message}`) || `[${response.status}] ${JSON.parse(txt).message}`,
+                                                                                });
+                                                                                gtag('event', 'verify_response', {
+                                                                                    state: 'error',
+                                                                                    code: response.status,
+                                                                                    message: JSON.parse(txt).message,
                                                                                 });
                                                                             });
                                                                     }

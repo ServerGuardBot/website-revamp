@@ -10,7 +10,6 @@ import Home from './account_pages/home.jsx';
 import BotAnalytics from './account_pages/bot_analytics.jsx';
 import Servers from './account_pages/servers.jsx';
 import { NotificationsProvider } from '@mantine/notifications';
-import { API_BASE_URL } from './helpers.jsx';
 
 const theme = {
     colors: {
@@ -32,7 +31,7 @@ const theme = {
     colorScheme: 'dark'
 };
 
-const useStyles = createStyles((theme, _params, getRef) => ({
+const useStyles = createStyles((theme) => ({
     app: {
         width: '100vw',
         height: '100vh',
@@ -141,7 +140,7 @@ function AccountApp() {
                                                     errorElement={<NothingFoundBackground />}
                                                 />
                                             ]), {
-                                                basename: "/account"
+                                                basename: "/account",
                                             })} />
                                         </div>
                                     </ScrollArea.Autosize>
