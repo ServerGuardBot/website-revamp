@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
     createStyles, Text, Title, Paper, Input, Select, Tooltip, Grid, ScrollArea, Button, Group,
-    Switch, Slider, MultiSelect
+    Switch, Slider, MultiSelect, TextInput
 } from '@mantine/core';
 import { IconAlertCircle, IconStar } from '@tabler/icons';
-import { generateChannels, generateRoles } from '../../helpers.jsx';
+import { generateChannels, generateRoles, isValidURL } from '../../helpers.jsx';
 import { getServerInfo } from '../../server_info.jsx';
+import { useDebouncedValue } from '@mantine/hooks';
 
 const useStyles = createStyles((theme) => ({
     paper: {
@@ -51,6 +52,8 @@ export function Verification({user, server, config, updateConfig}) {
     const [blockTOR, setBlockTOR] = useState(config?.block_tor == 1);
     const [raidGuard, setRG] = useState(config?.raid_guard == 1);
     const [blacklistedWords, setBlacklistedWords] = useState([]); // TODO: Make this sync
+    const [adminContact, setAdminContact] = useState(config?.admin_contact || '');
+    const [debouncedAdminContact] = useDebouncedValue(adminContact, 200);
 
     function switchChanged(field, updater) {
         return (event) => {
@@ -58,6 +61,13 @@ export function Verification({user, server, config, updateConfig}) {
             updateConfig(field, event.currentTarget.checked);
         }
     }
+
+    useEffect(() => {
+        if ((config?.admin_contact || '') == debouncedAdminContact) return // Make sure it doesn't automatically detect a change when the page loads
+        if (isValidURL(debouncedAdminContact) || debouncedAdminContact == '') {
+            updateConfig('admin_contact', debouncedAdminContact);
+        }
+    }, [debouncedAdminContact]);
 
     return (
         <div>
@@ -130,6 +140,17 @@ export function Verification({user, server, config, updateConfig}) {
                                 onChange={(value) => {
                                     updateConfig('unverified_role', parseInt(value));
                                 }}
+                            />
+                        </Input.Wrapper>
+                    </Grid.Col>
+                    <Grid.Col span={2}>
+                        <Input.Wrapper id="admin_contact" label="Admin Contact" description="In case a user fails verification, this URL will be shown">
+                            <TextInput
+                                placeholder="Place URL here"
+                                value={adminContact}
+                                onChange={(event) => setAdminContact(event.currentTarget.value)}
+                                error={(isValidURL(adminContact) || adminContact == '') ? false : 'Please enter a valid URL or leave blank'}
+                                className={classes.inputGap}
                             />
                         </Input.Wrapper>
                     </Grid.Col>

@@ -58,7 +58,7 @@ export function Welcomer({user, server, config, updateConfig}) {
         ); // TODO: Pull from config once the server component is designed to pass config to tabs
 
     const [imageURL, setImageURL] = useState(config?.welcome_image || '');
-    const [debouncedImageURL] = useDebouncedValue(imageURL, 200)
+    const [debouncedImageURL] = useDebouncedValue(imageURL, 200);
     const [enabled, setEnabled] = useState(config?.use_welcome == 1); // TODO: Pull from config once the server component is designed to pass config to tabs
     const [message, setMessage] = useState(content);
     const [messageDirty, setMessageDirty] = useState(false);
