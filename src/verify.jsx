@@ -189,6 +189,13 @@ function VerifyApp() {
                     }
                 }
             });
+        
+        try {
+            (window.adsbygoogle = window.adsbygoogle || []).push({});
+        }
+        catch (e) {
+
+        }
     }, []);
 
     if (translationsReady == false) {
