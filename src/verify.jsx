@@ -189,13 +189,6 @@ function VerifyApp() {
                     }
                 }
             });
-        
-        try {
-            (window.adsbygoogle = window.adsbygoogle || []).push({});
-        }
-        catch (e) {
-
-        }
     }, []);
 
     if (translationsReady == false) {
@@ -351,13 +344,6 @@ function VerifyApp() {
                                         </Group>
                                     )
                                 }
-                                <ins className="adsbygoogle"
-                                    style={{ display: "block" }}
-                                    data-ad-client="ca-pub-4625689430964513"
-                                    data-ad-slot="8619832219"
-                                    data-ad-format="auto"
-                                    data-full-width-responsive="true"
-                                />
                             </>
                         )
                     }
@@ -399,6 +385,13 @@ function VerifyApp() {
                         {translate('verify.notice')}
                     </Text>
                 </Paper>
+                <ins className="adsbygoogle"
+                    style={{ display: "block" }}
+                    data-ad-client="ca-pub-4625689430964513"
+                    data-ad-slot="8619832219"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true"
+                />
             </div>
         </MantineProvider>
     )
