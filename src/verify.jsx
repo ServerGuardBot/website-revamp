@@ -189,13 +189,6 @@ function VerifyApp() {
                     }
                 }
             });
-        
-        try {
-            (window.adsbygoogle = window.adsbygoogle || []).push({});
-        }
-        catch (e) {
-
-        }
     }, []);
 
     if (translationsReady == false) {
@@ -399,6 +392,9 @@ function VerifyApp() {
                     data-ad-format="auto"
                     data-full-width-responsive="true"
                 />
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
             </div>
         </MantineProvider>
     )
