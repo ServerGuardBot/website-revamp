@@ -73,7 +73,7 @@ function AccountApp() {
         waitForLoad().then(function() {
             setTranslationsReady(true)
         });
-    }, [])
+    }, []);
 
     return (
         <MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
@@ -94,7 +94,6 @@ function AccountApp() {
                                             <RouterProvider router={createBrowserRouter(createRoutesFromElements([
                                                 <Route errorElement={<NothingFoundBackground />} />,
                                                 <Route path='/' element={<Home user={user} />}/>,
-                                                <Route path='/internal/' element={<BotAnalytics user={user} />}/>,
                                                 <Route
                                                     path="/servers/:serverId" 
                                                     loader={async ({ params }) => {

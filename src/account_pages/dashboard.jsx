@@ -319,6 +319,7 @@ export function ServerNavigation(props) {
 export function Navigation(props) {
     const { classes, theme } = useStyles();
     var user = props.user;
+    var setDefaultSelected = props.setDefaultSelected;
     var first = getFirstNavItem(props.choices);
     if ((first == undefined || first == null) && props.default == undefined) {
         console.error('Could find no default choice');
@@ -350,6 +351,12 @@ export function Navigation(props) {
             setSelected(props.default);
         }
     }, [props]);
+
+    useEffect(() => {
+        if (setDefaultSelected) {
+            setDefaultSelected(selected);
+        }
+    }, [selected]);
 
     var listItems = [];
 

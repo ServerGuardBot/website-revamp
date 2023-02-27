@@ -6,7 +6,7 @@ import {
     UnstyledButton, Loader, Paper
 } from '@mantine/core';
 import { authenticated_delete, get_user, setCookie } from "./auth.jsx";
-import { IconLogin, IconLogout, IconUser } from "@tabler/icons";
+import { IconDashboard, IconLogin, IconLogout, IconUser } from "@tabler/icons";
 import { API_BASE_URL } from "./helpers.jsx";
 
 const ourTheme = {
@@ -148,6 +148,11 @@ function AccountBox() {
                             </Menu.Target>
                             <Menu.Dropdown>
                                 <Menu.Item sx={{fontSize: theme.fontSizes.sm, fontFamily: theme.fontFamily, color: 'white !important'}} component="a" href="/account" icon={<IconUser size={22} stroke={1.5} />}>Dashboard</Menu.Item>
+                                {
+                                    user.id == 'm6YxwpQd' && (
+                                        <Menu.Item sx={{fontSize: theme.fontSizes.sm, fontFamily: theme.fontFamily, color: 'white !important'}} component="a" href="/internal" icon={<IconDashboard size={22} stroke={1.5} />}>Internal</Menu.Item>
+                                    )
+                                }
                                 <Menu.Item sx={{fontSize: theme.fontSizes.sm, fontFamily: theme.fontFamily, color: 'white !important'}} onClick={logout} icon={<IconLogout color={theme.colors.red[6]} size={22} stroke={1.5} />}>Logout</Menu.Item>
                             </Menu.Dropdown>
                         </Menu>
