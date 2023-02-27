@@ -93,8 +93,7 @@ function getValues(arr) {
 
         for (let index = 0; index < arr.length; index++) {
             const element = arr[index];
-            console.log(Math.abs(element.value - itemA), ":::", element.value);
-            if (Math.abs(element.value - itemA) >= WEEK_SECONDS) {
+            if (Math.abs(element.time - arr[arr.length - 1].time) >= WEEK_SECONDS) {
                 itemB = element.value;
                 break
             }
