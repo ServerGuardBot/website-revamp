@@ -66,7 +66,10 @@ function StatIcon({ title, value, diff }) {
             </Group>
             <Text color="dimmed" size="sm" mt="md">
                 <Text component="span" color={diff >= 0 ? 'teal' : 'red'} weight={700}>
-                    {diff}%
+                    {diff.toLocaleString(
+                        undefined,
+                        { minimumFractionDigits: 2 }
+                    )}%
                 </Text>{' '}
                 {diff >= 0 ? 'increase' : 'decrease'} compared to past hour
             </Text>
