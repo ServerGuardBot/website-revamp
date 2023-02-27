@@ -11,7 +11,12 @@ export function isValidURL(string) {
 };
 
 export function generateChannels(channels, allowedTypes) {
-    var channelsList = [];
+    var channelsList = [
+        {
+            label: 'Disabled',
+            value: '',
+        },
+    ];
 
     if (channels !== null && channels !== undefined) {
         for (const [id, channel] of Object.entries(channels)) {
@@ -23,13 +28,17 @@ export function generateChannels(channels, allowedTypes) {
                 value: id,
             });
         }
-        return channelsList;
     }
-    return []
+    return channelsList;
 }
 
 export function generateRoles(roles) {
-    var rolesList = [];
+    var rolesList = [
+        {
+            label: 'Disabled',
+            value: 0,
+        },
+    ];
 
     if (roles !== null && roles !== undefined) {
         for (const [id, role] of Object.entries(roles)) {
@@ -38,9 +47,8 @@ export function generateRoles(roles) {
                 value: id,
             });
         }
-        return rolesList;
     }
-    return [];
+    return rolesList;
 }
 
 function httpGetAsync(theUrl, callback)

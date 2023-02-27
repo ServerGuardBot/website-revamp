@@ -6,6 +6,8 @@ import { IconArrowUpRight, IconArrowDownRight } from '@tabler/icons';
 import { authenticated_get } from '../auth.jsx';
 import { API_BASE_URL } from '../helpers.jsx';
 
+const WEEK_SECONDS = 60 * 60 * 24 * 7;
+
 const useStyles = createStyles((theme) => ({
     paper: {
         backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
@@ -71,7 +73,7 @@ function StatIcon({ title, value, diff }) {
                         { minimumFractionDigits: 2 }
                     )}%
                 </Text>{' '}
-                {diff >= 0 ? 'increase' : 'decrease'} compared to past hour
+                {diff >= 0 ? 'increase' : 'decrease'} compared to last week
             </Text>
         </Paper>
     )
@@ -82,12 +84,21 @@ function getValues(arr) {
         return [0, 0];
     }
     else if (arr.length == 1) {
-        const value = arr[1].value;
-        return [value, value];
+        const value = arr[0].value;
+        return [value, 0];
     }
     else {
         const itemA = arr[arr.length - 1].value;
-        const itemB = arr[arr.length - 2].value;
+        var itemB = arr[arr.length - 2].value;
+
+        for (let index = 0; index < arr.length; index++) {
+            const element = arr[index];
+            if (Math.abs(element.value - itemA) >= WEEK_SECONDS) {
+                console.log('found one');
+                itemB = element.value;
+                break
+            }
+        }
 
         return (itemA - itemB == 0) ? [itemA, 0] : [itemA, (itemB - itemA) / itemA * 100]
     }
@@ -100,9 +111,10 @@ export function Overview({ user }) {
     const [largestServers, setLS] = useState([]);
     const [serverCount, setSC] = useState([]);
     const [userCount, setUC] = useState([]);
+    const [premiumCount, setPC] = useState([]);
 
     useEffect(() => {
-        authenticated_get(API_BASE_URL + 'analytics/servers/dash/2')
+        authenticated_get(API_BASE_URL + 'analytics/servers/dash/30')
             .then((response) => {
                 response.text()
                     .then((txt) => {
@@ -110,6 +122,7 @@ export function Overview({ user }) {
                         setSC(json.servers);
                         setLS(json.largestServers || largestServers);
                         setUC(json.users || userCount);
+                        setPC(json.premium || premiumCount);
                         setLoaded(true);
                     });
             });
@@ -127,7 +140,7 @@ export function Overview({ user }) {
                         <SimpleGrid cols={3} breakpoints={[{ maxWidth: 'sm', cols: 1 }]}>
                             <StatIcon title="Servers" value={getValues(serverCount)[0]} diff={getValues(serverCount)[1]} />
                             <StatIcon title="Users" value={getValues(userCount)[0]} diff={getValues(userCount)[1]} />
-                            <StatIcon title="Premium Users" value={0} diff={0} />
+                            <StatIcon title="Premium Users" value={getValues(premiumCount)[0]} diff={getValues(premiumCount)[1]} />
                         </SimpleGrid>
                         <Paper
                             radius="md"
