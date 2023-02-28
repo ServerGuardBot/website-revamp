@@ -143,6 +143,8 @@ function VerifyApp() {
         const observer = new MutationObserver(function (mutations, observer) {
             obj.style.height = "";
             document.getElementsByClassName(classes.main)[0].style.height = "";
+            obj.style.minHeight = "";
+            document.getElementsByClassName(classes.main)[0].style.minHeight = "";
         });
         observer.observe(obj, {
             attributes: true,
