@@ -386,14 +386,19 @@ function VerifyApp() {
                     </Text>
                 </Paper>
                 <ins className="adsbygoogle"
-                    style={{ display: "block" }}
+                    style={{
+                        display: "block",
+                        width: "480px",
+                        height: "100px",
+                        marginTop: theme.spacing.sm,
+                    }}
                     data-ad-client="ca-pub-4625689430964513"
                     data-ad-slot="8619832219"
                     data-ad-format="auto"
                     data-full-width-responsive="true"
                 />
                 <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
+                    {"(adsbygoogle = window.adsbygoogle || []).push({});"}
                 </script>
             </div>
         </MantineProvider>

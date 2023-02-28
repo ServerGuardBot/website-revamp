@@ -126,7 +126,7 @@ function AccountBox() {
                     || (user == 0) && (
                         <a href="/login">
                             <Button>
-                                <IconLogin size={theme.fontSizes.md} />
+                                <IconLogin size={theme.fontSizes.lg} style={{marginRight: theme.spacing.xs}} />
                                 <Text size={theme.fontSizes.md}>Login</Text>
                             </Button>
                         </a>
