@@ -402,7 +402,7 @@ function VerifyApp() {
                     format="horizontal"
                     style={{
                         width: "480px",
-                        height: "100px",
+                        maxWidth: '95vw',
                         marginTop: theme.spacing.sm,
                         borderRadius: theme.radius.md,
                         overflow: 'hidden',
