@@ -15,7 +15,8 @@ import { IconAlertTriangle, IconShieldCheck, IconShieldX } from "@tabler/icons";
 import escapeHTML from 'escape-html-tags';
 import CryptoJS from 'crypto-js';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
-import { Turnstile } from '@marsidev/react-turnstile'
+import { Turnstile } from '@marsidev/react-turnstile';
+import { Adsense } from '@ctrl/react-adsense';
 
 const ourTheme = {
     colors: {
@@ -138,6 +139,16 @@ function VerifyApp() {
     const [turnstileToken, setTurnstileToken] = useState(null);
 
     useEffect(() => {
+        var obj = document.getElementById('app');
+        const observer = new MutationObserver(function (mutations, observer) {
+            obj.style.height = "";
+            document.getElementsByClassName(classes.main)[0].style.height = "";
+        });
+        observer.observe(obj, {
+            attributes: true,
+            attributeFilter: ['style']
+        });
+        
         const re = new RegExp(VERIFY_REGEX);
         var window_code = re.exec(window.location.href);
         let curCode;
@@ -385,21 +396,18 @@ function VerifyApp() {
                         {translate('verify.notice')}
                     </Text>
                 </Paper>
-                <ins className="adsbygoogle"
+                <Adsense
+                    client="ca-pub-4625689430964513"
+                    slot="8619832219"
+                    format="horizontal"
                     style={{
-                        display: "block",
                         width: "480px",
                         height: "100px",
                         marginTop: theme.spacing.sm,
+                        borderRadius: theme.radius.md,
+                        overflow: 'hidden',
                     }}
-                    data-ad-client="ca-pub-4625689430964513"
-                    data-ad-slot="8619832219"
-                    data-ad-format="auto"
-                    data-full-width-responsive="true"
                 />
-                <script>
-                    {"(adsbygoogle = window.adsbygoogle || []).push({});"}
-                </script>
             </div>
         </MantineProvider>
     )
