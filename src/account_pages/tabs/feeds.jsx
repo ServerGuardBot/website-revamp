@@ -289,8 +289,8 @@ export function Feeds({ user, server, config }) {
                             p="sm"
                             className={classes.paper}
                         >
-                            <Title order={1}>Feeds</Title>
-                            <Group position='right' spacing="sm">
+                            <Group position='apart' spacing="sm">
+                                <Title order={1}>Feeds</Title>
                                 <Button onClick={() => setModalOpened(true)}>
                                     Create new
                                 </Button>

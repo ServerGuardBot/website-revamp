@@ -262,8 +262,8 @@ export function Feeds({ user }) {
                             p="sm"
                             className={classes.paper}
                         >
-                            <Title order={1}>Feed Datas</Title>
-                            <Group position='right' spacing="sm">
+                            <Group position='apart' spacing="sm">
+                                <Title order={1}>Feed Datas</Title>
                                 <Button onClick={() => setModalOpened(true)}>
                                     Create new
                                 </Button>
@@ -279,6 +279,7 @@ export function Feeds({ user }) {
                                             justifyContent: 'center',
                                             overflow: 'hidden',
                                             padding: theme.spacing.xs,
+                                            border: `1px solid ${theme.colors.dark[4]}`
                                         }}>
                                             <div style={{
                                                 position: 'absolute',

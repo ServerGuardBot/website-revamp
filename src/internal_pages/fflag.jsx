@@ -68,7 +68,7 @@ function Th({ children, reversed, sorted, onSort }) {
 function filterData(data, search) {
     const query = search.toLowerCase().trim();
     return data.filter((item) =>
-        keys(data[0]).some((key) => item[key].toLowerCase().includes(query))
+        keys(data[0]).some((key) => (typeof item[key] == "string") ? item[key].toLowerCase().includes(query) : false)
     );
 }
     
@@ -142,7 +142,7 @@ function TableSort({ data }) {
                     </Menu.Target>
                     <Menu.Dropdown>
                         <Menu.Item
-                            icon={<IconFlag size={16} color={theme.colors.blue[6]} stroke={1.5} />}
+                            icon={<IconFlag size={16} color={theme.colors.pink[6]} stroke={1.5} />}
                             rightSection={
                                 <Text size="xs" transform="uppercase" weight={700} color="dimmed">
                                     Ctrl + F
@@ -162,7 +162,7 @@ function TableSort({ data }) {
                             String
                         </Menu.Item>
                         <Menu.Item
-                            icon={<IconNumber size={16} color={theme.colors.blue[6]} stroke={1.5} />}
+                            icon={<IconNumber size={16} color={theme.colors.green[6]} stroke={1.5} />}
                             rightSection={
                                 <Text size="xs" transform="uppercase" weight={700} color="dimmed">
                                     Ctrl + I
@@ -178,7 +178,7 @@ function TableSort({ data }) {
                 horizontalSpacing="md"
                 verticalSpacing="xs"
                 mt="sm"
-                sx={{ tableLayout: 'fixed', minWidth: 700, borderRadius: theme.radius.sm, overflow: 'hidden' }}
+                sx={{ tableLayout: 'fixed', borderRadius: theme.radius.sm, overflow: 'hidden' }}
             >
                 <thead>
                     <tr>

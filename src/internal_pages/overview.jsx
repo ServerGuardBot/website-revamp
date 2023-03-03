@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
-    createStyles, Text, Title, Paper, ThemeIcon, SimpleGrid, Group, Loader, Stack, Avatar
+    createStyles, Text, Title, Paper, ThemeIcon, SimpleGrid, Group, Loader, Stack, Avatar, RingProgress, Center
 } from '@mantine/core';
-import { IconArrowUpRight, IconArrowDownRight } from '@tabler/icons';
+import { IconArrowUpRight, IconArrowDownRight, IconCpu, IconDeviceAnalytics, IconServer } from '@tabler/icons';
 import { authenticated_get } from '../auth.jsx';
 import { API_BASE_URL } from '../helpers.jsx';
 
@@ -36,12 +36,43 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
+function StatRing({ icon, label, stats, mainStat }) {
+    const { classes, theme, cx } = useStyles();
+    return (
+        <Paper className={classes.paper} mt={0} withBorder radius="md" p="xs" key={label}>
+            <Group>
+                <RingProgress
+                    size={120}
+                    thickness={10}
+                    sections={stats.map((stat) => {
+                        return { value: stat.progress, color: stat.color }
+                    })}
+                    label={
+                    <Center>
+                        <icon.icon size="1.6rem" stroke={1.5} />
+                    </Center>
+                    }
+                />
+
+                <div>
+                    <Text color="dimmed" size="sm" transform="uppercase" weight={700}>
+                        {label}
+                    </Text>
+                    <Text weight={700} size={26}>
+                        {mainStat}
+                    </Text>
+                </div>
+            </Group>
+      </Paper>
+    )
+}
+
 function StatIcon({ title, value, diff }) {
     const { classes, theme, cx } = useStyles();
     const DiffIcon = diff >= 0 ? IconArrowUpRight : IconArrowDownRight;
 
     return (
-        <Paper className={classes.paper} mt={0} withBorder p="md" radius="md" key={title}>
+        <Paper className={classes.paper} mt="md" withBorder p="md" radius="md" key={title}>
             <Group position="apart">
             <div>
                 <Text
@@ -111,6 +142,9 @@ export function Overview({ user }) {
     const [serverCount, setSC] = useState([]);
     const [userCount, setUC] = useState([]);
     const [premiumCount, setPC] = useState([]);
+    const [disk, setDisk] = useState([]);
+    const [memory, setMemory] = useState([]);
+    const [cpu, setCPU] = useState(0);
 
     useEffect(() => {
         authenticated_get(API_BASE_URL + 'analytics/servers/dash/30')
@@ -122,6 +156,9 @@ export function Overview({ user }) {
                         setLS(json.largestServers || largestServers);
                         setUC(json.users || userCount);
                         setPC(json.premium || premiumCount);
+                        setDisk(json.disk);
+                        setMemory(json.ram);
+                        setCPU(json.cpu);
                         setLoaded(true);
                     });
             });
@@ -136,6 +173,43 @@ export function Overview({ user }) {
                     </div>
                 ) || (
                     <>
+                        <SimpleGrid cols={3} breakpoints={[{ maxWidth: 'sm', cols: 1 }]}>
+                            <StatRing label="CPU" icon={{icon: IconCpu}}
+                                mainStat={`${cpu.toLocaleString(
+                                    undefined,
+                                    { minimumFractionDigits: 1 }
+                                )}%`}
+                                stats={[{
+                                    progress: cpu,
+                                    color: theme.colors.blue[6],
+                                }]}
+                            />
+                            <StatRing label="Memory" icon={{icon: IconDeviceAnalytics}}
+                                 mainStat={`${memory[0].toLocaleString(
+                                    undefined,
+                                    { minimumFractionDigits: 1 }
+                                )}%`}
+                                stats={[{
+                                    progress: (memory[2] / memory[1]) * 100,
+                                    color: theme.colors.orange[6],
+                                }, {
+                                    progress: (memory[3] / memory[1]) * 100,
+                                    color: theme.colors.blue[6],
+                                }]}
+                            />
+                            <StatRing label="Disk" icon={{icon: IconServer}} mainStat={`${((disk[1]/disk[0]) * 100).toLocaleString(
+                                    undefined,
+                                    { minimumFractionDigits: 1 }
+                                )}%`}
+                                stats={[{
+                                    progress: (disk[1] / disk[0]) * 100,
+                                    color: theme.colors.orange[6],
+                                }, {
+                                    progress: (disk[2] / disk[0]) * 100,
+                                    color: theme.colors.blue[6],
+                                }]}
+                            />
+                        </SimpleGrid>
                         <SimpleGrid cols={3} breakpoints={[{ maxWidth: 'sm', cols: 1 }]}>
                             <StatIcon title="Servers" value={getValues(serverCount)[0]} diff={getValues(serverCount)[1]} />
                             <StatIcon title="Users" value={getValues(userCount)[0]} diff={getValues(userCount)[1]} />
