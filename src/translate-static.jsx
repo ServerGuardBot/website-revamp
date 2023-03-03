@@ -178,10 +178,13 @@ async function translateDocument() {
         .forEach(translateElement);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    waitForLoad().then(function() {
-        translateDocument();
+waitForLoad().then(function() {
+    translateDocument();
 
-        ReactDOM.render(<AccountBox />, document.getElementById('account-box'));
-    });
+    const rootElement = document.getElementById('account-box');
+    if (rootElement.hasChildNodes()) {
+        ReactDOM.hydrate(<AccountBox />, rootElement);
+    } else {
+        ReactDOM.render(<AccountBox />, rootElement);
+    }
 });

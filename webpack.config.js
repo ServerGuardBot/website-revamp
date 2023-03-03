@@ -11,6 +11,7 @@ var config = {
         internal: './src/internal.jsx',
         'translate-static': './src/translate-static.jsx',
         '404': './src/404.jsx',
+        'pages/index': './src/static_pages/index.jsx',
     },
     output: {
         filename: '[name].js',
@@ -43,7 +44,7 @@ var config = {
         new webpack.DefinePlugin({
             "SECRET": JSON.stringify(process.env.SECRET),
             "TURNSTILE_KEY": JSON.stringify(process.env.TURNSTILE_KEY)
-        })
+        }),
      ],
 };
 

@@ -5,7 +5,7 @@ import {
     createStyles, Drawer, MediaQuery, Header, Title, Burger, ScrollArea, Loader, MantineProvider
 } from '@mantine/core';
 import {
-    IconHome, IconUser, IconServer, IconFlag
+    IconHome, IconUser, IconServer, IconFlag, IconRss
 } from '@tabler/icons';
 import { Navigation, NavChoice } from "./account_pages/dashboard.jsx";
 import { useViewportSize } from '@mantine/hooks';
@@ -13,10 +13,13 @@ import { NothingFoundBackground } from './nothing_found.jsx';
 import { get_user } from './auth.jsx';
 import { waitForLoad } from "./translator.jsx";
 import { Overview } from './internal_pages/overview.jsx';
+import { FFlags } from './internal_pages/fflag.jsx';
+import { Feeds } from './internal_pages/feeds.jsx';
 
 const paths = {
     'Overview': '/',
     'FFlags': '/fflags',
+    'Feeds': '/feeds',
     'Users': '/users',
     'Servers': '/servers',
 }
@@ -24,6 +27,7 @@ const paths = {
 const icons = {
     'Overview': IconHome,
     'FFlags': IconFlag,
+    'Feeds': IconRss,
     'Users': IconUser,
     'Servers': IconServer,
 }
@@ -112,7 +116,7 @@ function Internal() {
     const [navOpened, setNavOpened] = useState(false);
     const [translationsReady, setTranslationsReady] = useState(false);
     useEffect(() => {
-        const re = new RegExp(/internal\/internal\/(\w+)/);
+        const re = new RegExp(/internal\/(\w+)/);
         const found = location.pathname.match(re);
         if (found !== null) {
             const testCase = `/${found[1]}`;
@@ -162,9 +166,10 @@ function Internal() {
             <Navigation setDefaultSelected={setDefaultSelected} screenWidth={screenWidth} default={defaultSelected} user={user} server={{id: 'aE9Zg6Kj', name: 'Server Guard [Internal]'}} choices={{
                 Overview: new NavChoice(IconHome, false, `/`),
                 Management: {
-                    FFlags: new NavChoice(IconFlag, false, `/internal/fflags`),
-                    Users: new NavChoice(IconUser, false, `/internal/users`),
-                    Servers: new NavChoice(IconServer, false, `/internal/servers`),
+                    FFlags: new NavChoice(IconFlag, false, `/fflags`),
+                    Feeds: new NavChoice(IconRss, false, `/feeds`),
+                    Users: new NavChoice(IconUser, false, `/users`),
+                    Servers: new NavChoice(IconServer, false, `/servers`),
                 },
             }}/>
         </div>
@@ -231,6 +236,8 @@ function Internal() {
                                     <div style={{width: "calc(100vw - 300px)"}} className={classes.content}>
                                             <Routes>
                                                 <Route exact path='/' element={<Overview user={user} />} />,
+                                                <Route exact path='/fflags' element={<FFlags user={user} />} />,
+                                                <Route exact path='/feeds' element={<Feeds user={user} />} />,
                                                 <Route path='/*' element={<NothingFoundBackground />} />,
                                             </Routes>
                                     </div>

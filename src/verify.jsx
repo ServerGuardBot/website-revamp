@@ -348,7 +348,7 @@ function VerifyApp() {
                                             >
                                                 {
                                                     (status.state == -1) && (
-                                                        <Loader size="sm" variant="dots" />
+                                                        <Loader size="sm" color="white" variant="dots" />
                                                     ) || (
                                                         translate('verify.button')
                                                     )

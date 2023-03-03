@@ -5,7 +5,7 @@ import {
 } from '@mantine/core';
 import {
     IconHome, IconShieldCheck, IconList, IconTrendingUp, IconMessageReport, IconForbid,
-    IconBell, IconMessage, IconGift
+    IconBell, IconMessage, IconGift, IconRss
 } from '@tabler/icons';
 import { API_BASE_URL } from '../helpers.jsx';
 import { Navigation, NavChoice, ServerNavigation } from "./dashboard.jsx";
@@ -20,6 +20,7 @@ import { Filters } from './tabs/filters.jsx';
 import { authenticated_get, authenticated_patch } from '../auth.jsx';
 import { showNotification } from '@mantine/notifications';
 import { FailureNotification, SuccessNotification } from './tabs/notifs.jsx';
+import { Feeds } from './tabs/feeds.jsx';
 
 const paths = {
     'Dashboard': '/',
@@ -29,7 +30,8 @@ const paths = {
     'Chat Filters': '/filters',
     'Welcomer': '/welcomer',
     'Conversation Starter': '/conversation',
-    'Giveaways': '/giveaways'
+    'Giveaways': '/giveaways',
+    'Feeds': '/feeds',
 }
 
 const icons = {
@@ -40,7 +42,8 @@ const icons = {
     'Chat Filters': IconMessageReport,
     'Welcomer': IconBell,
     'Conversation Starter': IconMessage,
-    'Giveaways': IconGift
+    'Giveaways': IconGift,
+    'Feeds': IconRss,
 }
 
 const useStyles = createStyles((theme) => ({
@@ -199,6 +202,7 @@ export default function Servers(props) {
                 },
                 General: {
                     Welcomer: new NavChoice(IconBell, false, `/servers/${server.id}/welcomer`),
+                    Feeds: new NavChoice(IconRss, false, `/servers/${server.id}/feeds`),
                     'Conversation Starter': new NavChoice(IconMessage, true, `/servers/${server.id}/conversation`),
                     Giveaways: new NavChoice(IconGift, true, `/servers/${server.id}/giveaways`)
                 }
@@ -269,6 +273,7 @@ export default function Servers(props) {
                                         <Route exact path='/xp' element={<XP config={config} updateConfig={updateConfig} user={user} server={server} />} />
                                         <Route exact path='/welcomer' element={<Welcomer config={config} updateConfig={updateConfig} user={user} server={server} />} />
                                         <Route exact path='/filters' element={<Filters config={config} updateConfig={updateConfig} user={user} server={server} />} />
+                                        <Route exact path='/feeds' element={<Feeds config={config} updateConfig={updateConfig} user={user} server={server} />} />
                                         <Route path='/*' element={<NothingFoundBackground />} />,
                                     </Routes>
                             </div>

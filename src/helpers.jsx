@@ -10,13 +10,17 @@ export function isValidURL(string) {
     return (res !== null);
 };
 
-export function generateChannels(channels, allowedTypes) {
-    var channelsList = [
-        {
-            label: 'Disabled',
-            value: '',
-        },
-    ];
+export function generateChannels(channels, allowedTypes, noDisabled) {
+    if (noDisabled) {
+        var channelsList = [];
+    } else {
+        var channelsList = [
+            {
+                label: 'Disabled',
+                value: '',
+            },
+        ];
+    }
 
     if (channels !== null && channels !== undefined) {
         for (const [id, channel] of Object.entries(channels)) {
