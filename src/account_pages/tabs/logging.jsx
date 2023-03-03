@@ -140,7 +140,7 @@ export function Logging({user, server, config, updateConfig}) {
                             </Tooltip>
                             <Input.Wrapper style={{flexGrow: 1}} id="nsfw_logs_channel" label="NSFW Logs Channel" description="Logs for when the bot detects NSFW">
                                 <Select
-                                    disabled={serverChannels.length == 0 && server.premium >= 1}
+                                    disabled={serverChannels.length == 0 || server.premium < 1}
                                     placeholder="Pick one"
                                     searchable
                                     withinPortal
