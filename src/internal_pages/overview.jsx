@@ -130,7 +130,7 @@ function getValues(arr) {
             }
         }
 
-        return (itemA - itemB == 0) ? [itemA, 0] : [itemA, (itemB - itemA) / itemA * 100]
+        return (itemA - itemB == 0) ? [itemA, 0] : [itemA, (itemA - itemB) / itemA * 100]
     }
 }
 
