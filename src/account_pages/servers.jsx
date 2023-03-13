@@ -21,6 +21,7 @@ import { authenticated_get, authenticated_patch } from '../auth.jsx';
 import { showNotification } from '@mantine/notifications';
 import { FailureNotification, SuccessNotification } from './tabs/notifs.jsx';
 import { Feeds } from './tabs/feeds.jsx';
+import { Giveaways } from './tabs/giveaways.jsx';
 
 const paths = {
     'Dashboard': '/',
@@ -203,8 +204,8 @@ export default function Servers(props) {
                 General: {
                     Welcomer: new NavChoice(IconBell, false, `/servers/${server.id}/welcomer`),
                     Feeds: new NavChoice(IconRss, false, `/servers/${server.id}/feeds`),
+                    Giveaways: new NavChoice(IconGift, false, `/servers/${server.id}/giveaways`),
                     'Conversation Starter': new NavChoice(IconMessage, true, `/servers/${server.id}/conversation`),
-                    Giveaways: new NavChoice(IconGift, true, `/servers/${server.id}/giveaways`)
                 }
             }}/>
         </div>
@@ -274,6 +275,7 @@ export default function Servers(props) {
                                         <Route exact path='/welcomer' element={<Welcomer config={config} updateConfig={updateConfig} user={user} server={server} />} />
                                         <Route exact path='/filters' element={<Filters config={config} updateConfig={updateConfig} user={user} server={server} />} />
                                         <Route exact path='/feeds' element={<Feeds config={config} updateConfig={updateConfig} user={user} server={server} />} />
+                                        <Route exact path='/giveaways' element={<Giveaways config={config} updateConfig={updateConfig} user={user} server={server} />} />
                                         <Route path='/*' element={<NothingFoundBackground />} />,
                                     </Routes>
                             </div>

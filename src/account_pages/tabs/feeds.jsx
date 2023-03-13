@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
-    createStyles, Text, Paper, Group, ScrollArea, Loader, TextInput,
+    createStyles, Text, Paper, Group, Loader, TextInput,
     Button, Stack, ActionIcon, Input, Modal, Title, Select
 } from '@mantine/core';
 import { IconEdit, IconTrash } from '@tabler/icons';
 import { authenticated_delete, authenticated_get, authenticated_patch, authenticated_post } from '../../auth.jsx';
 import { API_BASE_URL, generateChannels } from '../../helpers.jsx';
-import { encode } from 'blurhash';
 import { Blurhash } from 'react-blurhash';
 
 const useStyles = createStyles((theme) => ({
@@ -51,7 +50,7 @@ const useStyles = createStyles((theme) => ({
 export function Feeds({ user, server, config }) {
     const { classes, theme, cx } = useStyles();
 
-    const [loaded, setLoaded] = useState(true);
+    const [loaded, setLoaded] = useState(false);
     const [feeds, setFeeds] = useState([]);
     const [feedDatas, setFeedDatas] = useState([]);
 
