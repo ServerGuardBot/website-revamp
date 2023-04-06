@@ -3,7 +3,7 @@ import {
     createStyles, Title, Paper, Input, Select, Tooltip, Grid, Group,
     Switch
 } from '@mantine/core';
-import { IconAlertCircle, IconStar } from '@tabler/icons';
+import { IconStar } from '@tabler/icons';
 import { generateChannels } from '../../helpers.jsx';
 
 const useStyles = createStyles((theme) => ({

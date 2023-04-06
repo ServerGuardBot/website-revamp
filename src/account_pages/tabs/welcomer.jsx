@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-    createStyles, Title, Paper, Input, Select, Tooltip, Grid, Group,
+    createStyles, Title, Paper, Input, Select, Grid, Group,
     Switch, Text, ScrollArea, Dialog, Button, TextInput, List
 } from '@mantine/core';
-import { IconAlertCircle } from '@tabler/icons';
 import { RichTextEditor, Link } from '@mantine/tiptap';
 import { BubbleMenu, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -43,7 +42,7 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
-TurndownService.prototype.escape = (str) => str; // TODO: Test
+TurndownService.prototype.escape = (str) => str;
 const turndownService = new TurndownService();
 
 const reader = new Parser();
@@ -55,11 +54,11 @@ export function Welcomer({user, server, config, updateConfig}) {
     const content = 
         writer.render(
             reader.parse(config?.welcome_message || 'Welcome, {mention}, to **{server_name}**!')
-        ); // TODO: Pull from config once the server component is designed to pass config to tabs
+        );
 
     const [imageURL, setImageURL] = useState(config?.welcome_image || '');
     const [debouncedImageURL] = useDebouncedValue(imageURL, 200);
-    const [enabled, setEnabled] = useState(config?.use_welcome == 1); // TODO: Pull from config once the server component is designed to pass config to tabs
+    const [enabled, setEnabled] = useState(config?.use_welcome == 1);
     const [message, setMessage] = useState(content);
     const [messageDirty, setMessageDirty] = useState(false);
 
@@ -117,7 +116,6 @@ export function Welcomer({user, server, config, updateConfig}) {
                             updateConfig('welcome_message', markdown);
                             setMessage(editor.view.dom.innerHTML);
                             setMessageDirty(false);
-                            // TODO: Send request to save message config after converting HTML to CommonMark
                         }}
                     >
                         Apply Changes

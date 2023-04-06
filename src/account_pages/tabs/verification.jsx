@@ -51,7 +51,7 @@ export function Verification({user, server, config, updateConfig}) {
 
     const [blockTOR, setBlockTOR] = useState(config?.block_tor == 1);
     const [raidGuard, setRG] = useState(config?.raid_guard == 1);
-    const [blacklistedWords, setBlacklistedWords] = useState([]); // TODO: Make this sync
+    const [blacklistedWords, setBlacklistedWords] = useState([]);
     const [adminContact, setAdminContact] = useState(config?.admin_contact || '');
     const [debouncedAdminContact] = useDebouncedValue(adminContact, 200);
 

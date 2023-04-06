@@ -177,7 +177,13 @@ export default function Servers(props) {
             .then((request) => {
                 if (request.status == 200) {
                     request.text().then((txt) => {
-                        setConfig(JSON.parse(txt));
+                        let cfg = JSON.parse(txt);
+                        for (const [key, value] of Object.entries(cfg)) {
+                            if (value == null) {
+                                delete cfg[key]; // Delete null configurations from the dict to prevent weird behaviour
+                            }
+                        }
+                        setConfig(cfg);
                     });
                 }
             });
