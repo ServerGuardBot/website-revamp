@@ -186,16 +186,17 @@ function VerifyApp() {
                                                 server_id: userInfo.guild_id,
                                             });
                                         });
-                                } else {
-                                    response.text()
-                                        .then((txt) => {
-                                            setStatus({
-                                                state: 1,
-                                                message: translate(`verify.${response.status}.${JSON.parse(txt).message}`) | `[${response.status}] ${txt}`
-                                            });
-                                        });
                                 }
-                        });
+                            })
+                            .catch((response) => {
+                                response.text()
+                                    .then((txt) => {
+                                        setStatus({
+                                            state: 1,
+                                            message: translate(`verify.${response.status}.${JSON.parse(txt).message}`) || `[${response.status}] ${txt}`
+                                        });
+                                    });
+                            });
                     }
                     catch {
                         // Do nothing
@@ -233,7 +234,7 @@ function VerifyApp() {
                     className={classes.paper}
                 >
                     {
-                        (translationsReady == false || data == null) && (
+                        ((translationsReady == false || data == null) && !status.state == 1) && (
                             <div className={classes.loading}>
                                 <Loader size='xl' variant='dots' />
                             </div>
@@ -265,16 +266,16 @@ function VerifyApp() {
                                     align="center"
                                     dangerouslySetInnerHTML={{
                                         __html: (status.state == 1) && (
-                                            (data.admin_contact !== "" && data.admin_contact !== null) &&
-                                            translate('verify.failure.with_contact', {
-                                                message: status.message,
-                                                admin_contact: escapeHTML(data.admin_contact),
-                                            })
-                                            || status.message
-                                        ) ||
+                                                (data !== null && data.admin_contact !== "" && data.admin_contact !== null) &&
+                                                    translate('verify.failure.with_contact', {
+                                                        message: status.message,
+                                                        admin_contact: escapeHTML(data?.admin_contact),
+                                                    }) ||
+                                                status.message
+                                            ) ||
                                         (status.state == 2) && translate('verify.message.success') ||
                                         translate('verify.message.intro', {
-                                            server: data.server,
+                                            server: data?.server || 'Unknown',
                                         })
                                     }}
                                 />
@@ -317,18 +318,7 @@ function VerifyApp() {
                                                                             code: response.status,
                                                                         });
                                                                     }
-                                                                    else if (response.status >= 500 && request.status < 600) {
-                                                                        // Server Error
-                                                                        setStatus({
-                                                                            state: 1,
-                                                                            message: translate('verify.500') || '[500] Failed to verify due to a server error, if you continue receiving this message please report it in our <a href="https://serverguard.xyz/support">Support Server</a>',
-                                                                        });
-                                                                        gtag('event', 'verify_response', {
-                                                                            state: 'error',
-                                                                            code: response.status,
-                                                                            message: 'Internal server error',
-                                                                        });
-                                                                    } else {
+                                                                    else {
                                                                         response.text()
                                                                             .then((txt) => {
                                                                                 setStatus({
@@ -342,7 +332,21 @@ function VerifyApp() {
                                                                                 });
                                                                             });
                                                                     }
-                                                                });
+                                                                })
+                                                                .catch((response) => {
+                                                                    if (response.status >= 500 && request.status < 600) {
+                                                                        // Server Error
+                                                                        setStatus({
+                                                                            state: 1,
+                                                                            message: translate('verify.500') || '[500] Failed to verify due to a server error, if you continue receiving this message please report it in our <a href="https://serverguard.xyz/support">Support Server</a>',
+                                                                        });
+                                                                        gtag('event', 'verify_response', {
+                                                                            state: 'error',
+                                                                            code: response.status,
+                                                                            message: 'Internal server error',
+                                                                        });
+                                                                    }
+                                                                })
                                                         })
                                                 }}
                                             >
