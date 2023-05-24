@@ -39,6 +39,7 @@ export function Logging({user, server, config, updateConfig}) {
 
     const [logCommands, setLogCommands] = useState(config?.log_commands == 1);
     const [silenceCommands, setSC] = useState(config?.silence_commands == 1);
+    const [logRoles, setLR] = useState(config?.log_role_changes == 1);
 
     const serverChannels = generateChannels(config?.__cache?.channels, ['chat', 'voice']);
 
@@ -73,6 +74,15 @@ export function Logging({user, server, config, updateConfig}) {
                             <Switch
                                 checked={silenceCommands}
                                 onChange={switchChanged('silence_commands', setSC)}
+                                className={classes.inputGap}
+                            />
+                        </Input.Wrapper>
+                    </Grid.Col>
+                    <Grid.Col sm={2} md={2}>
+                        <Input.Wrapper id="log_role_changes" label="Log Role Changes" description="Whether or not to log when a user's roles change">
+                            <Switch
+                                checked={logRoles}
+                                onChange={switchChanged('log_role_changes', setLR)}
                                 className={classes.inputGap}
                             />
                         </Input.Wrapper>
@@ -154,6 +164,40 @@ export function Logging({user, server, config, updateConfig}) {
                                 />
                             </Input.Wrapper>
                         </Group>
+                    </Grid.Col>
+                    <Grid.Col sm={2} md={1}>
+                        <Input.Wrapper id="user_logs_channel" label="User Logs Channel" description="Logs channel for user-related changes like roles">
+                            <Select
+                                disabled={serverChannels.length == 0}
+                                placeholder="Pick one"
+                                searchable
+                                withinPortal
+                                nothingFound="No options"
+                                value={config?.user_logs_channel}
+                                data={serverChannels}
+                                className={classes.inputGap}
+                                onChange={(value) => {
+                                    updateConfig('user_logs_channel', value);
+                                }}
+                            />
+                        </Input.Wrapper>
+                    </Grid.Col>
+                    <Grid.Col sm={2} md={1}>
+                        <Input.Wrapper id="management_logs_channel" label="Management Logs Channel" description="Logs channel for things like channel creation">
+                            <Select
+                                disabled={serverChannels.length == 0}
+                                placeholder="Pick one"
+                                searchable
+                                withinPortal
+                                nothingFound="No options"
+                                value={config?.management_logs_channel}
+                                data={serverChannels}
+                                className={classes.inputGap}
+                                onChange={(value) => {
+                                    updateConfig('management_logs_channel', value);
+                                }}
+                            />
+                        </Input.Wrapper>
                     </Grid.Col>
                 </Grid>
             </Paper>
