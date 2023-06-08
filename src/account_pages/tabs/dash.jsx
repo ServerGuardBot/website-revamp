@@ -5,9 +5,10 @@ import {
 } from '@mantine/core';
 import { IconAlertCircle, IconTrash } from '@tabler/icons';
 import { SetupWizard } from './setup_wizard.jsx';
-import { getLanguages } from '../../translator.jsx';
+import { getLanguages, translate } from '../../translator.jsx';
 import { getServerInfo } from '../../server_info.jsx';
-import { generateRoles } from '../../helpers.jsx';
+import { generateRoles, API_BASE_URL } from '../../helpers.jsx';
+import { authenticated_get } from '../../auth.jsx';
 
 const useStyles = createStyles((theme) => ({
     paper: {
@@ -79,6 +80,17 @@ export function Dash({user, server, config, updateConfig}) {
 
     const [rolePermissions, setRolePermissions] = useState([]);
 
+    const [activity, setActivity] = useState([
+        {
+            user: {
+                name: "Server Guard",
+                avatar: "https://img.guildedcdn.com/UserAvatar/6dc417befe51bbca91b902984f113f89-Medium.webp?w=240&h=240",
+            },
+            logged_at: (new Date()).toISOString(),
+            action: "Recent Activity Feature Not Yet Implemented"
+        },
+    ]);
+
     const [serverData, setServerData] = useState({});
     useEffect(() => {
         getServerInfo(server.id)
@@ -143,6 +155,34 @@ export function Dash({user, server, config, updateConfig}) {
                 }
 
                 setRolePermissions(roles); // Only update role permissions once server data has loaded
+
+                authenticated_get(`${API_BASE_URL}servers/${server.id}/activity`)
+                    .then((request) => {
+                        if (request.status == 200) {
+                            request.text().then((txt) => {
+                                let act = JSON.parse(txt);
+                                for (let index = 0; index < act.length; index++) {
+                                    const item = act[index];
+                                    const actionData = item.action;
+                                    item.logged_at = (new Date(item.logged_at * 1000)).toISOString();
+                                    if (actionData.translation_keys?.role !== undefined) {
+                                        let roleData = null;
+                                        if (data?.team?.rolesById !== undefined) {
+                                            console.log(typeof data.team.rolesById);
+                                            roleData = data.team.rolesById?.[actionData.translation_keys.role] || null;
+                                        }
+                                        actionData.translation_keys.role = roleData?.name || `<@${actionData.translation_keys.role}>`;
+                                    }
+                                    if (actionData.action_type == 'channel') {
+                                        actionData.translation_keys.value = config?.__cache?.channels?.[actionData.translation_keys.value]?.name || `<#${actionData.translation_keys.value}>`;
+                                    }
+                                    item.action = translate(`activity.action.${actionData.action}`, actionData.translation_keys);
+                                }
+
+                                setActivity(act);
+                            });
+                        }
+                    });
             });
     }, []);
     const serverRoles = generateRoles(serverData?.team?.rolesById);
@@ -187,8 +227,12 @@ export function Dash({user, server, config, updateConfig}) {
                 }
             }
             setRolePermissions(newPerms);
-            updateConfig('roles', newPerms);
-            updateConfig('trusted_roles', newPerms);
+            if (perm != 'Trusted') {
+                updateConfig('roles', newPerms);
+            }
+            if (perm == 'Trusted') {
+                updateConfig('trusted_roles', newPerms);
+            }
         }
     }
 
@@ -202,136 +246,6 @@ export function Dash({user, server, config, updateConfig}) {
         })
     }
 
-    var activity = [
-        {
-            user: {
-                name: "Server Guard",
-                avatar: "https://img.guildedcdn.com/UserAvatar/6dc417befe51bbca91b902984f113f89-Medium.webp?w=240&h=240",
-            },
-            date: (new Date()).toISOString(),
-            action: "Recent Activity Feature Not Yet Implemented"
-        },
-        {
-            user: {
-                name: "Server Guard",
-                avatar: "https://img.guildedcdn.com/UserAvatar/6dc417befe51bbca91b902984f113f89-Medium.webp?w=240&h=240",
-            },
-            date: (new Date()).toISOString(),
-            action: "Recent Activity Feature Not Yet Implemented"
-        },
-        {
-            user: {
-                name: "Server Guard",
-                avatar: "https://img.guildedcdn.com/UserAvatar/6dc417befe51bbca91b902984f113f89-Medium.webp?w=240&h=240",
-            },
-            date: (new Date()).toISOString(),
-            action: "Recent Activity Feature Not Yet Implemented"
-        },
-        {
-            user: {
-                name: "Server Guard",
-                avatar: "https://img.guildedcdn.com/UserAvatar/6dc417befe51bbca91b902984f113f89-Medium.webp?w=240&h=240",
-            },
-            date: (new Date()).toISOString(),
-            action: "Recent Activity Feature Not Yet Implemented"
-        },
-        {
-            user: {
-                name: "Server Guard",
-                avatar: "https://img.guildedcdn.com/UserAvatar/6dc417befe51bbca91b902984f113f89-Medium.webp?w=240&h=240",
-            },
-            date: (new Date()).toISOString(),
-            action: "Recent Activity Feature Not Yet Implemented"
-        },
-        {
-            user: {
-                name: "Server Guard",
-                avatar: "https://img.guildedcdn.com/UserAvatar/6dc417befe51bbca91b902984f113f89-Medium.webp?w=240&h=240",
-            },
-            date: (new Date()).toISOString(),
-            action: "Recent Activity Feature Not Yet Implemented"
-        },
-        {
-            user: {
-                name: "Server Guard",
-                avatar: "https://img.guildedcdn.com/UserAvatar/6dc417befe51bbca91b902984f113f89-Medium.webp?w=240&h=240",
-            },
-            date: (new Date()).toISOString(),
-            action: "Recent Activity Feature Not Yet Implemented"
-        },
-        {
-            user: {
-                name: "Server Guard",
-                avatar: "https://img.guildedcdn.com/UserAvatar/6dc417befe51bbca91b902984f113f89-Medium.webp?w=240&h=240",
-            },
-            date: (new Date()).toISOString(),
-            action: "Recent Activity Feature Not Yet Implemented"
-        },
-        {
-            user: {
-                name: "Server Guard",
-                avatar: "https://img.guildedcdn.com/UserAvatar/6dc417befe51bbca91b902984f113f89-Medium.webp?w=240&h=240",
-            },
-            date: (new Date()).toISOString(),
-            action: "Recent Activity Feature Not Yet Implemented"
-        },
-        {
-            user: {
-                name: "Server Guard",
-                avatar: "https://img.guildedcdn.com/UserAvatar/6dc417befe51bbca91b902984f113f89-Medium.webp?w=240&h=240",
-            },
-            date: (new Date()).toISOString(),
-            action: "Recent Activity Feature Not Yet Implemented"
-        },
-        {
-            user: {
-                name: "Server Guard",
-                avatar: "https://img.guildedcdn.com/UserAvatar/6dc417befe51bbca91b902984f113f89-Medium.webp?w=240&h=240",
-            },
-            date: (new Date()).toISOString(),
-            action: "Recent Activity Feature Not Yet Implemented"
-        },
-        {
-            user: {
-                name: "Server Guard",
-                avatar: "https://img.guildedcdn.com/UserAvatar/6dc417befe51bbca91b902984f113f89-Medium.webp?w=240&h=240",
-            },
-            date: (new Date()).toISOString(),
-            action: "Recent Activity Feature Not Yet Implemented"
-        },
-        {
-            user: {
-                name: "Server Guard",
-                avatar: "https://img.guildedcdn.com/UserAvatar/6dc417befe51bbca91b902984f113f89-Medium.webp?w=240&h=240",
-            },
-            date: (new Date()).toISOString(),
-            action: "Recent Activity Feature Not Yet Implemented"
-        },
-        {
-            user: {
-                name: "Server Guard",
-                avatar: "https://img.guildedcdn.com/UserAvatar/6dc417befe51bbca91b902984f113f89-Medium.webp?w=240&h=240",
-            },
-            date: (new Date()).toISOString(),
-            action: "Recent Activity Feature Not Yet Implemented"
-        },
-        {
-            user: {
-                name: "Server Guard",
-                avatar: "https://img.guildedcdn.com/UserAvatar/6dc417befe51bbca91b902984f113f89-Medium.webp?w=240&h=240",
-            },
-            date: (new Date()).toISOString(),
-            action: "Recent Activity Feature Not Yet Implemented"
-        },
-        {
-            user: {
-                name: "Server Guard",
-                avatar: "https://img.guildedcdn.com/UserAvatar/6dc417befe51bbca91b902984f113f89-Medium.webp?w=240&h=240",
-            },
-            date: (new Date()).toISOString(),
-            action: "Recent Activity Feature Not Yet Implemented"
-        },
-    ]
     const activityRows = activity.map((item) => {
         return (
             <tr key={item.id}>
@@ -341,7 +255,7 @@ export function Dash({user, server, config, updateConfig}) {
                     </Tooltip>
                 </td>
                 <td width={160}>
-                    {(new Date(item.date)).toLocaleString(navigator.language)}
+                    {(new Date(item.logged_at)).toLocaleString(navigator.language)}
                 </td>
                 <td>
                     {item.action}
@@ -389,11 +303,12 @@ export function Dash({user, server, config, updateConfig}) {
 
     const [muteRole, setMuteRole] = useState((config?.mute_role !== undefined) ? config.mute_role.toString() : null);
 
+    const enableProtectedBanner = false;
     var unprotectedBanner = (
         <></>
     ) // Empty unless it is detected to be unconfigured or possibly poorly configured
 
-    if (Object.keys(config).length == 0) {
+    if (Object.keys(config).length == 0 && enableProtectedBanner) {
         unprotectedBanner = (
             <Paper
                 radius="md"
