@@ -52,7 +52,7 @@ export function Giveaways({ user, server, config, updateConfig }) {
 
     const [loaded, setLoaded] = useState(false);
     const [activeGiveaways, setAG] = useState([]);
-    const [pingRole, setPingRole] = useState([]);
+    const [pingRole, setPingRole] = useState(config?.giveaway_ping?.toString());
 
     const serverChannels = generateChannels(config?.__cache?.channels, ['chat', 'voice']);
     const [serverData, setServerData] = useState({});
@@ -60,65 +60,6 @@ export function Giveaways({ user, server, config, updateConfig }) {
         getServerInfo(server.id)
             .then((data) => {
                 setServerData(data);
-
-                let roles = [];
-                let rolesList = config?.roles || [];
-                let trustedRoles = config?.trusted_roles || [];
-                let handled = [];
-
-                for (let i = 0; i < rolesList.length; i++) {
-                    let role = rolesList[i];
-                    let sRole;
-                    for (const [id, r] of Object.entries(data?.team?.rolesById || {})) {
-                        if (r.id == ((typeof role.id == 'string') ? parseInt(role.id) : role.id)) {
-                            sRole = r;
-                            break
-                        }
-                    }
-                    if (sRole == undefined) continue;
-
-                    let perms = []
-
-                    if (role.level >= 0) {
-                        perms.push('Moderator');
-                    }
-                    if (role.level >= 1) {
-                        perms.push('Admin');
-                    }
-                    if (trustedRoles.indexOf(role.id) > -1) {
-                        perms.push('Trusted');
-                    }
-
-                    handled.push(parseInt(role.id));
-                    roles.push({
-                        id: (typeof role.id == 'string') ? parseInt(role.id) : role.id,
-                        name: sRole.name,
-                        'perms': perms,
-                    });
-                }
-
-                for (let i = 0; i < trustedRoles.length; i++) {
-                    let roleId = trustedRoles[i];
-
-                    if (handled.indexOf((typeof roleId == 'string') ? parseInt(roleId) : roleId) > -1) continue;
-
-                    let sRole;
-                    for (const [id, r] of Object.entries(data?.team?.rolesById || {})) {
-                        if (r.id == ((typeof roleId == 'string') ? parseInt(roleId) : roleId)) {
-                            sRole = r;
-                            break
-                        }
-                    }
-                    if (sRole == undefined) continue;
-
-                    roles.push({
-                        id: (typeof roleId == 'string') ? parseInt(roleId) : roleId,
-                        name: sRole.name,
-                        'perms': ['Trusted'],
-                    });
-                }
-
-                setRolePermissions(roles); // Only update role permissions once server data has loaded
             });
     }, []);
     const serverRoles = generateRoles(serverData?.team?.rolesById);
