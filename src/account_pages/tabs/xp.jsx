@@ -5,7 +5,6 @@ import {
     Table, Select
 } from '@mantine/core';
 import { IconTrash } from '@tabler/icons';
-import { getServerInfo } from '../../server_info.jsx';
 import { generateRoles } from '../../helpers.jsx';
 
 const useStyles = createStyles((theme) => ({
@@ -66,42 +65,37 @@ const useStyles = createStyles((theme) => ({
 export function XP({user, server, config, updateConfig}) {
     const { classes, cx } = useStyles();
 
-    const [serverData, setServerData] = useState({});
     useEffect(() => {
-        getServerInfo(server.id)
-            .then((data) => {
-                setServerData(data);
+        let gain = config?.xp_gain || {'-1': 0};
 
-                let gain = config?.xp_gain || {'-1': 0};
+        let xp = [];
 
-                let xp = [];
+        for (const [id, amt] of Object.entries(gain)) {
+            let roleId = parseInt(id);
+            let roleName;
 
-                for (const [id, amt] of Object.entries(gain)) {
-                    let roleId = parseInt(id);
-                    let roleName;
-
-                    if (roleId == -1) {
-                        roleName = '@everyone';
-                    } else {
-                        for (const [id, r] of Object.entries(data?.team?.rolesById || {})) {
-                            if (r.id == roleId) {
-                                roleName = r.name;
-                                break
-                            }
-                        }
+            if (roleId == -1) {
+                roleName = '@everyone';
+            } else {
+                for (const [id, r] of Object.entries(config?.__cache?.roles || {})) {
+                    if (r.id == roleId) {
+                        roleName = r.name;
+                        break
                     }
-
-                    xp.push({
-                        id: roleId,
-                        name: roleName,
-                        xp: amt,
-                    });
                 }
+            }
 
-                setRoleXP(xp);
+            xp.push({
+                id: roleId,
+                name: roleName,
+                xp: amt,
             });
+        }
+
+        setRoleXP(xp);
     }, []);
-    const serverRoles = generateRoles(serverData?.team?.rolesById);
+
+    const serverRoles = generateRoles(config?.__cache?.roles);
 
     const [removeOldLevelRoles, setRemoveOldLevelRoles] = useState(config?.xp_remove_old == 1);
     const [announceLU, setAnnounceLU] = useState(config?.xp_announce_lu == 1);

@@ -6,7 +6,6 @@ import {
 import { IconAlertCircle, IconTrash } from '@tabler/icons';
 import { SetupWizard } from './setup_wizard.jsx';
 import { getLanguages, translate } from '../../translator.jsx';
-import { getServerInfo } from '../../server_info.jsx';
 import { generateRoles, API_BASE_URL } from '../../helpers.jsx';
 import { authenticated_get } from '../../auth.jsx';
 
@@ -91,101 +90,102 @@ export function Dash({user, server, config, updateConfig}) {
         },
     ]);
 
-    const [serverData, setServerData] = useState({});
     useEffect(() => {
-        getServerInfo(server.id)
-            .then((data) => {
-                setServerData(data);
+        let roles = [];
+        let rolesList = config?.roles || [];
+        let trustedRoles = config?.trusted_roles || [];
+        let handled = [];
 
-                let roles = [];
-                let rolesList = config?.roles || [];
-                let trustedRoles = config?.trusted_roles || [];
-                let handled = [];
-
-                for (let i = 0; i < rolesList.length; i++) {
-                    let role = rolesList[i];
-                    let sRole;
-                    for (const [id, r] of Object.entries(data?.team?.rolesById || {})) {
-                        if (r.id == ((typeof role.id == 'string') ? parseInt(role.id) : role.id)) {
-                            sRole = r;
-                            break
-                        }
-                    }
-                    if (sRole == undefined) continue;
-
-                    let perms = []
-
-                    if (role.level >= 0) {
-                        perms.push('Moderator');
-                    }
-                    if (role.level >= 1) {
-                        perms.push('Admin');
-                    }
-                    if (trustedRoles.indexOf(role.id) > -1) {
-                        perms.push('Trusted');
-                    }
-
-                    handled.push(parseInt(role.id));
-                    roles.push({
-                        id: (typeof role.id == 'string') ? parseInt(role.id) : role.id,
-                        name: sRole.name,
-                        'perms': perms,
-                    });
+        for (let i = 0; i < rolesList.length; i++) {
+            let role = rolesList[i];
+            let sRole;
+            for (const [id, r] of Object.entries(config?.__cache?.roles || {})) {
+                if (r.id == ((typeof role.id == 'string') ? parseInt(role.id) : role.id)) {
+                    sRole = r;
+                    break
                 }
+            }
+            if (sRole == undefined) continue;
 
-                for (let i = 0; i < trustedRoles.length; i++) {
-                    let roleId = trustedRoles[i];
+            let perms = []
 
-                    if (handled.indexOf((typeof roleId == 'string') ? parseInt(roleId) : roleId) > -1) continue;
+            if (role.level >= 0) {
+                perms.push('Moderator');
+            }
+            if (role.level >= 1) {
+                perms.push('Admin');
+            }
+            if (trustedRoles.indexOf(role.id) > -1) {
+                perms.push('Trusted');
+            }
 
-                    let sRole;
-                    for (const [id, r] of Object.entries(data?.team?.rolesById || {})) {
-                        if (r.id == ((typeof roleId == 'string') ? parseInt(roleId) : roleId)) {
-                            sRole = r;
-                            break
-                        }
-                    }
-                    if (sRole == undefined) continue;
+            handled.push(parseInt(role.id));
+            roles.push({
+                id: (typeof role.id == 'string') ? parseInt(role.id) : role.id,
+                name: sRole.name,
+                'perms': perms,
+            });
+        }
 
-                    roles.push({
-                        id: (typeof roleId == 'string') ? parseInt(roleId) : roleId,
-                        name: sRole.name,
-                        'perms': ['Trusted'],
-                    });
+        for (let i = 0; i < trustedRoles.length; i++) {
+            let roleId = trustedRoles[i];
+
+            if (handled.indexOf((typeof roleId == 'string') ? parseInt(roleId) : roleId) > -1) continue;
+
+            let sRole;
+            for (const [id, r] of Object.entries(config?.__cache?.roles || {})) {
+                if (r.id == ((typeof roleId == 'string') ? parseInt(roleId) : roleId)) {
+                    sRole = r;
+                    break
                 }
+            }
+            if (sRole == undefined) continue;
 
-                setRolePermissions(roles); // Only update role permissions once server data has loaded
+            roles.push({
+                id: (typeof roleId == 'string') ? parseInt(roleId) : roleId,
+                name: sRole.name,
+                'perms': ['Trusted'],
+            });
+        }
 
-                authenticated_get(`${API_BASE_URL}servers/${server.id}/activity`)
-                    .then((request) => {
-                        if (request.status == 200) {
-                            request.text().then((txt) => {
-                                let act = JSON.parse(txt);
-                                for (let index = 0; index < act.length; index++) {
-                                    const item = act[index];
-                                    const actionData = item.action;
-                                    item.logged_at = (new Date(item.logged_at * 1000)).toISOString();
-                                    if (actionData.translation_keys?.role !== undefined) {
-                                        let roleData = null;
-                                        if (data?.team?.rolesById !== undefined) {
-                                            console.log(typeof data.team.rolesById);
-                                            roleData = data.team.rolesById?.[actionData.translation_keys.role] || null;
-                                        }
-                                        actionData.translation_keys.role = roleData?.name || `<@${actionData.translation_keys.role}>`;
-                                    }
-                                    if (actionData.action_type == 'channel') {
-                                        actionData.translation_keys.value = config?.__cache?.channels?.[actionData.translation_keys.value]?.name || `<#${actionData.translation_keys.value}>`;
-                                    }
-                                    item.action = translate(`activity.action.${actionData.action}`, actionData.translation_keys);
+        setRolePermissions(roles); // Only update role permissions once server data has loaded
+
+        authenticated_get(`${API_BASE_URL}servers/${server.id}/activity`)
+            .then((request) => {
+                if (request.status == 200) {
+                    request.text().then((txt) => {
+                        let act = JSON.parse(txt);
+                        for (let index = 0; index < act.length; index++) {
+                            const item = act[index];
+                            const actionData = item.action;
+                            item.logged_at = (new Date(item.logged_at * 1000)).toISOString();
+                            if (actionData.translation_keys?.role !== undefined) {
+                                let roleData = null;
+                                if (config?.__cache?.roles !== undefined) {
+                                    roleData = config?.__cache?.roles?.[parseInt(actionData.translation_keys.role)] || null;
                                 }
-
-                                setActivity(act);
-                            });
+                                actionData.translation_keys.role = roleData?.name || `<@${actionData.translation_keys.role}>`;
+                            }
+                            if (actionData.action_type == 'role') {
+                                let roleData = null;
+                                if (config?.__cache?.roles !== undefined) {
+                                    roleData = config?.__cache?.roles?.[parseInt(actionData.translation_keys.value)] || null;
+                                }
+                                actionData.translation_keys.value = roleData?.name || `<@${actionData.translation_keys.value}>`;
+                            }
+                            if (actionData.action_type == 'channel') {
+                                actionData.translation_keys.value = config?.__cache?.channels?.[actionData.translation_keys.value]?.name || `<#${actionData.translation_keys.value}>`;
+                            }
+                            item.action = translate(`activity.action.${actionData.action}`, actionData.translation_keys);
                         }
+
+                        setActivity(act);
                     });
+                }
             });
     }, []);
-    const serverRoles = generateRoles(serverData?.team?.rolesById);
+
+    const serverRoles = generateRoles(config?.__cache?.roles);
 
     const [showSetupWizard, setShowSetupWizard] = useState(false);
     const [validLangs, setValidLangs] = useState([]);

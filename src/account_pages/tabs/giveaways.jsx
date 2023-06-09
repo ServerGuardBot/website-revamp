@@ -6,7 +6,6 @@ import {
 import { IconEdit, IconTrash } from '@tabler/icons';
 import { authenticated_delete, authenticated_get, authenticated_patch, authenticated_post } from '../../auth.jsx';
 import { API_BASE_URL, generateChannels, generateRoles } from '../../helpers.jsx';
-import { getServerInfo } from '../../server_info.jsx';
 
 const useStyles = createStyles((theme) => ({
     paper: {
@@ -55,14 +54,7 @@ export function Giveaways({ user, server, config, updateConfig }) {
     const [pingRole, setPingRole] = useState(config?.giveaway_ping?.toString());
 
     const serverChannels = generateChannels(config?.__cache?.channels, ['chat', 'voice']);
-    const [serverData, setServerData] = useState({});
-    useEffect(() => {
-        getServerInfo(server.id)
-            .then((data) => {
-                setServerData(data);
-            });
-    }, []);
-    const serverRoles = generateRoles(serverData?.team?.rolesById);
+    const serverRoles = generateRoles(config?.__cache?.roles);
 
     useEffect(() => {
         authenticated_get(API_BASE_URL + `giveaways/${server.id}`)

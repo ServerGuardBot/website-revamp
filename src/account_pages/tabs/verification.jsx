@@ -5,7 +5,6 @@ import {
 } from '@mantine/core';
 import { IconAlertCircle, IconStar } from '@tabler/icons';
 import { generateChannels, generateRoles, isValidURL } from '../../helpers.jsx';
-import { getServerInfo } from '../../server_info.jsx';
 import { useDebouncedValue } from '@mantine/hooks';
 
 const useStyles = createStyles((theme) => ({
@@ -39,14 +38,7 @@ const useStyles = createStyles((theme) => ({
 export function Verification({user, server, config, updateConfig}) {
     const { classes, theme } = useStyles();
 
-    const [serverData, setServerData] = useState({});
-    useEffect(() => {
-        getServerInfo(server.id)
-            .then((data) => {
-                setServerData(data);
-            });
-    }, []);
-    const serverRoles = generateRoles(serverData?.team?.rolesById);
+    const serverRoles = generateRoles(config?.__cache?.roles);
     const serverChannels = generateChannels(config?.__cache?.channels, ['chat', 'voice']);
 
     const [blockTOR, setBlockTOR] = useState(config?.block_tor == 1);
