@@ -5,7 +5,6 @@ import {
 } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight, IconLogout, IconSettings, IconHelp, IconHome, IconInfoCircle } from '@tabler/icons';
 import { Link } from "react-router-dom";
-import { getServerInfo } from '../server_info.jsx';
 import { authenticated_delete, setCookie } from '../auth.jsx';
 import { API_BASE_URL } from '../helpers.jsx';
 
@@ -337,14 +336,6 @@ export function Navigation(props) {
         menuWidth = 190;
     }
 
-    const [serverData, setServerData] = useState(0);
-    useEffect(() => {
-        getServerInfo(props.server.id)
-            .then((data) => {
-                setServerData(data);
-            });
-    }, [props.server.id]);
-
     const [selected, setSelected] = useState(first);
     useEffect(() => {
         if (props.default !== undefined) {
@@ -368,7 +359,7 @@ export function Navigation(props) {
         <Navbar className={classes.aside} height={height} width={width} p="sm">
             <Navbar.Section style={{height: 62}}>
                 <BackgroundImage
-                    src={(serverData?.team?.teamDashImage !== undefined && serverData?.team?.teamDashImage !== null) ? blurBanner(serverData.team.teamDashImage) : props.server?.banner}
+                    src={`${API_BASE_URL}resources/server/${props.server.id}/banner?blur=true`}
                     radius='sm'
                 >
                     <Center p='md'>
