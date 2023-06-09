@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 import React, { useEffect, useState } from 'react';
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 import {
-    createStyles, Drawer, MediaQuery, Header, Title, Burger, ScrollArea, Loader, MantineProvider
+    createStyles, Drawer, MediaQuery, Header, Title, Burger, ScrollArea, Loader, MantineProvider, ColorSchemeProvider
 } from '@mantine/core';
 import {
     IconHome, IconUser, IconServer, IconFlag, IconRss
@@ -10,7 +10,7 @@ import {
 import { Navigation, NavChoice } from "./account_pages/dashboard.jsx";
 import { useViewportSize } from '@mantine/hooks';
 import { NothingFoundBackground } from './nothing_found.jsx';
-import { get_user } from './auth.jsx';
+import { get_user, setCookie } from './auth.jsx';
 import { waitForLoad } from "./translator.jsx";
 import { Overview } from './internal_pages/overview.jsx';
 import { FFlags } from './internal_pages/fflag.jsx';
@@ -32,27 +32,7 @@ const icons = {
     'Servers': IconServer,
 }
 
-const ourTheme = {
-    colors: {
-        brand: 
-        [
-          '#fffedc',
-          '#fff8af',
-          '#fff37e',
-          '#ffee4d',
-          '#ffe91e',
-          '#e6cf08',
-          '#b3a100',
-          '#807300',
-          '#4d4500',
-          '#1b1700',
-        ]
-    },
-    primaryColor: 'brand',
-    colorScheme: 'dark'
-};
-
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles((theme, { colorScheme }) => ({
     app: {
         width: '100vw',
         height: '100vh',
@@ -82,12 +62,12 @@ const useStyles = createStyles((theme) => ({
     },
 
     header: {
-        backgroundColor: theme.colors.dark[8],
+        backgroundColor: colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         padding: 4,
-        borderColor: theme.colors.dark[9],
+        borderColor: colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[3],
         height: 43,
     },
 
@@ -110,11 +90,27 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
+function getCookie(name) {
+    var nameEQ = name + "="
+    var ca = document.cookie.split(';')
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i]
+        while (c.charAt(0)==' ') c = c.substring(1,c.length)
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length)
+    }
+    return null
+}
+
 function Internal() {
-    const { classes, theme } = useStyles();
     const [defaultSelected, setDefaultSelected] = useState('Overview');
     const [navOpened, setNavOpened] = useState(false);
     const [translationsReady, setTranslationsReady] = useState(false);
+    const [colorScheme, setColorScheme] = useState(getCookie('color_scheme') || 'dark');
+    const toggleColorScheme = (value) => {
+        setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+        setCookie('color_scheme', value || (colorScheme === 'dark' ? 'light' : 'dark'));
+    }
+    const { classes, theme } = useStyles({ colorScheme });
     useEffect(() => {
         const re = new RegExp(/internal\/(\w+)/);
         const found = location.pathname.match(re);
@@ -131,6 +127,26 @@ function Internal() {
             setDefaultSelected('Overview');
         }
     }, []);
+
+    const ourTheme = {
+        colors: {
+            brand: 
+            [
+              '#fffedc',
+              '#fff8af',
+              '#fff37e',
+              '#ffee4d',
+              '#ffe91e',
+              '#e6cf08',
+              '#b3a100',
+              '#807300',
+              '#4d4500',
+              '#1b1700',
+            ]
+        },
+        primaryColor: 'brand',
+        colorScheme: colorScheme,
+    };
 
     const [user, setUser] = useState('');
 
@@ -207,47 +223,49 @@ function Internal() {
     }
 
     return (
-        <MantineProvider withGlobalStyles withNormalizeCSS theme={ourTheme}>
-            <BrowserRouter basename='/internal'>
-                <div className={classes.app}>
-                    {nav}
-                    <div className={classes.page}>
-                        <Header className={classes.header}>
-                            <MediaQuery
-                                query={`(min-width: ${theme.breakpoints.sm + 1}px)`}
-                                styles={{display: 'none'}}
-                            >
-                                <Burger
-                                    opened={navOpened}
-                                    onClick={() => setNavOpened((o) => !o)}
-                                    title={burgerTitle}
-                                />
-                            </MediaQuery>
-                            <icon.object style={{marginRight: `${theme.spacing.sm}px`, marginLeft: `${theme.spacing.sm}px`}} size={28} stroke={1.5} />
-                            <Title order={3}>{defaultSelected}</Title>
-                        </Header>
-                        {
-                            (user == '' || !translationsReady) && (
-                                <div className={classes.loading}>
-                                    <Loader size='xl' variant='dots' />
-                                </div>
-                            ) || (
-                                <ScrollArea.Autosize w="calc(100vw - 300px)" maxHeight='calc(100% - 43px)' scrollbarSize={6} className={classes.pageScroll}>
-                                    <div style={{width: "calc(100vw - 300px)"}} className={classes.content}>
-                                            <Routes>
-                                                <Route exact path='/' element={<Overview user={user} />} />,
-                                                <Route exact path='/fflags' element={<FFlags user={user} />} />,
-                                                <Route exact path='/feeds' element={<Feeds user={user} />} />,
-                                                <Route path='/*' element={<NothingFoundBackground />} />,
-                                            </Routes>
+        <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
+            <MantineProvider withGlobalStyles withNormalizeCSS theme={ourTheme}>
+                <BrowserRouter basename='/internal'>
+                    <div className={classes.app}>
+                        {nav}
+                        <div className={classes.page}>
+                            <Header className={classes.header}>
+                                <MediaQuery
+                                    query={`(min-width: ${theme.breakpoints.sm + 1}px)`}
+                                    styles={{display: 'none'}}
+                                >
+                                    <Burger
+                                        opened={navOpened}
+                                        onClick={() => setNavOpened((o) => !o)}
+                                        title={burgerTitle}
+                                    />
+                                </MediaQuery>
+                                <icon.object style={{marginRight: `${theme.spacing.sm}px`, marginLeft: `${theme.spacing.sm}px`}} size={28} stroke={1.5} />
+                                <Title order={3}>{defaultSelected}</Title>
+                            </Header>
+                            {
+                                (user == '' || !translationsReady) && (
+                                    <div className={classes.loading}>
+                                        <Loader size='xl' variant='dots' />
                                     </div>
-                                </ScrollArea.Autosize>
-                            )
-                        }
+                                ) || (
+                                    <ScrollArea.Autosize w="calc(100vw - 300px)" maxHeight='calc(100% - 43px)' scrollbarSize={6} className={classes.pageScroll}>
+                                        <div style={{width: "calc(100vw - 300px)"}} className={classes.content}>
+                                                <Routes>
+                                                    <Route exact path='/' element={<Overview user={user} />} />,
+                                                    <Route exact path='/fflags' element={<FFlags user={user} />} />,
+                                                    <Route exact path='/feeds' element={<Feeds user={user} />} />,
+                                                    <Route path='/*' element={<NothingFoundBackground />} />,
+                                                </Routes>
+                                        </div>
+                                    </ScrollArea.Autosize>
+                                )
+                            }
+                        </div>
                     </div>
-                </div>
-            </BrowserRouter>
-        </MantineProvider>
+                </BrowserRouter>
+            </MantineProvider>
+        </ColorSchemeProvider>
     );
 }
 

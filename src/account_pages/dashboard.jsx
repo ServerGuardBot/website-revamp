@@ -73,7 +73,7 @@ const useStyles = createStyles((theme) => ({
             .background,
             backgroundColor: theme.fn.variant({ variant: 'filled', color: theme.primaryColor })
             .background,
-            color: theme.white,
+            color: theme.colors.brand[6],
         },
     },
     
@@ -247,11 +247,6 @@ function logout() {
             setCookie('refresh', '', 14);
             location.assign('https://serverguard.xyz/login');
         });
-}
-
-function blurBanner(link) {
-    const re = new RegExp(/-Hero\.png\??[a-zA-Z0-9=&]*/);
-    return link.replace(re, '-SmallBlurred.jpg');
 }
 
 function ServerNavLink(props) {

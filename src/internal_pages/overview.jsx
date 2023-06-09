@@ -230,7 +230,7 @@ export function Overview({ user }) {
                                             withBorder
                                             p="sm"
                                             className={classes.paper}
-                                            bg={theme.colors.dark[9]}
+                                            bg={theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[2]}
                                             mt={0}
                                         >
                                             <Group>

@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useLoaderData, useLocation, Route, Routes, useParams } from "react-router-dom";
+import { useLoaderData, useLocation, Route, Routes } from "react-router-dom";
 import {
-    createStyles, Drawer, MediaQuery, Header, Title, Burger, ScrollArea, Loader
+    createStyles, Drawer, MediaQuery, Header, Title, Burger, ScrollArea, Loader, Box
 } from '@mantine/core';
 import {
     IconHome, IconShieldCheck, IconList, IconTrendingUp, IconMessageReport, IconForbid,
     IconBell, IconMessage, IconGift, IconRss
 } from '@tabler/icons';
 import { API_BASE_URL } from '../helpers.jsx';
+import { ColorSchemeSwitch } from '../color_scheme_switch.jsx';
 import { Navigation, NavChoice, ServerNavigation } from "./dashboard.jsx";
 import { useViewportSize } from '@mantine/hooks';
 import { Dash } from './tabs/dash.jsx';
@@ -264,6 +265,9 @@ export default function Servers(props) {
                     </MediaQuery>
                     <icon.object style={{marginRight: `${theme.spacing.sm}px`, marginLeft: `${theme.spacing.sm}px`}} size={28} stroke={1.5} />
                     <Title order={3}>{defaultSelected}</Title>
+                    <Box sx={{position: 'absolute', right: '5px'}}>
+                        <ColorSchemeSwitch />
+                    </Box>
                 </Header>
                 {
                     config == null && (

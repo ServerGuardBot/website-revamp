@@ -7,7 +7,7 @@ import { translate, waitForLoad } from "./translator.jsx";
 import React, { useEffect, useState } from "react";
 import ReactDOM from 'react-dom';
 import {
-    createStyles, MantineProvider, Paper, Text, Loader, Button, Avatar, Group
+    createStyles, MantineProvider, ColorSchemeProvider, Paper, Text, Loader, Button, Avatar, Group
 } from '@mantine/core';
 import { setCookie } from "./auth.jsx";
 import { API_BASE_URL, http_get, http_post_text } from "./helpers.jsx";
@@ -18,27 +18,7 @@ import FingerprintJS from '@fingerprintjs/fingerprintjs';
 import { Turnstile } from '@marsidev/react-turnstile';
 import { Adsense } from '@ctrl/react-adsense';
 
-const ourTheme = {
-    colors: {
-        brand: 
-        [
-          '#fffedc',
-          '#fff8af',
-          '#fff37e',
-          '#ffee4d',
-          '#ffe91e',
-          '#e6cf08',
-          '#b3a100',
-          '#807300',
-          '#4d4500',
-          '#1b1700',
-        ]
-    },
-    primaryColor: 'brand',
-    colorScheme: 'dark',
-};
-
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles((theme, { colorScheme }) => ({
     main: {
         width: '100vw',
         minHeight: '100vh',
@@ -49,7 +29,7 @@ const useStyles = createStyles((theme) => ({
     },
 
     paper: {
-        backgroundColor: theme.colors.dark[8],
+        backgroundColor: colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -60,7 +40,7 @@ const useStyles = createStyles((theme) => ({
 
         '& a': {
             textDecoration: 'none',
-            color: '#ffe91e',
+            color: '#b3a100',
         }
     },
 
@@ -129,7 +109,6 @@ async function generateBody(turnstileToken) {
 }
 
 function VerifyApp() {
-    const { classes, theme } = useStyles();
     const [data, setData] = useState(null);
     const [status, setStatus] = useState({
         state: 0,
@@ -137,6 +116,32 @@ function VerifyApp() {
     const [translationsReady, setTranslationsReady] = useState(false);
     const [code, setCode] = useState(null);
     const [turnstileToken, setTurnstileToken] = useState(null);
+    const [colorScheme, setColorScheme] = useState(getCookie('color_scheme') || 'dark');
+    const toggleColorScheme = (value) => {
+        setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+        setCookie('color_scheme', value || (colorScheme === 'dark' ? 'light' : 'dark'));
+    }
+    const { classes, theme } = useStyles({ colorScheme });
+
+    const ourTheme = {
+        colors: {
+            brand: 
+            [
+              '#fffedc',
+              '#fff8af',
+              '#fff37e',
+              '#ffee4d',
+              '#ffe91e',
+              '#e6cf08',
+              '#b3a100',
+              '#807300',
+              '#4d4500',
+              '#1b1700',
+            ]
+        },
+        primaryColor: 'brand',
+        colorScheme: colorScheme,
+    };
 
     useEffect(() => {
         var obj = document.getElementById('app');
@@ -207,6 +212,27 @@ function VerifyApp() {
 
     if (translationsReady == false) {
         return (
+            <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
+                <MantineProvider withGlobalStyles withNormalizeCSS theme={ourTheme}>
+                    <div className={classes.main}>
+                        <Paper
+                            radius="md"
+                            withBorder
+                            p="md"
+                            className={classes.paper}
+                        >
+                            <div className={classes.loading}>
+                                <Loader size='xl' variant='dots' />
+                            </div>
+                        </Paper>
+                    </div>
+                </MantineProvider>
+            </ColorSchemeProvider>
+        )
+    }
+
+    return (
+        <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
             <MantineProvider withGlobalStyles withNormalizeCSS theme={ourTheme}>
                 <div className={classes.main}>
                     <Paper
@@ -215,207 +241,190 @@ function VerifyApp() {
                         p="md"
                         className={classes.paper}
                     >
-                        <div className={classes.loading}>
-                            <Loader size='xl' variant='dots' />
-                        </div>
-                    </Paper>
-                </div>
-            </MantineProvider>
-        )
-    }
-
-    return (
-        <MantineProvider withGlobalStyles withNormalizeCSS theme={ourTheme}>
-            <div className={classes.main}>
-                <Paper
-                    radius="md"
-                    withBorder
-                    p="md"
-                    className={classes.paper}
-                >
-                    {
-                        ((translationsReady == false || data == null) && !status.state == 1) && (
-                            <div className={classes.loading}>
-                                <Loader size='xl' variant='dots' />
-                            </div>
-                        ) || (
-                            <>
-                                {
-                                    (status.state <= 0) && (
-                                        <Group position="left">
-                                            <Avatar src={data.avatar} radius="xl" size="md" />
-                                            <Text size="lg">{
-                                                translate('verify.welcome', {
-                                                    username: data.username,
-                                                })
-                                            }</Text>
-                                        </Group>
-                                    ) // Only render the header if this is not an error/success state
-                                }
-                                {
-                                    (status.state == 1) && (
-                                        <IconShieldX size={132} />
-                                    ) ||
-                                    (status.state == 2) && (
-                                        <IconShieldCheck size={132} />
-                                    )
-                                }
-                                <Text
-                                    size="md"
-                                    mt={theme.spacing.sm}
-                                    align="center"
-                                    dangerouslySetInnerHTML={{
-                                        __html: (status.state == 1) && (
-                                                (data !== null && data.admin_contact !== "" && data.admin_contact !== null) &&
-                                                    translate('verify.failure.with_contact', {
-                                                        message: status.message,
-                                                        admin_contact: escapeHTML(data?.admin_contact),
-                                                    }) ||
-                                                status.message
-                                            ) ||
-                                        (status.state == 2) && translate('verify.message.success') ||
-                                        translate('verify.message.intro', {
-                                            server: data?.server || 'Unknown',
-                                        })
-                                    }}
-                                />
-                                {
-                                    (status.state <= 0) && (
-                                        <Group align="center">
-                                            <Turnstile
-                                                siteKey={TURNSTILE_KEY}
-                                                onSuccess={(token) => {
-                                                    setTurnstileToken(token);
-                                                }}
-                                                onError={() => {
-                                                    setTurnstileToken('');
-                                                }}
-                                                options={{
-                                                    size: 'invisible',
-                                                }}
-                                            />
-                                            <Button
-                                                size="sm"
-                                                mt={theme.spacing.sm}
-                                                disabled={status.state == -1 || turnstileToken == null}
-                                                onClick={() => {
-                                                    gtag('event', 'verify_click', {
-                                                        guild_id: data.server_id,
-                                                    });
-                                                    setStatus({
-                                                        state: -1
-                                                    });
-                                                    generateBody(turnstileToken)
-                                                        .then((body) => {
-                                                            http_post_text(API_BASE_URL + 'verify/' + code, body, true)
-                                                                .then((response) => {
-                                                                    if (response.status == 200) {
-                                                                        setStatus({
-                                                                            state: 2,
-                                                                        });
-                                                                        gtag('event', 'verify_response', {
-                                                                            state: 'success',
-                                                                            code: response.status,
-                                                                        });
-                                                                    }
-                                                                    else {
-                                                                        response.text()
-                                                                            .then((txt) => {
-                                                                                setStatus({
-                                                                                    state: 1,
-                                                                                    message: translate(`verify.${response.status}.${JSON.parse(txt).message}`) || `[${response.status}] ${JSON.parse(txt).message}`,
-                                                                                });
-                                                                                gtag('event', 'verify_response', {
-                                                                                    state: 'error',
-                                                                                    code: response.status,
-                                                                                    message: JSON.parse(txt).message,
-                                                                                });
+                        {
+                            ((translationsReady == false || data == null) && !status.state == 1) && (
+                                <div className={classes.loading}>
+                                    <Loader size='xl' variant='dots' />
+                                </div>
+                            ) || (
+                                <>
+                                    {
+                                        (status.state <= 0) && (
+                                            <Group position="left">
+                                                <Avatar src={data.avatar} radius="xl" size="md" />
+                                                <Text size="lg">{
+                                                    translate('verify.welcome', {
+                                                        username: data.username,
+                                                    })
+                                                }</Text>
+                                            </Group>
+                                        ) // Only render the header if this is not an error/success state
+                                    }
+                                    {
+                                        (status.state == 1) && (
+                                            <IconShieldX size={132} />
+                                        ) ||
+                                        (status.state == 2) && (
+                                            <IconShieldCheck size={132} />
+                                        )
+                                    }
+                                    <Text
+                                        size="md"
+                                        mt={theme.spacing.sm}
+                                        align="center"
+                                        dangerouslySetInnerHTML={{
+                                            __html: (status.state == 1) && (
+                                                    (data !== null && data.admin_contact !== "" && data.admin_contact !== null) &&
+                                                        translate('verify.failure.with_contact', {
+                                                            message: status.message,
+                                                            admin_contact: escapeHTML(data?.admin_contact),
+                                                        }) ||
+                                                    status.message
+                                                ) ||
+                                            (status.state == 2) && translate('verify.message.success') ||
+                                            translate('verify.message.intro', {
+                                                server: data?.server || 'Unknown',
+                                            })
+                                        }}
+                                    />
+                                    {
+                                        (status.state <= 0) && (
+                                            <Group align="center">
+                                                <Turnstile
+                                                    siteKey={TURNSTILE_KEY}
+                                                    onSuccess={(token) => {
+                                                        setTurnstileToken(token);
+                                                    }}
+                                                    onError={() => {
+                                                        setTurnstileToken('');
+                                                    }}
+                                                    options={{
+                                                        size: 'invisible',
+                                                    }}
+                                                />
+                                                <Button
+                                                    size="sm"
+                                                    mt={theme.spacing.sm}
+                                                    disabled={status.state == -1 || turnstileToken == null}
+                                                    onClick={() => {
+                                                        gtag('event', 'verify_click', {
+                                                            guild_id: data.server_id,
+                                                        });
+                                                        setStatus({
+                                                            state: -1
+                                                        });
+                                                        generateBody(turnstileToken)
+                                                            .then((body) => {
+                                                                http_post_text(API_BASE_URL + 'verify/' + code, body, true)
+                                                                    .then((response) => {
+                                                                        if (response.status == 200) {
+                                                                            setStatus({
+                                                                                state: 2,
                                                                             });
-                                                                    }
-                                                                })
-                                                                .catch((response) => {
-                                                                    if (response.status >= 500 && request.status < 600) {
-                                                                        // Server Error
-                                                                        setStatus({
-                                                                            state: 1,
-                                                                            message: translate('verify.500') || '[500] Failed to verify due to a server error, if you continue receiving this message please report it in our <a href="https://serverguard.xyz/support">Support Server</a>',
-                                                                        });
-                                                                        gtag('event', 'verify_response', {
-                                                                            state: 'error',
-                                                                            code: response.status,
-                                                                            message: 'Internal server error',
-                                                                        });
-                                                                    }
-                                                                })
-                                                        })
-                                                }}
-                                            >
-                                                {
-                                                    (status.state == -1) && (
-                                                        <Loader size="sm" color="white" variant="dots" />
-                                                    ) || (
-                                                        translate('verify.button')
-                                                    )
-                                                }
-                                            </Button>
-                                        </Group>
-                                    )
-                                }
-                            </>
-                        )
-                    }
-                </Paper>
-                <Paper
-                    radius="md"
-                    withBorder
-                    p="md"
-                    className={classes.paper}
-                >
-                    <Text
-                        size="md"
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                        }}
+                                                                            gtag('event', 'verify_response', {
+                                                                                state: 'success',
+                                                                                code: response.status,
+                                                                            });
+                                                                        }
+                                                                        else {
+                                                                            response.text()
+                                                                                .then((txt) => {
+                                                                                    setStatus({
+                                                                                        state: 1,
+                                                                                        message: translate(`verify.${response.status}.${JSON.parse(txt).message}`) || `[${response.status}] ${JSON.parse(txt).message}`,
+                                                                                    });
+                                                                                    gtag('event', 'verify_response', {
+                                                                                        state: 'error',
+                                                                                        code: response.status,
+                                                                                        message: JSON.parse(txt).message,
+                                                                                    });
+                                                                                });
+                                                                        }
+                                                                    })
+                                                                    .catch((response) => {
+                                                                        if (response.status >= 500 && request.status < 600) {
+                                                                            // Server Error
+                                                                            setStatus({
+                                                                                state: 1,
+                                                                                message: translate('verify.500') || '[500] Failed to verify due to a server error, if you continue receiving this message please report it in our <a href="https://serverguard.xyz/support">Support Server</a>',
+                                                                            });
+                                                                            gtag('event', 'verify_response', {
+                                                                                state: 'error',
+                                                                                code: response.status,
+                                                                                message: 'Internal server error',
+                                                                            });
+                                                                        }
+                                                                    })
+                                                            })
+                                                    }}
+                                                >
+                                                    {
+                                                        (status.state == -1) && (
+                                                            <Loader size="sm" color="white" variant="dots" />
+                                                        ) || (
+                                                            translate('verify.button')
+                                                        )
+                                                    }
+                                                </Button>
+                                            </Group>
+                                        )
+                                    }
+                                </>
+                            )
+                        }
+                    </Paper>
+                    <Paper
+                        radius="md"
+                        withBorder
+                        p="md"
+                        className={classes.paper}
                     >
-                        <IconAlertTriangle style={{marginRight: `${theme.spacing.xs}px`}} size={36} color={theme.colors.orange[6]} />
-                        {translate('verify.scamwarning')}
-                    </Text>
-                </Paper>
-                <Paper
-                    radius="md"
-                    withBorder
-                    p="md"
-                    className={classes.paper}
-                >
-                    <Text
-                        size="md"
-                        align="center"
-                        dangerouslySetInnerHTML={{
-                            __html: translate('verify.legal'),
+                        <Text
+                            size="md"
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <IconAlertTriangle style={{marginRight: `${theme.spacing.xs}px`}} size={36} color={theme.colors.orange[6]} />
+                            {translate('verify.scamwarning')}
+                        </Text>
+                    </Paper>
+                    <Paper
+                        radius="md"
+                        withBorder
+                        p="md"
+                        className={classes.paper}
+                    >
+                        <Text
+                            size="md"
+                            align="center"
+                            dangerouslySetInnerHTML={{
+                                __html: translate('verify.legal'),
+                            }}
+                        />
+                        <Text 
+                            size="md"
+                            align="center"
+                        >
+                            {translate('verify.notice')}
+                        </Text>
+                    </Paper>
+                    <Adsense
+                        client="ca-pub-4625689430964513"
+                        slot="8619832219"
+                        format="horizontal"
+                        style={{
+                            width: "480px",
+                            maxWidth: '95vw',
+                            marginTop: theme.spacing.sm,
+                            borderRadius: theme.radius.md,
+                            overflow: 'hidden',
                         }}
                     />
-                    <Text 
-                        size="md"
-                        align="center"
-                    >
-                        {translate('verify.notice')}
-                    </Text>
-                </Paper>
-                <Adsense
-                    client="ca-pub-4625689430964513"
-                    slot="8619832219"
-                    format="horizontal"
-                    style={{
-                        width: "480px",
-                        maxWidth: '95vw',
-                        marginTop: theme.spacing.sm,
-                        borderRadius: theme.radius.md,
-                        overflow: 'hidden',
-                    }}
-                />
-            </div>
-        </MantineProvider>
+                </div>
+            </MantineProvider>
+        </ColorSchemeProvider>
     )
 }
 

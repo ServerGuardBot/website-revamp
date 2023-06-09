@@ -298,7 +298,7 @@ export function Feeds({ user }) {
                                                 />
                                             </div>
                                             <Group w="100%">
-                                                <Text sx={{flexGrow: 1, flexShrink: 0}} size="lg" pos="relative">{item.name}</Text>
+                                                <Text sx={{flexGrow: 1, flexShrink: 0}} color="white" size="lg" pos="relative">{item.name}</Text>
                                                 <Group w={60} sx={{flexGrow: 0, flexShrink: 1}} spacing={0} position="right">
                                                     <ActionIcon onClick={() => {
                                                         setName(item.name);
