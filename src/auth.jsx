@@ -186,13 +186,18 @@ export async function authenticated_delete(url, data, noRedirect) {
 export async function get_user(noRedirect) {
     return new Promise(async function(resolve, reject) {
         try {
-            var request = await authenticated_get(API_BASE_URL + 'auth', noRedirect);
-            if (request.status == 200) {
-                const txt = await request.text();
-                resolve(JSON.parse(txt));
-            } else {
-                resolve(0); // Resolve to null as it didn't redirect, the calling function would expect this and handle it appropriately
-            }
+            authenticated_get(API_BASE_URL + 'auth', noRedirect)
+                .then(async (request) => {
+                    if (request.status == 200) {
+                        const txt = await request.text();
+                        resolve(JSON.parse(txt));
+                    } else {
+                        resolve(0); // Resolve to null as it didn't redirect, the calling function would expect this and handle it appropriately
+                    }
+                })
+                .catch(() => {
+                    resolve(0); // Resolve to null as it didn't redirect, the calling function would expect this and handle it appropriately
+                });
         } catch {
             resolve(0); // Resolve to null as it didn't redirect, the calling function would expect this and handle it appropriately
         }

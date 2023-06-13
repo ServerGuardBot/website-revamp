@@ -12,6 +12,7 @@ var config = {
         'translate-static': './src/translate-static.jsx',
         '404': './src/404.jsx',
         'pages/index': './src/static_pages/index.jsx',
+        'pages/legal': './src/static_pages/legal.jsx',
     },
     output: {
         filename: '[name].js',
