@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
     createStyles, Image, Header, Container, Group, Burger, Paper, Transition,
-    UnstyledButton, Loader, Text, Select, Avatar, Menu, Anchor
+    UnstyledButton, Loader, Text, Select, Avatar, Menu, Anchor, Button
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { getLanguages, translate, setLanguage, waitForLoad, getCurrentLanguage } from "../translator.jsx";
