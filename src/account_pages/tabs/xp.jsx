@@ -185,7 +185,6 @@ export function XP({user, server, config, updateConfig}) {
                                 checked={removeOldLevelRoles}
                                 onChange={switchChanged('xp_remove_old', setRemoveOldLevelRoles)}
                                 className={classes.inputGap}
-                                disabled
                             />
                         </Input.Wrapper>
                     </Grid.Col>
