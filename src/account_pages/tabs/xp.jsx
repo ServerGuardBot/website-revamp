@@ -194,7 +194,6 @@ export function XP({user, server, config, updateConfig}) {
                                 checked={announceLU}
                                 onChange={switchChanged('xp_announce_lu', setAnnounceLU)}
                                 className={classes.inputGap}
-                                disabled
                             />
                         </Input.Wrapper>
                     </Grid.Col>
