@@ -148,6 +148,7 @@ export default function Home(props) {
                 p="md"
                 sx={(theme) => ({
                     marginTop: theme.spacing.sm,
+                    maxWidth: "100%",
                 })}
                 className={classes.paper}
             >
