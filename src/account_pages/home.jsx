@@ -94,7 +94,7 @@ function Server(props) {
         return (
             <Link to={`/servers/${data.id}`}>
                 <div className={cx(classes.server, { [classes.serverDisabled]: !data.active })}>
-                    <img src={(data.avatar != null) ? data.avatar : "https://img.guildedcdn.com/asset/DefaultUserAvatars/profile_1.png"} alt={`${data.name} Server Icon`} className={classes.serverIcon} />
+                    <img src={(data.avatar != null) ? `https://api.serverguard.xyz/resources/server/${data.id}/avatar` : "https://img.guildedcdn.com/asset/DefaultUserAvatars/profile_1.png"} alt={`${data.name} Server Icon`} className={classes.serverIcon} />
                     <Text className={classes.serverName}>{data.name}</Text>
                 </div>
             </Link>
@@ -102,7 +102,7 @@ function Server(props) {
     } else {
         return (
             <div className={cx(classes.server, { [classes.serverDisabled]: !data.active })}>
-                <img src={(data.avatar != null) ? data.avatar : "https://img.guildedcdn.com/asset/DefaultUserAvatars/profile_1.png"} alt={`${data.name} Server Icon`} className={classes.serverIcon} />
+                <img src={(data.avatar != null) ? `https://api.serverguard.xyz/resources/server/${data.id}/avatar` : "https://img.guildedcdn.com/asset/DefaultUserAvatars/profile_1.png"} alt={`${data.name} Server Icon`} className={classes.serverIcon} />
                 <Text className={classes.serverName}>{data.name}</Text>
             </div>
         )

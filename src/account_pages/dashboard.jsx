@@ -302,7 +302,7 @@ export function ServerNavigation(props) {
                 >
                     <Stack justify="center" spacing={10}>
                         <ServerNavLink link="/" img="/images/logo.svg" label="Home" />
-                        {user.guilds.map((guild, index) => (guild.active == false) ? null : <ServerNavLink link={`/servers/${guild.id}`} selected={guild.id == server.id} label={guild.name} disabled={guild.active == false} img={(guild.avatar != null) ? guild.avatar : "https://img.guildedcdn.com/asset/DefaultUserAvatars/profile_1.png"} />)}
+                        {user.guilds.map((guild, index) => (guild.active == false) ? null : <ServerNavLink link={`/servers/${guild.id}`} selected={guild.id == server.id} label={guild.name} disabled={guild.active == false} img={(guild.avatar != null) ? `${API_BASE_URL}resources/server/${guild.id}/avatar` : "https://img.guildedcdn.com/asset/DefaultUserAvatars/profile_1.png"} />)}
                     </Stack>
                 </ScrollArea.Autosize>
             </Navbar.Section>
