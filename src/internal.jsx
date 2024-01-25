@@ -7,6 +7,7 @@ import {
 import {
     IconHome, IconUser, IconServer, IconFlag, IconRss
 } from '@tabler/icons';
+import { NotificationsProvider } from '@mantine/notifications';
 import { Navigation, NavChoice } from "./account_pages/dashboard.jsx";
 import { useViewportSize } from '@mantine/hooks';
 import { NothingFoundBackground } from './nothing_found.jsx';
@@ -225,45 +226,47 @@ function Internal() {
     return (
         <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
             <MantineProvider withGlobalStyles withNormalizeCSS theme={ourTheme}>
-                <BrowserRouter basename='/internal'>
-                    <div className={classes.app}>
-                        {nav}
-                        <div className={classes.page}>
-                            <Header className={classes.header}>
-                                <MediaQuery
-                                    query={`(min-width: ${theme.breakpoints.sm + 1}px)`}
-                                    styles={{display: 'none'}}
-                                >
-                                    <Burger
-                                        opened={navOpened}
-                                        onClick={() => setNavOpened((o) => !o)}
-                                        title={burgerTitle}
-                                    />
-                                </MediaQuery>
-                                <icon.object style={{marginRight: `${theme.spacing.sm}px`, marginLeft: `${theme.spacing.sm}px`}} size={28} stroke={1.5} />
-                                <Title order={3}>{defaultSelected}</Title>
-                            </Header>
-                            {
-                                (user == '' || !translationsReady) && (
-                                    <div className={classes.loading}>
-                                        <Loader size='xl' variant='dots' />
-                                    </div>
-                                ) || (
-                                    <ScrollArea.Autosize w="calc(100vw - 300px)" maxHeight='calc(100% - 43px)' scrollbarSize={6} className={classes.pageScroll}>
-                                        <div style={{width: "calc(100vw - 300px)"}} className={classes.content}>
-                                                <Routes>
-                                                    <Route exact path='/' element={<Overview user={user} />} />,
-                                                    <Route exact path='/fflags' element={<FFlags user={user} />} />,
-                                                    <Route exact path='/feeds' element={<Feeds user={user} />} />,
-                                                    <Route path='/*' element={<NothingFoundBackground />} />,
-                                                </Routes>
+                <NotificationsProvider limit={5}>
+                    <BrowserRouter basename='/internal'>
+                        <div className={classes.app}>
+                            {nav}
+                            <div className={classes.page}>
+                                <Header className={classes.header}>
+                                    <MediaQuery
+                                        query={`(min-width: ${theme.breakpoints.sm + 1}px)`}
+                                        styles={{display: 'none'}}
+                                    >
+                                        <Burger
+                                            opened={navOpened}
+                                            onClick={() => setNavOpened((o) => !o)}
+                                            title={burgerTitle}
+                                        />
+                                    </MediaQuery>
+                                    <icon.object style={{marginRight: `${theme.spacing.sm}px`, marginLeft: `${theme.spacing.sm}px`}} size={28} stroke={1.5} />
+                                    <Title order={3}>{defaultSelected}</Title>
+                                </Header>
+                                {
+                                    (user == '' || !translationsReady) && (
+                                        <div className={classes.loading}>
+                                            <Loader size='xl' variant='dots' />
                                         </div>
-                                    </ScrollArea.Autosize>
-                                )
-                            }
+                                    ) || (
+                                        <ScrollArea.Autosize w="calc(100vw - 300px)" maxHeight='calc(100% - 43px)' scrollbarSize={6} className={classes.pageScroll}>
+                                            <div style={{width: "calc(100vw - 300px)"}} className={classes.content}>
+                                                    <Routes>
+                                                        <Route exact path='/' element={<Overview user={user} />} />,
+                                                        <Route exact path='/fflags' element={<FFlags user={user} />} />,
+                                                        <Route exact path='/feeds' element={<Feeds user={user} />} />,
+                                                        <Route path='/*' element={<NothingFoundBackground />} />,
+                                                    </Routes>
+                                            </div>
+                                        </ScrollArea.Autosize>
+                                    )
+                                }
+                            </div>
                         </div>
-                    </div>
-                </BrowserRouter>
+                    </BrowserRouter>
+                </NotificationsProvider>
             </MantineProvider>
         </ColorSchemeProvider>
     );
