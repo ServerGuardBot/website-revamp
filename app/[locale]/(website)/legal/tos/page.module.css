@@ -1,0 +1,7 @@
+.terms {
+    width: calc(100% - rem(8));
+
+    li::marker {
+        font-weight: 700;
+    }
+}

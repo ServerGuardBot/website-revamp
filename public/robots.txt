@@ -1,5 +1,0 @@
-User-agent: *
-Disallow: /verify
-Disallow: /verify/
-Disallow: /account
-Disallow: /account/

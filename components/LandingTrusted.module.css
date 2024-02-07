@@ -1,0 +1,41 @@
+.trustedGroup {
+    width: max-content;
+    animation-name: autoscroll;
+    animation-duration: 10s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-direction: alternate;
+
+    &:hover {
+        animation-play-state: paused;
+    }
+
+    p {
+        user-select: none;
+    }
+
+    :link {
+        text-decoration: none;
+    }
+}
+
+.card {
+    &:hover {
+        background-color: var(--mantine-color-dark-5);
+    }
+}
+
+.container {
+    padding: 0 rem(128);
+    --mask: linear-gradient(to right, rgba(0, 0, 0, 0) 5%, rgba(0, 0, 0, 1) 25%, rgba(0, 0, 0, 1) 85%, rgba(0, 0, 0, 0) 95%);
+    -webkit-mask-image: var(--mask);
+    mask-image: var(--mask);
+    overflow-x: hidden;
+}
+
+@keyframes autoscroll {
+    0% {margin-left: 0;}
+    25% {margin-left: 0;}
+    75% {margin-left: var(--trusted-width);}
+    100% {margin-left: var(--trusted-width);}
+}

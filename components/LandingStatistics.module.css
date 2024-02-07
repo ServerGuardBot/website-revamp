@@ -1,0 +1,7 @@
+.statisticsGroup {
+    padding: 0 rem(248);
+
+    @media (max-width: $mantine-breakpoint-md) {
+        padding: 0;
+    }
+}
