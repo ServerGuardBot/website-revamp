@@ -1,4 +1,8 @@
 .link {
     margin: 0;
     line-height: 0;
+    text-decoration: none !important;
+    color: var(--mantine-color-text);
+    display: flex;
+    align-items: center;
 }

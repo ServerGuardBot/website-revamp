@@ -4,6 +4,16 @@
   }
 }
 
+.logged_in_widget {
+  @mixin hover {
+    background-color: var(--mantine-color-dark-6);
+  }
+}
+
+.menu_item {
+  text-decoration: none !important;
+}
+
 .header {
   height: rem(56px);
   background-color: var(--mantine-color-body);

@@ -1,0 +1,26 @@
+.text {
+    user-select: none;
+    text-decoration: none !important;
+}
+
+.server {
+    text-decoration: none !important;
+
+    img {
+        transition: filter .15s linear;
+    }
+
+    @mixin hover {
+        img {
+            filter: brightness(.8);
+        }
+    }
+}
+
+.loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+}

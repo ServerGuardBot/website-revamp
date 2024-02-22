@@ -1,18 +1,20 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-import "@mantine/core/styles.css";
-import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
+import "@mantine/carousel/styles.css";
 import "@mantine/tiptap/styles.css";
 import "@mantine/charts/styles.css";
-import "@mantine/carousel/styles.css";
+import "@mantine/dates/styles.css";
+import "@mantine/core/styles.css";
 
 import { ColorSchemeScript, MantineProvider, createTheme } from "@mantine/core";
-import { ModalsProvider } from "@mantine/modals";
-import { Notifications } from "@mantine/notifications";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 import TRANSLATION_VALUES from "@/localization/defaults";
+import { Notifications } from "@mantine/notifications";
+import ServiceWorker from "@/components/ServiceWorker";
+import { ModalsProvider } from "@mantine/modals";
+import { SessionProvider } from "../api/client";
 
 const theme = createTheme({
   colors: {
@@ -64,11 +66,17 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body>
-        <NextIntlClientProvider locale={locale} messages={messages} defaultTranslationValues={TRANSLATION_VALUES}>
+        <NextIntlClientProvider
+          locale={locale}
+          messages={messages}
+          defaultTranslationValues={TRANSLATION_VALUES}
+        >
           <MantineProvider theme={theme}>
             <ModalsProvider>
-              <Notifications />
-              {children}
+              <SessionProvider>
+                <Notifications />
+                {children}
+              </SessionProvider>
             </ModalsProvider>
           </MantineProvider>
         </NextIntlClientProvider>

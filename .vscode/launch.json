@@ -6,7 +6,7 @@
     "configurations": [
         {
             "command": "npm run dev",
-            "name": "Start Test Server",
+            "name": "Run Site",
             "request": "launch",
             "type": "node-terminal"
         },

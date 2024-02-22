@@ -1,0 +1,39 @@
+.navbar {
+    width: rem(300);
+    height: 100vh;
+    background-color: var(--mantine-color-dark-6);
+    border-right: 2px solid var(--mantine-color-dark-8);
+}
+
+.bannerContainer {
+    margin-bottom: var(--mantine-spacing-md);
+    padding: var(--mantine-spacing-xs);
+    height: rem(100);
+}
+
+.banner {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--mantine-shadow-md);
+    border-radius: var(--mantine-radius-sm);
+}
+
+.scrollArea {
+    height: calc(100% - rem(100) - var(--mantine-spacing-md));
+    padding: var(--mantine-spacing-xs);
+}
+
+.text {
+    user-select: none;
+}
+
+.link {
+    text-decoration: none !important;
+    border-radius: var(--mantine-radius-sm);
+
+    @mixin hover {
+        color: var(--mantine-color-white);
+    }
+}

@@ -1,0 +1,24 @@
+.server {
+    width: var(--size);
+    height: var(--size);
+    background-color: var(--mantine-color-dark-6);
+    border-radius: var(--mantine-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.server_active {
+    border: 2px solid var(--mantine-primary-color-6);
+    border-radius: calc(var(--mantine-radius-sm) + 3px);
+}
+
+.server_icon {
+    border-radius: var(--mantine-radius-sm);
+}
+
+.navbar {
+    --size: rem(55);
+    border-right: 2px solid var(--mantine-color-dark-8);
+    padding: rem(12);
+}

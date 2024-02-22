@@ -1,31 +1,131 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Container, Group, Burger, Drawer, Button } from "@mantine/core";
+import {
+  Container,
+  Group,
+  Burger,
+  Drawer,
+  Button,
+  Loader,
+  Avatar,
+  Stack,
+  Text,
+  rem,
+  Menu,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconLogin } from "@tabler/icons-react";
+import {
+  IconDashboard,
+  IconLogin,
+  IconLogout,
+  IconUser,
+} from "@tabler/icons-react";
 import { usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
 import trimLocale from "@/helpers/trimLocale";
 import classes from "./SiteHeader.module.css";
-import Logo from "@/components/Logo";
+import { useSession } from "@/app/api/client";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 import SchemeToggle from "./SchemeToggle";
 import LangSwitcher from "./LangSwitcher";
+import Logo from "@/components/Logo";
 import Link from "next/link";
+import ServerGuardRequest from "@/app/api/ServerGuardRequest";
 
 function LoginWidget() {
   const t = useTranslations("general");
-  return (
-    <Button
-      component="a"
-      href="/login"
-      leftSection={<IconLogin />}
-      size="sm"
-      variant="filled"
-      className={classes.login_widget}
-    >
-      {t("login")}
-    </Button>
-  )
+  const session = useSession();
+  if (session.status == "loading") {
+    return <Loader variant="dots" />;
+  } else {
+    return session.status == "unauthenticated" ? (
+      <Button
+        component="a"
+        href="/login"
+        leftSection={<IconLogin />}
+        size="sm"
+        variant="filled"
+        className={classes.login_widget}
+      >
+        {t("login")}
+      </Button>
+    ) : (
+      <Menu>
+        <Menu.Target>
+          <Button
+            leftSection={<Avatar src={session.user?.avatar} size={28} />}
+            size="sm"
+            variant="transparent"
+            className={classes.logged_in_widget}
+            c="var(--mantine-color-text)"
+            p={4}
+          >
+            <Stack gap={0}>
+              <Text size={rem(14)} fw={500} truncate="end">
+                {session.user?.name}
+              </Text>
+              <Text size={rem(11)} c="dimmed">
+                {session.user?.id}
+              </Text>
+            </Stack>
+          </Button>
+        </Menu.Target>
+        <Menu.Dropdown>
+          <Menu.Item leftSection={<IconUser />}>
+            <Link
+              style={{ color: "var(--mantine-color-text)" }}
+              className={classes.menu_item}
+              href="/my/account"
+            >
+              {t("dashboard")}
+            </Link>
+          </Menu.Item>
+          {session.user?.isDeveloper && (
+            <Menu.Item leftSection={<IconDashboard />}>
+              <Link
+                style={{ color: "var(--mantine-color-text)" }}
+                className={classes.menu_item}
+                href="/dev"
+              >
+                {t("internal")}
+              </Link>
+            </Menu.Item>
+          )}
+          <Menu.Item
+            leftSection={<IconLogout color="var(--mantine-color-red-6)" />}
+            onClick={() => {
+              const req = new ServerGuardRequest("/logout", "POST");
+              req
+                .execute()
+                .then(() => {
+                  session.loadSession();
+                  if ("serviceWorker" in navigator) {
+                    navigator.serviceWorker
+                      .getRegistration()
+                      .then((reg) =>
+                        reg?.active?.postMessage({ type: "reloadSession" })
+                      );
+                  }
+                })
+                .catch(() => {
+                  session.loadSession();
+                  if ("serviceWorker" in navigator) {
+                    navigator.serviceWorker
+                      .getRegistration()
+                      .then((reg) =>
+                        reg?.active?.postMessage({ type: "reloadSession" })
+                      );
+                  }
+                });
+            }}
+          >
+            <Text size="sm" c="red.6">
+              Logout
+            </Text>
+          </Menu.Item>
+        </Menu.Dropdown>
+      </Menu>
+    );
+  }
 }
 
 export default function SiteHeader() {
@@ -69,8 +169,18 @@ export default function SiteHeader() {
     setActive(trimLocale(pathname));
   }, [pathname]);
 
-  items.push(<SchemeToggle size="calc(var(--mantine-font-size-sm) + 22px)" key="scheme-toggle" />);
-  items.push(<LangSwitcher size="calc(var(--mantine-font-size-sm) + 22px)" key="lang-switcher" />);
+  items.push(
+    <SchemeToggle
+      size="calc(var(--mantine-font-size-sm) + 22px)"
+      key="scheme-toggle"
+    />
+  );
+  items.push(
+    <LangSwitcher
+      size="calc(var(--mantine-font-size-sm) + 22px)"
+      key="lang-switcher"
+    />
+  );
   items.push(<LoginWidget key="login-widget" />);
 
   return (

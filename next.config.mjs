@@ -1,18 +1,23 @@
-import createNextIntlPlugin from 'next-intl/plugin';
-import webpack from "webpack";
- 
+import createNextIntlPlugin from "next-intl/plugin";
+import { InjectManifest } from "workbox-webpack-plugin";
+
 const withNextIntl = createNextIntlPlugin();
- 
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    webpack: (config) => {
-        config.plugins.push(
-            webpack.DefinePlugin({
-                "SECRET": process.env.SECRET,
-                "TURNSTILE_KEY": process.env.TURNSTILE_KEY,
-            })
-        );
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    if (!isServer) {
+      config.plugins.push(
+        new InjectManifest({
+          swSrc: "./sw.ts",
+          swDest: "../public/sw.js",
+          include: ["__nothing__"],
+        })
+      );
     }
+
+    return config;
+  },
 };
- 
+
 export default withNextIntl(nextConfig);
