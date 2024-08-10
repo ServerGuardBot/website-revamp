@@ -13,7 +13,11 @@ export default class ServerGuardRequest {
         }
     }
 
-    public async execute(body?: any): Promise<any> {
+    public async execute(body?: any, credentials: boolean = true): Promise<any> {
+        if (typeof window === 'undefined') {
+            const dns = await import('node:dns');
+            dns.setDefaultResultOrder('ipv4first');
+        }
         return new Promise((resolve, reject) => {
             let retries = 0;
             const tryRequest = () => {
@@ -23,7 +27,7 @@ export default class ServerGuardRequest {
                     headers: {
                         'Content-Type': typeof body === 'object' ? 'application/json' : 'text/plain',
                     },
-                    credentials: 'include',
+                    credentials: credentials ? 'include' : 'omit',
                 }).then((response) => {
                     if (response.ok) {
                         response.json().then((data) => {
@@ -34,14 +38,17 @@ export default class ServerGuardRequest {
                             });
                         });
                     } else {
-                        if (response.status >= 400 && response.status < 500) {
+                        if (response.status >= 402 && response.status < 500) {
                             // Don't retry client errors
                             reject(response);
                             return
                         }
                         if (retries < 3) {
                             if (response.status === 401) {
-                                fetch('/refresh').then((response) => {
+                                fetch(process.env.NEXT_PUBLIC_API_BASE + '/refresh', {
+                                    method: "POST",
+                                    credentials: 'include',
+                                }).then((response) => {
                                     if (response.ok) {
                                         retries++;
                                         tryRequest();
@@ -79,11 +86,9 @@ export default class ServerGuardRequest {
                             reject(response);
                         }
                     }
-                }).catch((error: string) => {
-                    reject({
-                        status: "error",
-                        error: error,
-                    })
+                }).catch((error) => {
+                    console.log(error);
+                    reject(error);
                 })
             }
 

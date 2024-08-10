@@ -1,5 +1,5 @@
 "use client";
-import { IconChevronDown } from "@tabler/icons-react";
+import { IconChevronUp } from "@tabler/icons-react";
 import blurBanner from "@/helpers/blurBanner";
 import { usePathname } from "next/navigation";
 import { useServer } from "./ServerContext";
@@ -12,9 +12,11 @@ import {
   Badge,
   NavLinkProps,
   ScrollArea,
+  Drawer,
 } from "@mantine/core";
 
 import classes from "./DashNavigation.module.css";
+import { useMenu } from "./MenuContext";
 
 export interface DashLink {
   name: string;
@@ -23,6 +25,7 @@ export interface DashLink {
   icon?: any;
   children?: DashLink[];
   isNew?: Date;
+  disabled?: boolean;
 }
 
 interface NavLinkWrapperProps extends NavLinkProps {
@@ -43,7 +46,7 @@ function NavLinkWrapper(props: NavLinkWrapperProps) {
         onClick={() => setOpen(!open)}
         opened={open}
         className={classes.link}
-        rightSection={<IconChevronDown size={16} stroke={1.5} />}
+        rightSection={<IconChevronUp size={16} stroke={1.5} />}
       >
         {props.children}
       </NavLink>
@@ -72,6 +75,7 @@ function renderLinks(path: string, base: string, links: DashLink[]) {
         leftSection={link.icon && <link.icon size="1.5rem" stroke={2} />}
         component={Link}
         href={href}
+        disabled={link.disabled}
         rightSection={
           isNew && (
             <Badge size="sm" color="red">
@@ -89,9 +93,11 @@ function renderLinks(path: string, base: string, links: DashLink[]) {
 export default function DashNavigation({
   links,
   base = "/",
+  open = false,
 }: {
   links: DashLink[];
   base?: string;
+  open?: boolean;
 }) {
   let server;
   try {
@@ -103,6 +109,8 @@ export default function DashNavigation({
       base = "/my/servers/UNKNOWN/";
     }
   } catch (e) {}
+
+  const menu = useMenu();
 
   const pathname = usePathname().split(base)[1] || "";
   const renderedLinks = renderLinks(pathname, base, links);
@@ -125,5 +133,17 @@ export default function DashNavigation({
     </>
   );
 
-  return <nav className={classes.navbar}>{contents}</nav>;
+  return (
+    <>
+      <nav className={classes.navbar}>{contents}</nav>
+      <Drawer
+        size="100%"
+        opened={menu?.menuOpen || false}
+        onClose={menu?.closeMenu || (() => {})}
+        hiddenFrom="sm"
+      >
+        {contents}
+      </Drawer>
+    </>
+  );
 }

@@ -1,7 +1,21 @@
 .main {
-    width: calc(100vw - rem(82) - rem(302));
-    height: 100vh;
-    display: flex;
-    align-items: center;
     justify-content: center;
+    display: flex;
+    flex-grow: 1;
+    height: 100%;
+
+    @mixin smaller-than $mantine-breakpoint-sm {
+        width: calc(100vw - rem(82));
+    }
+}
+
+.mainCentered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+
+    @mixin smaller-than $mantine-breakpoint-sm {
+        width: calc(100vw - rem(82));
+    }
 }

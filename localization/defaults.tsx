@@ -18,8 +18,10 @@ const TRANSLATION_VALUES = {
   premium: (chunks: any) => <Link href="/premium">{chunks}</Link>,
   reapimus: (chunks: any) => <a href="https://reapimus.com">{chunks}</a>,
   website: (chunks: any) => <Link href="/">{chunks}</Link>,
+  legal: (chunks: any) => <Link href="/legal">{chunks}</Link>,
   year: new Date().getFullYear().toString(),
   em: (chunks: any) => <em>{chunks}</em>,
+  b: (chunks: any) => <b>{chunks}</b>,
 };
 
 export default TRANSLATION_VALUES;

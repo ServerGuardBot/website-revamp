@@ -5,3 +5,13 @@
         padding: 0;
     }
 }
+
+.animatedNumber {
+    font-size: var(--text-fz,var(--mantine-font-size-md));
+    line-height: var(--_text-line-height,var(--text-lh,var(--mantine-line-height-md)));
+}
+
+.animatedText {
+    display: flex;
+    justify-content: center;
+}

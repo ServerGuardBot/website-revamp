@@ -36,6 +36,7 @@ export enum GuildPermission {
   BypassFilter,
   HostGiveaways,
   IsTrusted,
+  ViewAuditLogs,
 }
 
 export interface SessionUser {

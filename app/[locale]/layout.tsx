@@ -15,24 +15,8 @@ import { Notifications } from "@mantine/notifications";
 import ServiceWorker from "@/components/ServiceWorker";
 import { ModalsProvider } from "@mantine/modals";
 import { SessionProvider } from "../api/client";
-
-const theme = createTheme({
-  colors: {
-    brand: [
-      "#fffedc",
-      "#fff8af",
-      "#fff37e",
-      "#ffee4d",
-      "#ffe91e",
-      "#e6cf08",
-      "#b3a100",
-      "#807300",
-      "#4d4500",
-      "#1b1700",
-    ],
-  },
-  primaryColor: "brand",
-});
+import theme from "@/app/theme";
+import { DatesProvider } from "@mantine/dates";
 
 export const metadata: Metadata = {
   title: {
@@ -72,12 +56,16 @@ export default function RootLayout({
           defaultTranslationValues={TRANSLATION_VALUES}
         >
           <MantineProvider theme={theme}>
-            <ModalsProvider>
-              <SessionProvider>
-                <Notifications />
-                {children}
-              </SessionProvider>
-            </ModalsProvider>
+            <DatesProvider
+              settings={{}}
+            >
+              <ModalsProvider>
+                <SessionProvider>
+                  <Notifications />
+                  {children}
+                </SessionProvider>
+              </ModalsProvider>
+            </DatesProvider>
           </MantineProvider>
         </NextIntlClientProvider>
       </body>

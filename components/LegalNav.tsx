@@ -36,7 +36,7 @@ export default function LegalNav() {
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>
         <Title ta="center" className={classes.header}>
-          Legal
+          {t("legal")}
         </Title>
         {links}
       </div>

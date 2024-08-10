@@ -1,0 +1,20 @@
+.header {
+    width: 100%;
+    align-items: center;
+    padding: rem(2);
+    padding-left: rem(4);
+    background-color: var(--mantine-color-dark-7);
+    border-bottom: 2px solid var(--mantine-color-dark-8);
+}
+
+.title {
+    user-select: none;
+}
+
+.icon {
+    height: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

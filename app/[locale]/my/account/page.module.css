@@ -3,6 +3,10 @@
     text-decoration: none !important;
 }
 
+.paper {
+    background-color: var(--mantine-color-dark-8);
+}
+
 .server {
     text-decoration: none !important;
 

@@ -1,0 +1,15 @@
+.rolesArea {
+    height: 100%;
+    width: rem(300);
+    border-right: 2px solid var(--mantine-color-dark-8);
+    padding-right: var(--mantine-spacing-xs);
+}
+
+.permsArea {
+    height: 100%;
+    flex-grow: 1;
+}
+
+.activeRole {
+    background-color: alpha(var(--mantine-color-dark-3), 0.25);
+}

@@ -1,0 +1,31 @@
+index b5d8950..5ecec81
+--- a/node_modules/domino/lib/sloppy.js
++++ b/node_modules/domino/lib/sloppy.js
+@@ -7,15 +7,21 @@
+ module.exports = {
+   Window_run: function _run(code, file) {
+     if (file) code += '\n//@ sourceURL=' + file;
+-    with(this) eval(code);
++    // with(this) eval(code);
++    Function(code).bind(this)();
+   },
+   EventHandlerBuilder_build: function build() {
+     try {
+-      with(this.document.defaultView || Object.create(null))
+-        with(this.document)
+-          with(this.form)
+-            with(this.element)
+-              return eval("(function(event){" + this.body + "})");
++      // with(this.document.defaultView || Object.create(null))
++      //   with(this.document)
++      //     with(this.form)
++      //       with(this.element)
++      //         return eval("(function(event){" + this.body + "})");
++      let view = this.document.defaultView || Object.create(null);
++      let doc = view?.document;
++      let form = doc?.form;
++      let element = form?.element;
++      return eval("(function(event){" + this.body + "})");
+     }
+     catch (err) {
+       return function() { throw err; };

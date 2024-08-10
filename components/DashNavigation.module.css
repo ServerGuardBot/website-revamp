@@ -1,8 +1,14 @@
 .navbar {
     width: rem(300);
-    height: 100vh;
+    min-width: rem(300);
+    height: 100%;
     background-color: var(--mantine-color-dark-6);
-    border-right: 2px solid var(--mantine-color-dark-8);
+    display: flex;
+    flex-direction: column;
+
+    @mixin smaller-than $mantine-breakpoint-sm {
+        display: none;
+    }
 }
 
 .bannerContainer {
@@ -21,7 +27,8 @@
 }
 
 .scrollArea {
-    height: calc(100% - rem(100) - var(--mantine-spacing-md));
+    //height: calc(100% - rem(100) - var(--mantine-spacing-md));
+    flex-grow: 1;
     padding: var(--mantine-spacing-xs);
 }
 

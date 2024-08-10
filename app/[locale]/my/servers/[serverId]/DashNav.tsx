@@ -1,6 +1,6 @@
 "use client";
 import DashNavigation, { DashLink } from "@/components/DashNavigation";
-import { useServer } from "@/components/ServerContext";
+import { ServerContext, useServer } from "@/components/ServerContext";
 import {
   IconBell,
   IconChecklist,
@@ -11,10 +11,24 @@ import {
   IconShieldCheck,
   IconTrendingUp,
   IconUser,
+  IconUserShield,
   IconUsersGroup,
 } from "@tabler/icons-react";
+import { useTranslations } from "next-intl";
 
-const dashLinks: DashLink[] = [
+const moduleMap = {
+  "verification": "verification",
+  "logging": "logging",
+  "xp": "xp",
+  "automod": "automod",
+  "welcomer": "welcomer",
+  "moderation": "moderation",
+  "autoroles": "autoroles",
+  "feeds": "feeds",
+  "giveaways": "giveaways",
+}
+
+export const dashLinks: DashLink[] = [
   {
     name: "Dashboard",
     href: "",
@@ -24,6 +38,11 @@ const dashLinks: DashLink[] = [
     name: "Permissions",
     href: "permissions",
     icon: IconUsersGroup,
+  },
+  {
+    name: "Audit Log",
+    href: "audit",
+    icon: IconUserShield,
   },
   {
     name: "Moderation",
@@ -77,8 +96,40 @@ const dashLinks: DashLink[] = [
   },
 ];
 
+export function slugify(str: string) {
+  if (str.trim() == "") {
+    return "index";
+  }
+  return str.toLowerCase().replace(/[\s\/]+/g, "_")
+    .replace(/\//g, "_");
+}
+
+function parseDashLinks(t: any, server: ServerContext, links: DashLink[]): DashLink[] {
+  return links.map((link) => {
+    let disabled = false;
+    if (typeof link?.href !== "undefined" && Object.hasOwn(moduleMap, link.href)) {
+      const key = link.href as keyof typeof moduleMap;
+      disabled = !server.serverData?.modules?.includes(moduleMap[key]);
+    }
+    if (link.children) {
+      return {
+        ...link,
+        name: t(`category.${slugify(link.name as string)}`),
+        disabled,
+        children: parseDashLinks(t, server, link.children),
+      };
+    }
+    return {
+      ...link,
+      name: t(slugify(link.href as string)),
+      disabled,
+    };
+  });
+}
+
 export default function DashNav() {
+    const t = useTranslations("navigation.dashboard");
     const server = useServer();
     if (server.status == "loading") return <></>;
-    return <DashNavigation links={dashLinks} />;
+    return <DashNavigation links={parseDashLinks(t, server, dashLinks)} />;
 }

@@ -14,6 +14,7 @@ import {
   Loader,
   Paper,
   Box,
+  Center,
 } from "@mantine/core";
 
 import classes from "./page.module.css";
@@ -30,17 +31,20 @@ export default function Page() {
       </div>
     )) || (
       <Stack p="md" align="center">
-        <Paper withBorder p="xs" shadow="sm">
-          <Logo size={48} withText withLink textSize={32} />
+        <Paper withBorder p="xs" shadow="sm" className={classes.paper}>
+          <Stack>
+            <Center>
+              <Logo size={48} withText withLink textSize={32} />
+            </Center>
+            <Group>
+              <Avatar size={106} src={session.user?.avatar} />
+              <Title className={classes.text} size={42}>
+                Hello, {session.user?.name}
+              </Title>
+            </Group>
+          </Stack>
         </Paper>
-        <Group>
-          <Avatar size="xl" src={session.user?.avatar} />
-          <Title className={classes.text} size={42}>
-            Hello, {session.user?.name}
-          </Title>
-        </Group>
-        <Title className={classes.text}>My Servers</Title>
-        <Paper withBorder p="xs" shadow="sm">
+        <Paper withBorder p="xs" shadow="sm" className={classes.paper}>
           <SimpleGrid
             cols={{
               base: 2,
@@ -50,6 +54,7 @@ export default function Page() {
             spacing="xs"
             verticalSpacing={"sm"}
             style={{ overflow: "visible" }}
+            p={4}
           >
             {session.guilds.map((guild) => (
               <Box key={guild.id} h={serverIconSize + 18}>

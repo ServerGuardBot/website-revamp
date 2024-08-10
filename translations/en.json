@@ -51,7 +51,22 @@
     "dashboard": "Dashboard",
     "internal": "Internal",
     "copyright": "© {year} <reapimus>Reapimus</reapimus>. All rights reserved.",
-    "endorse-notice": "Server Guard is not endorsed or created by Guilded"
+    "endorse-notice": "Server Guard is not endorsed or created by Guilded",
+    "premium_feature": "Premium Feature",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "channel": "Channel",
+    "image": "Image",
+    "message": "Message",
+    "apply": "Apply",
+    "legal": "Legal",
+    "settings": "Settings",
+    "home": "Home",
+    "coming_soon": "Coming Soon",
+    "webhook": "Webhook"
   },
   "locales": {
     "en": "English",
@@ -63,7 +78,49 @@
     "fr": "French",
     "ko": "Korean",
     "es": "Spanish",
-    "de": "German"
+    "de": "German",
+    "cs": "Czech",
+    "da": "Danish",
+    "eo": "Esperanto",
+    "fi": "Finnish",
+    "hi": "Hindi",
+    "hu": "Hungarian",
+    "it": "Italian",
+    "ja": "Japanese",
+    "fa": "Persian",
+    "pl": "Polish",
+    "pt": "Portugese",
+    "ru": "Russian",
+    "sv": "Swedish",
+    "th": "Thai",
+    "tr": "Turkish"
+  },
+  "verify": {
+    "button": "Verify",
+    "waiting_turnstile": "Waiting for Cloudflare Turnstile",
+    "welcome": "Hello, {username}!",
+    "intro": "Welcome to {server}! This server is protected by Server Guard, please verify with us by clicking the button below.",
+    "legal": "By verifying with Server Guard, you agree with our <legal>Privacy Policy & Terms and Conditions.</legal>",
+    "rejected": {
+      "invalid_browser": "Please verify using a browser",
+      "proxy_check": "Suspicious verification attempt",
+      "tor": "This server does not permit verification via the TOR network",
+      "nsfw": "Your profile or banner is too NSFW for this server",
+      "turnstile": "Failed turnstile validation",
+      "turnstile_missing": "Please provide a turnstile key",
+      "internal_error": "Something went wrong",
+      "linked_account": "Your account is linked to a previously banned user",
+      "toxicity": "Your profile is too toxic for this server",
+      "hatespeech": "Your profile contains too much hatespeech for this server",
+      "invalid_token": "This code is invalid or expired, please generate another."
+    },
+    "success": "Thanks for verifying, you can now enter the server!",
+    "scamwarning": "Server Guard will <b>never</b> ask you for personal information",
+    "state": {
+      "accepted": "Welcome to the server!",
+      "rejected": "You have failed verification"
+    },
+    "admin_contact": "If you believe this was an error, contact <url>{admin_contact}</url>"
   },
   "legal": {
     "notice": "<em>Please be aware that only our Terms of Service and Privacy Policy in English are legally binding. While translations of these documents may be provided for your convenience, they are translated by the community and are thus not legal documents.</em>"
@@ -102,5 +159,879 @@
     "acknowledgement-text": "By using Server Guard, you acknowledge all above Terms. You acknowledge that, even if you did not read the Terms in full, you will comply with our Terms.",
     "contact": "Contact",
     "contact-text": "If you have any questions, requests or complaints about Server Guard, please forward this to our staff using our <support>support server</support>. We will respond to these inquiries within 28 days. Server Guard fully complies with GDPR Data Releasements and Data Deletion."
+  },
+  "audit_logs": {
+    "no-logs": "No audit logs found.",
+    "filters": {
+      "events": {
+        "label": "Event Types",
+        "placeholder": "Filter events"
+      },
+      "users": {
+        "label": "Users",
+        "placeholder": "Filter users"
+      },
+      "date": {
+        "label": "Date Range",
+        "placeholder": "Filter date range"
+      },
+      "event_types": {
+        "update_setting": "Setting Updated"
+      }
+    },
+    "setting": {
+      "modules": {
+        "both": "Enabled module(s) <added></added> and disabled module(s) <removed></removed>",
+        "added": "Enabled module(s) <added></added>",
+        "removed": "Disabled module(s) <removed></removed>"
+      },
+      "nickname": "Changed nickname from <content>{prevValue}</content> to <content>{value}</content>",
+      "language": "Changed language from <content>{prevValue}</content> to <content>{value}</content>",
+      "prefix": "Changed prefix from <content>{prevValue}</content> to <content>{value}</content>",
+      "timezone": "Changed timezone from <content>{prevValue}</content> to <content>{value}</content>",
+      "muted_role": "Changed muted role from <content>{prevValue}</content> to <content>{value}</content>",
+      "remove_old_level_roles": "Changed remove old level roles from <content>{prevValue}</content> to <content>{value}</content>",
+      "verification_channel": "Changed verification channel from <content>{prevValue}</content> to <content>{value}</content>",
+      "verified_role": "Changed verified role from <content>{prevValue}</content> to <content>{value}</content>",
+      "unverified_role": "Changed unverified role from <content>{prevValue}</content> to <content>{value}</content>",
+      "send_welcome": "Changed muted role from <content>{prevValue}</content> to <content>{value}</content>",
+      "send_goodbye": "Changed muted role from <content>{prevValue}</content> to <content>{value}</content>",
+      "welcome_message": "Changed welcome message from <content>{prevValue}</content> to <content>{value}</content>",
+      "goodbye_message": "Changed goodbye message from <content>{prevValue}</content> to <content>{value}</content>",
+      "welcome_channel": "Changed welcome channel from <content>{prevValue}</content> to <content>{value}</content>",
+      "goodbye_channel": "Changed goodbye channel from <content>{prevValue}</content> to <content>{value}</content>",
+      "logs_traffic": "Changed traffic logs from <content>{prevValue}</content> to <content>{value}</content>",
+      "logs_message": "Changed message logs from <content>{prevValue}</content> to <content>{value}</content>",
+      "logs_user": "Changed user logs from <content>{prevValue}</content> to <content>{value}</content>",
+      "logs_management": "Changed management logs from <content>{prevValue}</content> to <content>{value}</content>",
+      "logs_action": "Changed action logs from <content>{prevValue}</content> to <content>{value}</content>",
+      "logs_nsfw": "Changed nsfw logs from <content>{prevValue}</content> to <content>{value}</content>",
+      "logs_verification": "Changed verification logs from <content>{prevValue}</content> to <content>{value}</content>",
+      "permissions": {
+        "both": "Assigned permission(s) <assigned></assigned> and unassigned permission(s) <unassigned></unassigned> from <content>{role}</content>",
+        "added": "Assigned permission(s) <assigned></assigned> to <content>{role}</content>",
+        "removed": "Unassigned permission(s) <unassigned></unassigned> from <content>{role}</content>",
+        "cleared": "Unassigned all permissions from <content>{role}</content>"
+      },
+      "log_commands": "Changed log commands from <content>{prevValue}</content> to <content>{value}</content>",
+      "log_roles": "Changed log roles from <content>{prevValue}</content> to <content>{value}</content>",
+      "silence_commands": "Changed silence commands from <content>{prevValue}</content> to <content>{value}</content>",
+      "filter_api_keys": "Changed filter API keys from <content>{prevValue}</content> to <content>{value}</content>",
+      "malicious_urls": "Changed filter malicious URLs from <content>{prevValue}</content> to <content>{value}</content>",
+      "filter_invites": "Changed filter invite links from <content>{prevValue}</content> to <content>{value}</content>",
+      "filter_spam": "Changed spam filter from <content>{prevValue}</content> to <content>{value}</content>",
+      "filter_toxicity": "Changed spam filter from <content>{prevValue}</content> to <content>{value}</content>",
+      "filter_hatespeech": "Changed spam filter from <content>{prevValue}</content> to <content>{value}</content>",
+      "word_blacklist": {
+        "both": "Added word(s) <added></added> and removed word(s) from blacklist <removed></removed>",
+        "added": "Added word(s) <added></added> to blacklist",
+        "removed": "Removed word(s) <removed></removed> from blacklist"
+      },
+      "default_profanities": {
+        "both": "Enabled profanity list(s) <added></added> and disabled profanity list(s) <removed></removed>",
+        "added": "Enabled profanity list(s) <added></added>",
+        "removed": "Disabled profanity list(s) <removed></removed>"
+      },
+      "untrusted_block_attachments": {
+        "both": "Blocked attachment type(s) <added></added> and unblocked attachment type(s) <removed></removed> for untrusted members",
+        "added": "Blocked attachment type(s) <added></added> for untrusted members",
+        "removed": "Unblocked attachment type(s) <removed></removed> for untrusted members"
+      },
+      "xp_roles": {
+        "changed": "Set XP Gain for <content>{role}</content> from <content>{prevValue}</content> to <content>{value}</content>",
+        "disabled": "Disabled XP Gain for <content>{role}</content>"
+      },
+      "welcome_image": {
+        "both": "Added welcome image(s) <added></added> and removed welcome image(s) <removed></removed>",
+        "added": "Added welcome image(s) <added></added>",
+        "removed": "Removed welcome image(s) <removed></removed>"
+      },
+      "goodbye_image": {
+        "both": "Added goodbye image(s) <added></added> and removed goodbye image(s) <removed></removed>",
+        "added": "Added goodbye image(s) <added></added>",
+        "removed": "Removed goodbye image(s) <removed></removed>"
+      },
+      "word_blacklist_restrictions": {
+        "allow": {
+          "user": {
+            "both": "Added user(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Word Blacklist</content>",
+            "added": "Added user(s) <assigned></assigned> to allow list for automod rule <content>Word Blacklist</content>",
+            "removed": "Removed user(s) <unassigned></unassigned> from allow list for automod rule <content>Word Blacklist</content>"
+          },
+          "role": {
+            "both": "Added role(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Word Blacklist</content>",
+            "added": "Added role(s) <assigned></assigned> to allow list for automod rule <content>Word Blacklist</content>",
+            "removed": "Removed role(s) <unassigned></unassigned> from allow list for automod rule <content>Word Blacklist</content>"
+          },
+          "channel": {
+            "both": "Added channel(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Word Blacklist</content>",
+            "added": "Added channel(s) <assigned></assigned> to allow list for automod rule <content>Word Blacklist</content>",
+            "removed": "Removed channel(s) <unassigned></unassigned> from allow list for automod rule <content>Word Blacklist</content>"
+          }
+        },
+        "blacklist": {
+          "user": {
+            "both": "Added user(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Word Blacklist</content>",
+            "added": "Added user(s) <assigned></assigned> to exception list for automod rule <content>Word Blacklist</content>",
+            "removed": "Removed user(s) <unassigned></unassigned> from exception list for automod rule <content>Word Blacklist</content>"
+          },
+          "role": {
+            "both": "Added role(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Word Blacklist</content>",
+            "added": "Added role(s) <assigned></assigned> to exception list for automod rule <content>Word Blacklist</content>",
+            "removed": "Removed role(s) <unassigned></unassigned> from exception list for automod rule <content>Word Blacklist</content>"
+          },
+          "channel": {
+            "both": "Added channel(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Word Blacklist</content>",
+            "added": "Added channel(s) <assigned></assigned> to exception list for automod rule <content>Word Blacklist</content>",
+            "removed": "Removed channel(s) <unassigned></unassigned> from exception list for automod rule <content>Word Blacklist</content>"
+          }
+        }
+      },
+      "malicious_urls_restrictions": {
+        "allow": {
+          "user": {
+            "both": "Added user(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Malicious URLs</content>",
+            "added": "Added user(s) <assigned></assigned> to allow list for automod rule <content>Malicious URLs</content>",
+            "removed": "Removed user(s) <unassigned></unassigned> from allow list for automod rule <content>Malicious URLs</content>"
+          },
+          "role": {
+            "both": "Added role(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Malicious URLs</content>",
+            "added": "Added role(s) <assigned></assigned> to allow list for automod rule <content>Malicious URLs</content>",
+            "removed": "Removed role(s) <unassigned></unassigned> from allow list for automod rule <content>Malicious URLs</content>"
+          },
+          "channel": {
+            "both": "Added channel(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Malicious URLs</content>",
+            "added": "Added channel(s) <assigned></assigned> to allow list for automod rule <content>Malicious URLs</content>",
+            "removed": "Removed channel(s) <unassigned></unassigned> from allow list for automod rule <content>Malicious URLs</content>"
+          }
+        },
+        "blacklist": {
+          "user": {
+            "both": "Added user(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Malicious URLs</content>",
+            "added": "Added user(s) <assigned></assigned> to exception list for automod rule <content>Malicious URLs</content>",
+            "removed": "Removed user(s) <unassigned></unassigned> from exception list for automod rule <content>Malicious URLs</content>"
+          },
+          "role": {
+            "both": "Added role(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Malicious URLs</content>",
+            "added": "Added role(s) <assigned></assigned> to exception list for automod rule <content>Malicious URLs</content>",
+            "removed": "Removed role(s) <unassigned></unassigned> from exception list for automod rule <content>Malicious URLs</content>"
+          },
+          "channel": {
+            "both": "Added channel(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Malicious URLs</content>",
+            "added": "Added channel(s) <assigned></assigned> to exception list for automod rule <content>Malicious URLs</content>",
+            "removed": "Removed channel(s) <unassigned></unassigned> from exception list for automod rule <content>Malicious URLs</content>"
+          }
+        }
+      },
+      "filter_invites_restrictions": {
+        "allow": {
+          "user": {
+            "both": "Added user(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Filter Invites</content>",
+            "added": "Added user(s) <assigned></assigned> to allow list for automod rule <content>Filter Invites</content>",
+            "removed": "Removed user(s) <unassigned></unassigned> from allow list for automod rule <content>Filter Invites</content>"
+          },
+          "role": {
+            "both": "Added role(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Filter Invites</content>",
+            "added": "Added role(s) <assigned></assigned> to allow list for automod rule <content>Filter Invites</content>",
+            "removed": "Removed role(s) <unassigned></unassigned> from allow list for automod rule <content>Filter Invites</content>"
+          },
+          "channel": {
+            "both": "Added channel(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Filter Invites</content>",
+            "added": "Added channel(s) <assigned></assigned> to allow list for automod rule <content>Filter Invites</content>",
+            "removed": "Removed channel(s) <unassigned></unassigned> from allow list for automod rule <content>Filter Invites</content>"
+          }
+        },
+        "blacklist": {
+          "user": {
+            "both": "Added user(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Filter Invites</content>",
+            "added": "Added user(s) <assigned></assigned> to exception list for automod rule <content>Filter Invites</content>",
+            "removed": "Removed user(s) <unassigned></unassigned> from exception list for automod rule <content>Filter Invites</content>"
+          },
+          "role": {
+            "both": "Added role(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Filter Invites</content>",
+            "added": "Added role(s) <assigned></assigned> to exception list for automod rule <content>Filter Invites</content>",
+            "removed": "Removed role(s) <unassigned></unassigned> from exception list for automod rule <content>Filter Invites</content>"
+          },
+          "channel": {
+            "both": "Added channel(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Filter Invites</content>",
+            "added": "Added channel(s) <assigned></assigned> to exception list for automod rule <content>Filter Invites</content>",
+            "removed": "Removed channel(s) <unassigned></unassigned> from exception list for automod rule <content>Filter Invites</content>"
+          }
+        }
+      },
+      "filter_api_keys_restriction": {
+        "allow": {
+          "user": {
+            "both": "Added user(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Filter API Keys</content>",
+            "added": "Added user(s) <assigned></assigned> to allow list for automod rule <content>Filter API Keys</content>",
+            "removed": "Removed user(s) <unassigned></unassigned> from allow list for automod rule <content>Filter API Keys</content>"
+          },
+          "role": {
+            "both": "Added role(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Filter API Keys</content>",
+            "added": "Added role(s) <assigned></assigned> to allow list for automod rule <content>Filter API Keys</content>",
+            "removed": "Removed role(s) <unassigned></unassigned> from allow list for automod rule <content>Filter API Keys</content>"
+          },
+          "channel": {
+            "both": "Added channel(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Filter API Keys</content>",
+            "added": "Added channel(s) <assigned></assigned> to allow list for automod rule <content>Filter API Keys</content>",
+            "removed": "Removed channel(s) <unassigned></unassigned> from allow list for automod rule <content>Filter API Keys</content>"
+          }
+        },
+        "blacklist": {
+          "user": {
+            "both": "Added user(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Filter API Keys</content>",
+            "added": "Added user(s) <assigned></assigned> to exception list for automod rule <content>Filter API Keys</content>",
+            "removed": "Removed user(s) <unassigned></unassigned> from exception list for automod rule <content>Filter API Keys</content>"
+          },
+          "role": {
+            "both": "Added role(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Filter API Keys</content>",
+            "added": "Added role(s) <assigned></assigned> to exception list for automod rule <content>Filter API Keys</content>",
+            "removed": "Removed role(s) <unassigned></unassigned> from exception list for automod rule <content>Filter API Keys</content>"
+          },
+          "channel": {
+            "both": "Added channel(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Filter API Keys</content>",
+            "added": "Added channel(s) <assigned></assigned> to exception list for automod rule <content>Filter API Keys</content>",
+            "removed": "Removed channel(s) <unassigned></unassigned> from exception list for automod rule <content>Filter API Keys</content>"
+          }
+        }
+      },
+      "filter_nsfw_restrictions": {
+        "allow": {
+          "user": {
+            "both": "Added user(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Filter NSFW</content>",
+            "added": "Added user(s) <assigned></assigned> to allow list for automod rule <content>Filter NSFW</content>",
+            "removed": "Removed user(s) <unassigned></unassigned> from allow list for automod rule <content>Filter NSFW</content>"
+          },
+          "role": {
+            "both": "Added role(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Filter NSFW</content>",
+            "added": "Added role(s) <assigned></assigned> to allow list for automod rule <content>Filter NSFW</content>",
+            "removed": "Removed role(s) <unassigned></unassigned> from allow list for automod rule <content>Filter NSFW</content>"
+          },
+          "channel": {
+            "both": "Added channel(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Filter NSFW</content>",
+            "added": "Added channel(s) <assigned></assigned> to allow list for automod rule <content>Filter NSFW</content>",
+            "removed": "Removed channel(s) <unassigned></unassigned> from allow list for automod rule <content>Filter NSFW</content>"
+          }
+        },
+        "blacklist": {
+          "user": {
+            "both": "Added user(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Filter NSFW</content>",
+            "added": "Added user(s) <assigned></assigned> to exception list for automod rule <content>Filter NSFW</content>",
+            "removed": "Removed user(s) <unassigned></unassigned> from exception list for automod rule <content>Filter NSFW</content>"
+          },
+          "role": {
+            "both": "Added role(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Filter NSFW</content>",
+            "added": "Added role(s) <assigned></assigned> to exception list for automod rule <content>Filter NSFW</content>",
+            "removed": "Removed role(s) <unassigned></unassigned> from exception list for automod rule <content>Filter NSFW</content>"
+          },
+          "channel": {
+            "both": "Added channel(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Filter NSFW</content>",
+            "added": "Added channel(s) <assigned></assigned> to exception list for automod rule <content>Filter NSFW</content>",
+            "removed": "Removed channel(s) <unassigned></unassigned> from exception list for automod rule <content>Filter NSFW</content>"
+          }
+        }
+      },
+      "filter_toxicity_restrictions": {
+        "allow": {
+          "user": {
+            "both": "Added user(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Filter Toxicity</content>",
+            "added": "Added user(s) <assigned></assigned> to allow list for automod rule <content>Filter Toxicity</content>",
+            "removed": "Removed user(s) <unassigned></unassigned> from allow list for automod rule <content>Filter Toxicity</content>"
+          },
+          "role": {
+            "both": "Added role(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Filter Toxicity</content>",
+            "added": "Added role(s) <assigned></assigned> to allow list for automod rule <content>Filter Toxicity</content>",
+            "removed": "Removed role(s) <unassigned></unassigned> from allow list for automod rule <content>Filter Toxicity</content>"
+          },
+          "channel": {
+            "both": "Added channel(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Filter Toxicity</content>",
+            "added": "Added channel(s) <assigned></assigned> to allow list for automod rule <content>Filter Toxicity</content>",
+            "removed": "Removed channel(s) <unassigned></unassigned> from allow list for automod rule <content>Filter Toxicity</content>"
+          }
+        },
+        "blacklist": {
+          "user": {
+            "both": "Added user(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Filter Toxicity</content>",
+            "added": "Added user(s) <assigned></assigned> to exception list for automod rule <content>Filter Toxicity</content>",
+            "removed": "Removed user(s) <unassigned></unassigned> from exception list for automod rule <content>Filter Toxicity</content>"
+          },
+          "role": {
+            "both": "Added role(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Filter Toxicity</content>",
+            "added": "Added role(s) <assigned></assigned> to exception list for automod rule <content>Filter Toxicity</content>",
+            "removed": "Removed role(s) <unassigned></unassigned> from exception list for automod rule <content>Filter Toxicity</content>"
+          },
+          "channel": {
+            "both": "Added channel(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Filter Toxicity</content>",
+            "added": "Added channel(s) <assigned></assigned> to exception list for automod rule <content>Filter Toxicity</content>",
+            "removed": "Removed channel(s) <unassigned></unassigned> from exception list for automod rule <content>Filter Toxicity</content>"
+          }
+        }
+      },
+      "filter_hatespeech_restrictions": {
+        "allow": {
+          "user": {
+            "both": "Added user(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Filter Hate-Speech</content>",
+            "added": "Added user(s) <assigned></assigned> to allow list for automod rule <content>Filter Hate-Speech</content>",
+            "removed": "Removed user(s) <unassigned></unassigned> from allow list for automod rule <content>Filter Hate-Speech</content>"
+          },
+          "role": {
+            "both": "Added role(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Filter Hate-Speech</content>",
+            "added": "Added role(s) <assigned></assigned> to allow list for automod rule <content>Filter Hate-Speech</content>",
+            "removed": "Removed role(s) <unassigned></unassigned> from allow list for automod rule <content>Filter Hate-Speech</content>"
+          },
+          "channel": {
+            "both": "Added channel(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Filter Hate-Speech</content>",
+            "added": "Added channel(s) <assigned></assigned> to allow list for automod rule <content>Filter Hate-Speech</content>",
+            "removed": "Removed channel(s) <unassigned></unassigned> from allow list for automod rule <content>Filter Hate-Speech</content>"
+          }
+        },
+        "blacklist": {
+          "user": {
+            "both": "Added user(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Filter Hate-Speech</content>",
+            "added": "Added user(s) <assigned></assigned> to exception list for automod rule <content>Filter Hate-Speech</content>",
+            "removed": "Removed user(s) <unassigned></unassigned> from exception list for automod rule <content>Filter Hate-Speech</content>"
+          },
+          "role": {
+            "both": "Added role(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Filter Hate-Speech</content>",
+            "added": "Added role(s) <assigned></assigned> to exception list for automod rule <content>Filter Hate-Speech</content>",
+            "removed": "Removed role(s) <unassigned></unassigned> from exception list for automod rule <content>Filter Hate-Speech</content>"
+          },
+          "channel": {
+            "both": "Added channel(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Filter Hate-Speech</content>",
+            "added": "Added channel(s) <assigned></assigned> to exception list for automod rule <content>Filter Hate-Speech</content>",
+            "removed": "Removed channel(s) <unassigned></unassigned> from exception list for automod rule <content>Filter Hate-Speech</content>"
+          }
+        }
+      },
+      "spam_filter_restrictions": {
+        "allow": {
+          "user": {
+            "both": "Added user(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Filter Spam</content>",
+            "added": "Added user(s) <assigned></assigned> to allow list for automod rule <content>Filter Spam</content>",
+            "removed": "Removed user(s) <unassigned></unassigned> from allow list for automod rule <content>Filter Spam</content>"
+          },
+          "role": {
+            "both": "Added role(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Filter Spam</content>",
+            "added": "Added role(s) <assigned></assigned> to allow list for automod rule <content>Filter Spam</content>",
+            "removed": "Removed role(s) <unassigned></unassigned> from allow list for automod rule <content>Filter Spam</content>"
+          },
+          "channel": {
+            "both": "Added channel(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Filter Spam</content>",
+            "added": "Added channel(s) <assigned></assigned> to allow list for automod rule <content>Filter Spam</content>",
+            "removed": "Removed channel(s) <unassigned></unassigned> from allow list for automod rule <content>Filter Spam</content>"
+          }
+        },
+        "blacklist": {
+          "user": {
+            "both": "Added user(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Filter Spam</content>",
+            "added": "Added user(s) <assigned></assigned> to exception list for automod rule <content>Filter Spam</content>",
+            "removed": "Removed user(s) <unassigned></unassigned> from exception list for automod rule <content>Filter Spam</content>"
+          },
+          "role": {
+            "both": "Added role(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Filter Spam</content>",
+            "added": "Added role(s) <assigned></assigned> to exception list for automod rule <content>Filter Spam</content>",
+            "removed": "Removed role(s) <unassigned></unassigned> from exception list for automod rule <content>Filter Spam</content>"
+          },
+          "channel": {
+            "both": "Added channel(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Filter Spam</content>",
+            "added": "Added channel(s) <assigned></assigned> to exception list for automod rule <content>Filter Spam</content>",
+            "removed": "Removed channel(s) <unassigned></unassigned> from exception list for automod rule <content>Filter Spam</content>"
+          }
+        }
+      },
+      "default_profanities_restrictions": {
+        "allow": {
+          "user": {
+            "both": "Added user(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Default Profanity Filters</content>",
+            "added": "Added user(s) <assigned></assigned> to allow list for automod rule <content>Default Profanity Filters</content>",
+            "removed": "Removed user(s) <unassigned></unassigned> from allow list for automod rule <content>Default Profanity Filters</content>"
+          },
+          "role": {
+            "both": "Added role(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Default Profanity Filters</content>",
+            "added": "Added role(s) <assigned></assigned> to allow list for automod rule <content>Default Profanity Filters</content>",
+            "removed": "Removed role(s) <unassigned></unassigned> from allow list for automod rule <content>Default Profanity Filters</content>"
+          },
+          "channel": {
+            "both": "Added channel(s) <assigned></assigned> and removed <unassigned></unassigned> from allow list for automod rule <content>Default Profanity Filters</content>",
+            "added": "Added channel(s) <assigned></assigned> to allow list for automod rule <content>Default Profanity Filters</content>",
+            "removed": "Removed channel(s) <unassigned></unassigned> from allow list for automod rule <content>Default Profanity Filters</content>"
+          }
+        },
+        "blacklist": {
+          "user": {
+            "both": "Added user(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Default Profanity Filters</content>",
+            "added": "Added user(s) <assigned></assigned> to exception list for automod rule <content>Default Profanity Filters</content>",
+            "removed": "Removed user(s) <unassigned></unassigned> from exception list for automod rule <content>Default Profanity Filters</content>"
+          },
+          "role": {
+            "both": "Added role(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Default Profanity Filters</content>",
+            "added": "Added role(s) <assigned></assigned> to exception list for automod rule <content>Default Profanity Filters</content>",
+            "removed": "Removed role(s) <unassigned></unassigned> from exception list for automod rule <content>Default Profanity Filters</content>"
+          },
+          "channel": {
+            "both": "Added channel(s) <assigned></assigned> and removed <unassigned></unassigned> from exception list for automod rule <content>Default Profanity Filters</content>",
+            "added": "Added channel(s) <assigned></assigned> to exception list for automod rule <content>Default Profanity Filters</content>",
+            "removed": "Removed channel(s) <unassigned></unassigned> from exception list for automod rule <content>Default Profanity Filters</content>"
+          }
+        }
+      }
+    }
+  },
+  "permissions": {
+    "perms": {
+      "ManageVerification": "Can Manage Verification Module",
+      "ManageXP": "Can Manage XP Module",
+      "ManageModeration": "Can Manage Moderation Module",
+      "ManageAutoMod": "Can Manage AutoMod Module",
+      "ManageLogging": "Can Manage Logging Module",
+      "ManageWelcomer": "Can Manage Welcomer Module",
+      "ManageAutoroles": "Can Manage AutoRoles Module",
+      "ManageFeeds": "Can Manage Feeds Module",
+      "ManageGiveaways": "Can Manage Giveaways Module",
+      "ManageAutomations": "Can Manage Automations Module",
+      "ManageBot": "Can Manage Bot",
+      "CommandsBan": "Can Use Ban Command",
+      "CommandsKick": "Can Use Kick Command",
+      "CommandsMute": "Can Use Mute Command",
+      "CommandsBypass": "Can Use Bypass Command",
+      "CommandsWarn": "Can Use Warn Command",
+      "CommandsEvaluate": "Can Use Evaluate Command",
+      "CommandsUserInfo": "Can Use User Info Command",
+      "CommandsServerInfo": "Can Use Server Info Command",
+      "CommandsPurge": "Can Use Purge Command",
+      "CommandsNote": "Can Use Note Command",
+      "BypassFilter": "Can Bypass Chat Filters",
+      "HostGiveaways": "Can Host Giveaways",
+      "IsTrusted": "Is a Trusted Member",
+      "ViewAuditLogs": "Can View Audit Logs"
+    },
+    "categories": {
+      "Management": "Management",
+      "Commands": "Commands",
+      "General": "General"
+    }
+  },
+  "logging": {
+    "commands": {
+      "label": "Log Commands",
+      "description": "Log when moderators use commands"
+    },
+    "silence_commands": {
+      "label": "Silence Commands",
+      "description": "Remove the message when a moderator uses a command"
+    },
+    "roles": {
+      "label": "Log Role Changes",
+      "description": "When enabled, logs role changes to User Logs"
+    },
+    "messages": {
+      "label": "Message Logs Channel",
+      "description": "Logs channel for any kind of message"
+    },
+    "traffic": {
+      "label": "Traffic Logs Channel",
+      "description": "Logs channel for when users join/leave or are banned"
+    },
+    "users": {
+      "label": "User Logs Channel",
+      "description": "Logs channel for user-related changes like roles"
+    },
+    "management": {
+      "label": "Management Logs Channel",
+      "description": "Logs channel for things like channel creation"
+    },
+    "actions": {
+      "label": "Action Logs Channel",
+      "description": "Logs channel for actions like bans or kicks"
+    },
+    "nsfw": {
+      "label": "NSFW Logs Channel",
+      "description": "Logs channel for the bot's NSFW detection"
+    }
+  },
+  "xp": {
+    "remove_old": {
+      "label": "Remove Old Level Roles",
+      "description": "When a user gains a level, the bot will try to remove any known previous level roles"
+    },
+    "announce_level_up": {
+      "label": "Announce Level Up",
+      "description": "Announces that the user leveled up, in the channel where they leveled up from"
+    },
+    "xp_gain": {
+      "label": "Role XP Gain",
+      "description": "Grant certain roles (or everyone) XP when they speak. Limits XP gains to once per minute"
+    },
+    "new": "Add Role",
+    "placeholder": "Input XP here"
+  },
+  "automod": {
+    "logs": {
+      "label": "Automod Logs",
+      "description": "Where automoderation logs will be sent to"
+    },
+    "malicious_urls": {
+      "label": "Block Malicious URLs",
+      "description": "Filters out known malicious URLs from a public database"
+    },
+    "invite_links": {
+      "label": "Block Invite Links",
+      "description": "Blocks Discord & Guilded invite links"
+    },
+    "api_keys": {
+      "label": "Block API Keys",
+      "description": "Blocks Detected API keys leaked in messages"
+    },
+    "mass_mentions": {
+      "label": "Block Mass Mentions",
+      "description": "Blocks messages with more than 6 mentions in them"
+    },
+    "spam": {
+      "label": "Spam",
+      "description": "How many messages must be sent within 3 seconds of each other to trigger the spam filter"
+    },
+    "toxicity": {
+      "label": "Toxicity Filter",
+      "description": "How certain the bot must be of a toxicity detection to act on it"
+    },
+    "hate-speech": {
+      "label": "Hate-speech Filter",
+      "description": "How certain the bot must be of a hate-speech detection to act on it"
+    },
+    "nsfw": {
+      "label": "NSFW Filter",
+      "description": "How certain the bot must be of a NSFW detection to act on it"
+    },
+    "blacklist": {
+      "label": "Word Blacklist",
+      "description": "Blacklist words in messages, automatically detects potential variants of listed words"
+    },
+    "default_profanities": {
+      "label": "Default Profanity Lists",
+      "description": "Which languages to apply a default profanity list for if detected in a message",
+      "placeholder": "Input languages here"
+    },
+    "untrusted_block_attachments": {
+      "label": "Untrusted Block Attachments",
+      "description": "What types of attachments the bot should block from users you consider untrusted.",
+      "placeholder": "Input attachment types here"
+    },
+    "restrictions": {
+      "allow_roles": {
+        "label": "Include Roles",
+        "placeholder": "Input roles here"
+      },
+      "allow_users": {
+        "label": "Include Users",
+        "placeholder": "Input users here"
+      },
+      "allow_channels": {
+        "label": "Include Channels",
+        "placeholder": "Input channels here"
+      },
+      "blacklist_roles": {
+        "label": "Exclude Roles",
+        "placeholder": "Input roles here"
+      },
+      "blacklist_users": {
+        "label": "Exclude Users",
+        "placeholder": "Input users here"
+      },
+      "blacklist_channels": {
+        "label": "Exclude Channels",
+        "placeholder": "Input channels here"
+      }
+    }
+  },
+  "welcomer": {
+    "welcome": {
+      "title": "Welcome Message",
+      "placeholder": "Write your welcome message",
+      "enabled_description": "Whether or not the bot will welcome users",
+      "channel_description": "The channel to welcome users in",
+      "image_description": "URL(s) to images for the welcome message to use",
+      "message_description": "The welcomer's welcome message"
+    },
+    "goodbye": {
+      "title": "Goodbye Message",
+      "placeholder": "Write your goodbye message",
+      "enabled_description": "Whether or not the bot will say goodbye to users",
+      "channel_description": "The channel to say goodbye in",
+      "image_description": "URL(s) to images for the goodbye message to use",
+      "message_description": "The welcomer's goodbye message"
+    },
+    "welcomer_cycle": {
+      "label": "Cycle",
+      "description": "How should the welcomer cycle through images?",
+      "options": {
+        "Daily": "Daily",
+        "Weekly": "Weekly",
+        "Monthly": "Monthly",
+        "Random": "Random",
+        "PerUser": "Per User"
+      }
+    },
+    "templates_note": "Welcomer messages support the following template strings:",
+    "templates": {
+      "mention": "Mentions the user being welcomed",
+      "server_name": "The name of the server"
+    },
+    "editor": {
+      "characters": "{amount, number}/{total, number} characters",
+      "words": "{count, number} words"
+    }
+  },
+  "feeds": {
+    "title": "RSS Feeds",
+    "create": "Create feed",
+    "edit": "Edit feed",
+    "delete": "Delete feed",
+    "delete_confirm": "Are you sure you want to delete this feed?",
+    "source": {
+      "label": "Source",
+      "description": "What this feed should post to"
+    },
+    "feed": {
+      "label": "Feed",
+      "description": "Where this feed pulls RSS data from"
+    },
+    "extra_fields": {
+      "url": {
+        "label": "URL",
+        "description": "The URL of your custom feed"
+      }
+    },
+    "channel_description": "The channel this feed will post to",
+    "webhook_description": "The webhook this feed will post to",
+    "invalid_webhook": "This webhook URL is invalid",
+    "feed_dead": {
+      "tooltip": "The feed at this URL is no longer in service.",
+      "title": "Feed no longer available",
+      "description": "The provider for the feed at this URL has indicated that they no longer intend to offer this feed. Please change the source or delete this feed.",
+      "confirm": "Got it"
+    },
+    "source_names": {
+      "steam": "Steam Game",
+      "custom": "Custom RSS",
+      "roblox_blog": "Roblox Blog",
+      "roblox_releases": "Roblox Release Notes",
+      "league_of_legends": "League of Legends",
+      "unreal_engine_blog": "Unreal Engine Blog",
+      "unity_releases": "Unity Release Notes",
+      "unit_blog": "Unity Blog",
+      "myanimelist": "MyAnimeList News",
+      "livechart": "LiveChart Anime Episode Releases"
+    },
+    "internal": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Input Name Here"
+      },
+      "url": {
+        "label": "URL",
+        "placeholder": "Input URL Here"
+      },
+      "create": {
+        "title": "Create Feed Type",
+        "submit": "Create Feed Data"
+      },
+      "edit": {
+        "title": "Edit Feed Type \"{name}\"",
+        "submit": "Edit Feed Data"
+      },
+      "delete": {
+        "title": "Delete Feed Type \"{name}\"?",
+        "submit": "Delete Feed Data"
+      }
+    }
+  },
+  "giveaways": {
+    "title": "Giveaways",
+    "create": "Host giveaway",
+    "role": {
+      "label": "Ping Role",
+      "description": "The role that will be pinged when a giveaway is hosted"
+    },
+    "channel": {
+      "label": "Giveaway Channel",
+      "description": "The channel all giveaways will be posted in"
+    },
+    "status": {
+      "active": "Active",
+      "ended": "Over",
+      "cancelled": "Cancelled"
+    },
+    "ends_in": {
+      "active": "Ends {relative_date}",
+      "ended": "Ended {relative_date}"
+    },
+    "prize": {
+      "label": "Prize",
+      "description": "The prize for this giveaway"
+    },
+    "ends_at": {
+      "label": "End Time",
+      "description": "When this giveaway should end"
+    },
+    "winners": {
+      "count": "{winners, number} winners",
+      "label": "Winners",
+      "description": "How many entrants can win this giveaway"
+    },
+    "reward": "Prize: {reward}",
+    "entrants": "{entrants, number} entries",
+    "channel_description": "The channel this giveaway will be posted in"
+  },
+  "verification": {
+    "verified_role": {
+      "label": "Verified Role",
+      "description": "The role that will be added to verified users"
+    },
+    "unverified_role": {
+      "label": "Unverified Role",
+      "description": "The role that will be added to unverified users"
+    },
+    "channel": {
+      "label": "Verification Channel",
+      "description": "Where new users will be directed towards for verification"
+    },
+    "logs": {
+      "label": "Verify Logs",
+      "description": "Where logs for verified users will be sent to"
+    },
+    "admin_contact": {
+      "label": "Admin Contact",
+      "description": "How users should contact you if something goes wrong during verification"
+    },
+    "block_tor": {
+      "label": "Block TOR Exit Nodes",
+      "description": "When enabled, Server Guard will block any verification attempts from the TOR network"
+    },
+    "proxy_check": {
+      "label": "Proxy Check",
+      "description": "When enabled, Server Guard will block verification attempts from dangerous IPs"
+    },
+    "raid_guard": {
+      "label": "Raid Guard",
+      "description": "Raid Guard attempts to automatically block and intercept raid attempts"
+    },
+    "rule_enforcement": {
+      "label": "Rule Enforcement",
+      "description": "Server Guard will automatically reject verification based on these rules"
+    },
+    "toxicity": "Toxicity",
+    "hate-speech": "Hate-Speech",
+    "nsfw": {
+      "label": "NSFW",
+      "description": "How certain the bot needs to be of NSFW in the user's Avatar or Banner to flag them"
+    },
+    "blacklist": {
+      "label": "Blacklist",
+      "description": "Words to blacklist in users' names or bios"
+    }
+  },
+  "dashboard_index": {
+    "nickname": "Nickname",
+    "timezone": "Timezone",
+    "language": {
+      "label": "Language",
+      "description": "The language that things like logs will be outputted in"
+    },
+    "muted_role": {
+      "label": "Muted Role",
+      "description": "The role that will be added to muted users"
+    },
+    "prefix": {
+      "label": "Prefix",
+      "description": "The prefix that will be used for commands"
+    },
+    "modules": {
+      "verification": {
+        "name": "Verification",
+        "description": "Protect your server from raids, ban evaders & more"
+      },
+      "logging": {
+        "name": "Logging",
+        "description": "Log all actions in your server"
+      },
+      "moderation": {
+        "name": "Moderation",
+        "description": "Moderate your server with tools like temp bans, mutes & more"
+      },
+      "automod": {
+        "name": "Automod",
+        "description": "Automatically moderate messages in your server"
+      },
+      "xp": {
+        "name": "XP",
+        "description": "Level up announcements, XP gain & more"
+      },
+      "feeds": {
+        "name": "RSS Feeds",
+        "description": "Automatically send news from RSS feeds right to your server"
+      },
+      "giveaways": {
+        "name": "Giveaways",
+        "description": "Host giveaways in your server"
+      },
+      "welcomer": {
+        "name": "Welcomer",
+        "description": "Welcome new members to your server"
+      },
+      "autoroles": {
+        "name": "Autoroles",
+        "description": "Give members roles automatically"
+      }
+    }
+  },
+  "navigation": {
+    "dashboard": {
+      "category": {
+        "moderation": "Moderation",
+        "general": "General"
+      },
+      "index": "Dashboard",
+      "permissions": "Permissions",
+      "audit": "Audit Log",
+      "verification": "Verification",
+      "logging": "Logging",
+      "xp": "XP Management",
+      "automod": "Automod",
+      "autoroles": "Autoroles",
+      "welcomer": "Welcomer",
+      "feeds": "RSS Feeds",
+      "giveaways": "Giveaways"
+    }
+  },
+  "server_context": {
+    "unsaved": {
+      "title": "Unsaved Changes",
+      "message": "You have unsaved changes. Apply them to keep them!"
+    },
+    "success": {
+      "title": "Success",
+      "message": "Successfully applied changes."
+    },
+    "partial": {
+      "title": "Partial Success",
+      "message": "Some settings failed to save."
+    },
+    "failed": {
+      "title": "Failed",
+      "message": "All settings failed to save.",
+      "message_cors": "An unexpected CORS error has occurred.",
+      "message_server": "An unexpected server error has occurred."
+    }
+  },
+  "settings": {
+    "malicious_urls": "Block Malicious URLs",
+    "filter_invites": "Block Invite Links",
+    "filter_api_keys": "Block API Keys",
+    "default_profanities": "Default Profanity Lists",
+    "filter_nsfw": "NSFW Filter",
+    "spam_filter": "Spam Filter",
+    "filter_toxicity": "Toxicity Filter",
+    "filter_hatespeech": "Hatespeech Filter",
+    "word_blacklist": "Blacklisted Words"
   }
 }

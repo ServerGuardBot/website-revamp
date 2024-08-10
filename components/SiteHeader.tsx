@@ -49,7 +49,7 @@ function LoginWidget() {
         {t("login")}
       </Button>
     ) : (
-      <Menu>
+      <Menu withArrow>
         <Menu.Target>
           <Button
             leftSection={<Avatar src={session.user?.avatar} size={28} />}

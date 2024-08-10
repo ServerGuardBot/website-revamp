@@ -1,6 +1,6 @@
 "use client";
 import LegalNotice from "@/components/LegalNotice";
-import { List, Text, Title } from "@mantine/core";
+import { List, Space, Text, Title } from "@mantine/core";
 import { useTranslations } from "next-intl";
 
 export default function Page() {
@@ -11,17 +11,22 @@ export default function Page() {
       <Title>{tg("privacy")}</Title>
       <LegalNotice />
       <Text>{t("intro")}</Text>
-      <Text mt="sm">{t("verification")}</Text>
+      <Space h="sm" />
+      <Text>{t("verification")}</Text>
       <List withPadding>
         <List.Item>{t("verification-username")}</List.Item>
         <List.Item>{t("verification-metrics")}</List.Item>
         <List.Item>{t("verification-connection")}</List.Item>
       </List>
 
-      <Text mt="sm">{t("hashing")}</Text>
-      <Text mt="sm">{t("analytics")}</Text>
-      <Text mt="sm">{t("agreement")}</Text>
-      <Text mt="sm">{t("filters")}</Text>
+      <Space h="sm" />
+      <Text>{t("hashing")}</Text>
+      <Space h="sm" />
+      <Text>{t("analytics")}</Text>
+      <Space h="sm" />
+      <Text>{t("agreement")}</Text>
+      <Space h="sm" />
+      <Text>{t("filters")}</Text>
     </>
   );
 }

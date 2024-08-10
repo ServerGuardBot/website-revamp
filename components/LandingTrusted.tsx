@@ -46,20 +46,6 @@ export default function LandingTrusted({ data }: { data?: Array<any> }) {
   }
 
   const t = useTranslations("home");
-  const ref = useRef<HTMLDivElement>(null);
-
-  const len = data.length;
-  for (let i = 0; i < len; i++) {
-    data.push(data[i]);
-  }
-
-  useEffect(() => {
-    let lastElementWidth = 0;
-    if (ref.current) {
-      lastElementWidth = (ref.current.lastElementChild as HTMLDivElement)?.clientWidth ?? 0;
-    }
-    document.documentElement.style.setProperty("--trusted-width", "-" + ((ref.current?.clientWidth ?? 0) / 2).toString() + "px")
-  }, [ref]);
 
   return (
     <>
@@ -67,14 +53,16 @@ export default function LandingTrusted({ data }: { data?: Array<any> }) {
         {t("trusted-by")}
       </Title>
       <div className={classes.container}>
-        <Group
-          className={classes.trustedGroup}
-          gap="sm"
-          p="sm"
-          ref={ref}
-        >
+        <Group className={classes.trustedGroupv2} gap="sm" p="sm">
           {data.map((item, index) => (
-            <Card className={classes.card} component="a" href={`https://guilded.gg/${item.vanity}`} key={index} withBorder p="xs">
+            <Card
+              className={classes.card}
+              component="a"
+              href={`https://guilded.gg/${item.vanity}`}
+              key={index}
+              withBorder
+              p="xs"
+            >
               <Group>
                 <Image
                   src={item.avatar}
@@ -86,7 +74,7 @@ export default function LandingTrusted({ data }: { data?: Array<any> }) {
                 <Stack gap={0}>
                   <Text size="xl">{item.name}</Text>
                   <Text c="dimmed" size="sm">
-                    {item.members}+
+                    {(item.members as number).toLocaleString()}+
                   </Text>
                 </Stack>
               </Group>
